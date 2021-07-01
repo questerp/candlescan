@@ -41,6 +41,6 @@ class CandlescanSettings(Document):
                 q = enqueue(s.method, queue='long', job_name=s.job_id)
                 id = q.get_id()
                 print(id)
-                frappe.db.sql("""UPDATE set job_id='%s' from `tabCandlescan scanner` where name='%s'""" % (id,s.name))
+                frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
 
                 
