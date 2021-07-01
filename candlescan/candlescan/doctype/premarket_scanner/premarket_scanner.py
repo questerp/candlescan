@@ -10,12 +10,13 @@ from frappe.model.document import Document
 from frappe.realtime import get_redis_server
 
 class PremarketScanner(Document):
-    def start(self):        
-        redis = get_redis_server()
-        print("Running premarket...")
-        val = 1
-        while(True):
-            val=val+1 
-            time.sleep(self.update_ms/1000)
-            redis.publish("candlesocket",frappe.as_json({"scanner":"premarket","title":self.public_name,"data":" %s"% val}))
+    pass
+
+def start():        
+    redis = get_redis_server()
+    val = 1
+    while(True):
+        val=val+1 
+        time.sleep(self.update_ms/1000)
+        redis.publish("candlesocket",frappe.as_json({"scanner":"premarket","title":self.public_name,"data":" %s"% val}))
 
