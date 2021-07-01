@@ -30,7 +30,7 @@ class CandlescanSettings(Document):
             print("scanner: %s" % s.scanner)
             print("active: %s" % s.job_id)
             if s.job_id:
-                if Job.exists(s.job_id):
+                if Job.exists(s.job_id, connection=redis):
                     job = Job.fetch(s.job_id, connection=redis)
                     print('Stopping job, Status: %s' % job.get_status())
                     job.cancel()
