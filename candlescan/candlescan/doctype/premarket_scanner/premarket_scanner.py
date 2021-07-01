@@ -16,9 +16,10 @@ def start():
     redis = get_redis_server()
     val = 1
     doc = frappe.get_doc("Premarket Scanner")
-    job_meta = 
     while(True):
         stop = frappe.cache().get_value('stop_%s' % doc.job_id)
+        print("stop")
+        print(stop)
         if stop == 1:
             break
         val=val+1 
