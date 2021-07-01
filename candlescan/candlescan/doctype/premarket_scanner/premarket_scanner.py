@@ -17,7 +17,7 @@ def start():
     val = 1
     doc = frappe.get_doc("Premarket Scanner")
     while(True):
-        stop = frappe.cache().get_value('stop_%s' % doc.job_id)
+        stop = frappe.cache().get_value('stop_%s' % doc.job_id,shared=True)
         print("stop")
         print(stop)
         if stop == 1:
