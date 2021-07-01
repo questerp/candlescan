@@ -12,6 +12,7 @@ from frappe.realtime import get_redis_server
 class PremarketScanner(Document):
     def start(self):        
         redis = get_redis_server()
+        print("Running premarket...")
         val = 1
         while(True):
             val=val+1 
