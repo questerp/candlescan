@@ -20,6 +20,7 @@ def start_scanners():
     result = {}
     for s in scanners:
         cache_id = 'stop_%s' % s.job_id
+        result["cache_id"] = cache_id
         result[s.scanner] = s.active
         if s.active:
             frappe.cache().set_value(cache_id,0)
