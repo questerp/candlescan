@@ -17,10 +17,10 @@ class CandlescanSettings(Document):
 @frappe.whitelist()
 def start_scanners():
     scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+    result = {}
     for s in scanners:
-        print(s)
         cache_id = 'stop_%s' % s.job_id
-        print(cache_id)
+        result[s.scanner] = s.active
         if s.active:
             frappe.cache().set_value(cache_id,0)
             #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
@@ -29,5 +29,6 @@ def start_scanners():
             #frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
         else:
             frappe.cache().set_value(cache_id, 1)
+    return result
 
                 
