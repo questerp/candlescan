@@ -12,26 +12,27 @@ from rq.registry import StartedJobRegistry
 
 
 class CandlescanSettings(Document):
-    
+    pass
 
-    def start_scanners(self):
-        redis = get_redis_conn()
-        registry = StartedJobRegistry('long', connection=redis)
-        running_job_ids = registry.get_job_ids()  # Jobs which are exactly running. 
+@frappe.whitelist()
+def start_scanners():
+    redis = get_redis_conn()
+    registry = StartedJobRegistry('long', connection=redis)
+    running_job_ids = registry.get_job_ids()  # Jobs which are exactly running. 
 
-            
-        scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
-        for s in scanners:
-            if s.job_id:
-                if s.job_id in running_job_ids:
-                    job = Job.fetch(s.job_id, connection=redis)
-                    job.cancel()
-                    job.delete()
-                
-            if s.active:
-                #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
-                q = enqueue(s.method, queue='long', job_name=s.job_id)
-                id = q.get_id()
-                frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
+
+    scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+    for s in scanners:
+        if s.job_id:
+            if s.job_id in running_job_ids:
+                job = Job.fetch(s.job_id, connection=redis)
+                job.cancel()
+                job.delete()
+
+        if s.active:
+            #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
+            q = enqueue(s.method, queue='long', job_name=s.job_id)
+            id = q.get_id()
+            frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
 
                 
