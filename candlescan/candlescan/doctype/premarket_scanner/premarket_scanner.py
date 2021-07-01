@@ -18,13 +18,9 @@ def start():
     doc = frappe.get_doc("Premarket Scanner")
     while(True):
         stop = frappe.cache().hget(doc.doctype,"stop",shared=True)
-        
-        print("stop")
-        print(stop)
         if stop == 1:
             print("breaking")            
             break
         val=val+1 
         time.sleep(2)
         redis.publish("candlesocket",frappe.as_json({"scanner":"premarket","title":doc.public_name,"data":" %s"% val}))
-
