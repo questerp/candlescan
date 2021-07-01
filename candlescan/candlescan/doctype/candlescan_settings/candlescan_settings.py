@@ -16,7 +16,7 @@ class CandlescanSettings(Document):
     def start_scanners(self):
         frappe.msgprint("start_scanners")
         redis = get_redis_conn()
-        jobs = get_jobs()
+        jobs = get_jobs(queue="long")
         for job in jobs:
             print("job: %s" % job)
             
@@ -26,4 +26,4 @@ class CandlescanSettings(Document):
             scanner = frappe.get_doc(s.scanner)
             print(s.job_id)
             if s.active:
-                enqueue(scanner.start, queue='background', job_name=scanner.job_id, job_id=scanner.job_id)
+                enqueue(scanner.start, queue='long', job_name=scanner.job_id, job_id=scanner.job_id)
