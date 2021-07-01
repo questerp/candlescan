@@ -23,4 +23,4 @@ def start():
             break
         val=val+1 
         time.sleep(2)
-        redis.publish("candlesocket",frappe.as_json({"scanner":"premarket","title":doc.public_name,"data":" %s"% val}))
+        redis.publish("candlesocket",frappe.as_json({"scanner":"premarket","title":doc.public_name,"stop":" %s"% stop}))
