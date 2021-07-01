@@ -13,11 +13,11 @@ class PremarketScanner(Document):
     pass
 
 def signature():
-    return {
-        "symbol":"Symbol",
-        "volume":"Volume",
-        "price":"Price"
-    }
+    return [
+        {"symbol":"Symbol"},
+        {"olume":"Volume"},
+        {"rice":"Price"}
+        ]
 
 def start(scanner_id):        
     redis = get_redis_server()
