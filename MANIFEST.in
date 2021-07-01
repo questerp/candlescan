@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include candlescan *.css
+recursive-include candlescan *.csv
+recursive-include candlescan *.html
+recursive-include candlescan *.ico
+recursive-include candlescan *.js
+recursive-include candlescan *.json
+recursive-include candlescan *.md
+recursive-include candlescan *.png
+recursive-include candlescan *.py
+recursive-include candlescan *.svg
+recursive-include candlescan *.txt
+recursive-exclude candlescan *.pyc
