@@ -15,7 +15,7 @@ class CandlescanSettings(Document):
 
     def start_scanners(self):
         redis = get_redis_conn()
-        jobs = get_jobs(queue="long")
+        jobs = get_jobs()
         for job in jobs:
             print("job: %s" % job)
             
