@@ -19,5 +19,6 @@ def start():
     while(True):
         val=val+1 
         time.sleep(2)
+        print(val)
         redis.publish("candlesocket",frappe.as_json({"scanner":"premarket","title":doc.public_name,"data":" %s"% val}))
 
