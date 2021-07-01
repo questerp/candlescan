@@ -18,11 +18,11 @@ class CandlescanSettings(Document):
         redis = get_redis_conn()
         jobs = get_jobs()
         for job in jobs:
-            print(job)
-            frappe.msgprint(job)
+            print("job: %s" % job)
             
         scanners = frappe.db.sql(""" select name,active,job_id,scanner from `tabCandlescan scanner` """,as_dict=True)
         for s in scanners:
+            print("scanner: %s" % s.scanner)
             scanner = frappe.get_doc(s.scanner)
             print(s.job_id)
             if s.active:
