@@ -23,13 +23,14 @@ def start_scanners():
         result["cache_id"] = cache_id
         result[s.scanner] = s.active
         if s.active:
+            print("Starting %s" % s.scanner)
             frappe.cache().hset(s.scanner,"stop",0,shared=True)
             #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
-            print("Starting %s" % s.method)
             q = enqueue(s.method)
             #id = q.get_id()
             #frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
         else:
+            print("Stopping %s" % s.scanner)
             frappe.cache().hset(s.scanner,"stop",1,shared=True)
     return result
 
