@@ -23,7 +23,7 @@ def start(scanner_id):
             break
         val=val+1 
         time.sleep(2)
-        redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id","data":[
+        redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":[
                                                      {"symbol":"AAPL","price":5412.25,"volume":125158574},
                                                      {"symbol":"TSLA","price":43.2,"volume":342322332},
                                                      {"symbol":"AMD","price":11.31,"volume":232411432},
