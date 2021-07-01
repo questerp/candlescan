@@ -19,11 +19,14 @@ def start_scanners():
     redis = get_redis_conn()
     registry = StartedJobRegistry('long', connection=redis)
     running_job_ids = registry.get_job_ids()  # Jobs which are exactly running. 
-
+    print("running_job_ids")
+    print(running_job_ids)
 
     scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     for s in scanners:
         if s.job_id:
+            print("s.job_id")
+            print(s.job_id)
             if s.job_id in running_job_ids:
                 job = Job.fetch(s.job_id, connection=redis)
                 job.cancel()
