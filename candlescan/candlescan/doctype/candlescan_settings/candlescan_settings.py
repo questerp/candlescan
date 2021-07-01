@@ -12,34 +12,26 @@ from rq.registry import StartedJobRegistry
 
 
 class CandlescanSettings(Document):
-    def on_update(self):
-        self.start_scanners()
+    
 
     def start_scanners(self):
         redis = get_redis_conn()
         registry = StartedJobRegistry('long', connection=redis)
         running_job_ids = registry.get_job_ids()  # Jobs which are exactly running. 
 
-        for job in running_job_ids:
-            print("job: %s" % job)
             
         scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
         for s in scanners:
-            print("scanner: %s" % s.scanner)
-            print("active: %s" % s.job_id)
             if s.job_id:
-                if Job.exists(s.job_id, connection=redis):
+                if s.job_id in running_job_ids:
                     job = Job.fetch(s.job_id, connection=redis)
-                    print('Stopping job, Status: %s' % job.get_status())
                     job.cancel()
                     job.delete()
                 
             if s.active:
-                print("Starting")
                 #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
                 q = enqueue(s.method, queue='long', job_name=s.job_id)
                 id = q.get_id()
-                print(id)
                 frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
 
                 
