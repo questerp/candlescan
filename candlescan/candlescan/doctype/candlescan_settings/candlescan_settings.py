@@ -16,24 +16,10 @@ class CandlescanSettings(Document):
 
 @frappe.whitelist()
 def start_scanners():
-    scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
-    result = {}
+    scanners = frappe.db.sql(""" select name,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     for s in scanners:
-        cache_id = 'stop_%s' % s.job_id
-        result["cache_id"] = cache_id
-        result[s.scanner] = s.active
         if s.active:
-            print("Starting %s" % s.scanner)
-            frappe.cache().hset(s.scanner,"stop",0,shared=True)
-            #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
-            q = enqueue(s.method,queue='default', job_name=s.scanner)
-            #id = q.get_id()
-            #frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
+            frappe.cache().hset(s.scanner_id,"stop",0,shared=True)
+            q = enqueue(s.method,queue='default', job_name=s.scanner_id,scanner_id=s.scanner_id)
         else:
-            print("Stopping %s" % s.scanner)
-            frappe.cache().hset(s.scanner,"stop",1,shared=True)
-            
-    result["cache"] = frappe.cache().hget(s.scanner,"stop",shared=True)
-    return result
-
-                
+            frappe.cache().hset(s.scanner_id,"stop",1,shared=True)
