@@ -19,7 +19,7 @@ def start_scanners():
     scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     for s in scanners:
         print(s)
-        cache_id = 'stop_%s' % s.job_i
+        cache_id = 'stop_%s' % s.job_id
         print(cache_id)
         if s.active:
             frappe.cache().set_value(cache_id,0)
