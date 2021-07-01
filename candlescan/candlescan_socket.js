@@ -30,7 +30,7 @@ subscriber.on('message',function(channel,message){
 	if(channel=='candlesocket'){
 		message = JSON.parse(message);
 		if(message.scanner_id) {
-			io.sockets.emit(message.scanner_id,message);
+			io.sockets.emit(message.scanner_id,message.data);
 		}
 	}
 
