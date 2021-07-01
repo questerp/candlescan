@@ -26,5 +26,8 @@ class CandlescanSettings(Document):
             print("active: %s" % s.active)
             print(s.job_id)
             if s.active:
+                print("Starting")
                 #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
-                enqueue(s.method, queue='long', job_name=s.job_id, job_id=s.job_id)
+                q = enqueue(s.method, queue='long', job_name=s.job_id, job_id=s.job_id)
+                print(q)
+                
