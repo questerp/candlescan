@@ -17,5 +17,5 @@ class PremarketScanner(Document):
         while(True):
             val=val+1 
             time.sleep(self.update_ms/1000)
-            redis.publish("candlesocket",frappe.as_json({"scanner":"premarket","title":self.public_name,"data":"%s %s"% (active,val)}))
+            redis.publish("candlesocket",frappe.as_json({"scanner":"premarket","title":self.public_name,"data":" %s"% val}))
 
