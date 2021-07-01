@@ -14,11 +14,10 @@ class CandlescanSettings(Document):
         self.start_scanners()
 
     def start_scanners(self):
-        if self.scanners:
-            redis = get_redis_conn()
-            jobs = get_jobs(queue="default")
-            for job in jobs:
-                frappe.msgprint(job.get_id())
+        redis = get_redis_conn()
+        jobs = get_jobs(queue="default")
+        for job in jobs:
+            frappe.msgprint(job.get_id())
             #for s in self.scanners:
             #    scanner = frappe.get_doc(s.scanner)
             #    print(scanner.job_id)
