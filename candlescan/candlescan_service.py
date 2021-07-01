@@ -1,7 +1,7 @@
 import frappe, random
 
 
-def after_signup(customer):
+def after_signup(customer,method):
     if not customer:
         return
     if not customer.confirm:
