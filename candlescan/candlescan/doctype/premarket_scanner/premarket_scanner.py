@@ -3,7 +3,7 @@
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
-import frappe
+import frappe, random
 import time
 from frappe.utils.background_jobs import enqueue_doc
 from frappe.model.document import Document
@@ -30,8 +30,9 @@ def start(scanner_id):
             break
         val=val+1 
         time.sleep(2)
+        rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
+        rprice = random.randrange(2, 100)
+        rvol = random.randrange(10000000, 90000000)
         redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":[
-                                                     {"symbol":"AAPL","price":5412.25,"volume":125158574},
-                                                     {"symbol":"TSLA","price":43.2,"volume":342322332},
-                                                     {"symbol":"AMD","price":11.31,"volume":232411432},
+                                                     {"symbol":rsymb,"price":rprice,"volume":rvol}
                                                      ]}))
