@@ -11,4 +11,5 @@ def after_signup(customer):
     if not customer.user_key:
         customer.user_key = frappe.generate_hash(length=15)
     
+    customer.save()
         
