@@ -17,7 +17,7 @@ def start():
     val = 1
     doc = frappe.get_doc("Premarket Scanner")
     while(True):
-        stop = frappe.cache().hget(doc.doctype,"stop",shared=True)
+        stop = frappe.cache().hget("Premarket Scanner","stop",shared=True)
         if stop == 1:
             print("breaking")            
             break
