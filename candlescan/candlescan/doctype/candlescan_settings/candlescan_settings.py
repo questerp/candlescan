@@ -20,12 +20,11 @@ class CandlescanSettings(Document):
         for job in jobs:
             print("job: %s" % job)
             
-        scanners = frappe.db.sql(""" select name,active,job_id,scanner from `tabCandlescan scanner` """,as_dict=True)
+        scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
         for s in scanners:
             print("scanner: %s" % s.scanner)
-            scanner = frappe.get_doc(s.scanner)
             print("active: %s" % s.active)
             print(s.job_id)
             if s.active:
-                enqueue_doc(s.scanner, name=None, method="start", queue='long')
-                #enqueue(scanner.start, queue='long', job_name=scanner.job_id, job_id=scanner.job_id)
+                #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
+                enqueue(s.method, queue='long', job_name=s.job_id, job_id=s.job_id)
