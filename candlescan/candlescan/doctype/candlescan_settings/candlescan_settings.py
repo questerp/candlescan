@@ -6,19 +6,22 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 from frappe.realtime import get_redis_server
+from frappe.utils.background_jobs import enqueue,get_redis_conn
+from rq.command import send_stop_job_command
+
 
 class CandlescanSettings(Document):
     def on_update(self):
-        redis = get_redis_server()
-        redis.publish("candlesocket",frappe.as_json({'scanner':'premarket','data':'no data available yet'}))
-        #frappe.emit_via_redis('candlesocket',{'message':'candlescan'},'candlescan')
-        #print("Testingsocket")
+        self.start_scanners()
 
-@frappe.whitelist()
-def get_scanners(user_id):
-    if user_id:
-        scanners = self.scanners
-        return {"result":True,'data':scanners}
-    return {"result":False}
-
-
+    def start_scanners(self):
+        if self.scanners:
+            redis = get_redis_conn()
+            for s in self.scanners:
+                scanner = frappe.get_doc(s.scanner)
+                print(scanner.job_id)
+                if not scanner.job_id:
+                    continue
+                send_stop_job_command(redis, scanner.job_id)
+                if scanner.active:
+                    enqueue(scanner.start, queue='background', job_name=scanner.job_id, job_id=scanner.job_id)
