@@ -32,6 +32,8 @@ def start_scanners():
         else:
             print("Stopping %s" % s.scanner)
             frappe.cache().hset(s.scanner,"stop",1,shared=True)
+            
+    result["cache"] = frappe.cache().hget(s.scanner,"stop",shared=True)
     return result
 
                 
