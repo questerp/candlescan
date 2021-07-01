@@ -16,26 +16,15 @@ class CandlescanSettings(Document):
 
 @frappe.whitelist()
 def start_scanners():
-    redis = get_redis_conn()
-    registry = StartedJobRegistry('long', connection=redis)
-    running_job_ids = registry.get_job_ids()  # Jobs which are exactly running. 
-    print("running_job_ids")
-    print(running_job_ids)
-
     scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     for s in scanners:
-        if s.job_id:
-            print("s.job_id")
-            print(s.job_id)
-            if s.job_id in running_job_ids:
-                job = Job.fetch(s.job_id, connection=redis)
-                job.cancel()
-                job.delete()
-
         if s.active:
+            frappe.cache().set_value('stop_%s' % s.job_id,0)
             #enqueue_doc(s.scanner, name=s.scanner, method="start", queue='long')
             q = enqueue(s.method, queue='long', job_name=s.job_id)
-            id = q.get_id()
-            frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
+            #id = q.get_id()
+            #frappe.db.sql("""UPDATE `tabCandlescan scanner` set job_id='%s' where name='%s'""" % (id,s.name))
+        else:
+            frappe.cache().set_value('stop_%s' % s.job_id, 1)
 
                 
