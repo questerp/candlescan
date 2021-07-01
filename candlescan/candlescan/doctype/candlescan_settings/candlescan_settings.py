@@ -20,7 +20,7 @@ class CandlescanSettings(Document):
         for job in jobs:
             frappe.msgprint(job.get_id())
             
-        scanners = frappe.db.sql(""" select doctype,name,active,job_id,scanner from `tabCandlescan scanner` """,as_dict=True)
+        scanners = frappe.db.sql(""" select name,active,job_id,scanner from `tabCandlescan scanner` """,as_dict=True)
         for s in scanners:
             scanner = frappe.get_doc(s.scanner)
             print(s.job_id)
