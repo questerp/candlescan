@@ -19,11 +19,10 @@ class CandlescanSettings(Document):
         jobs = get_jobs()
         for job in jobs:
             frappe.msgprint(job.get_id())
-            #for s in self.scanners:
-            #    scanner = frappe.get_doc(s.scanner)
-            #    print(scanner.job_id)
-            #    if not scanner.job_id:
-            #        continue
-            #    send_stop_job_command(redis, scanner.job_id)
-            #    if scanner.active:
-            #        enqueue(scanner.start, queue='background', job_name=scanner.job_id, job_id=scanner.job_id)
+            
+        scanners = frappe.db.sql(""" select doctype,name,active,job_id,scanner from `tabCandlescan scanner` """,as_dict=True)
+        for s in scanners:
+            scanner = frappe.get_doc(s.scanner)
+            print(s.job_id)
+            if s.active:
+                enqueue(scanner.start, queue='background', job_name=scanner.job_id, job_id=scanner.job_id)
