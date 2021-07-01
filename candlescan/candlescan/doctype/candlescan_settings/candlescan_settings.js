@@ -9,7 +9,7 @@ frappe.ui.form.on('Candlescan Settings', {
 									method: 'candlescan.candlescan.doctype.candlescan_settings.candlescan_settings.start_scanners',
 									args: { },
 									callback(r) {
-										alert("Scanners running");
+										alert("Scanners running",r.message);
 										if (!r.exc) {
 												frm.reload_doc();
 											}
