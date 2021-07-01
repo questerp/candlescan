@@ -10,6 +10,9 @@ frappe.ui.form.on('Candlescan Settings', {
 									args: { },
 									callback(r) {
 										alert("Scanners running");
+										if (!r.exc) {
+												frm.reload_doc();
+											}
 									}
 								});
 							});
