@@ -12,6 +12,13 @@ from frappe.realtime import get_redis_server
 class PremarketScanner(Document):
     pass
 
+def signature():
+    return {
+        "symbol":"Symbol",
+        "volume":"Volume",
+        "price":"Price"
+    }
+
 def start(scanner_id):        
     redis = get_redis_server()
     val = 1
