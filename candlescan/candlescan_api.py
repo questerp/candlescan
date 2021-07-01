@@ -20,6 +20,13 @@ def logged_in():
         frappe.throw('Forbiden, Please login to continue.')
 
 
+@frappe.whitelist()
+def get_scanners(user):
+    logged_in()
+    if not user:
+        return handle(Flase,"User is required")
+    scanners = frappe.db.sql(""" select name,active,job_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+    return handle(True,"Success",scanners)
 
 @frappe.whitelist(allow_guest=True)
 def update_customer(name,customer_name,email):
