@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 from frappe.realtime import get_redis_server
-from frappe.utils.background_jobs import enqueue,get_redis_conn,get_jobs
+from frappe.utils.background_jobs import enqueue,get_redis_conn,get_jobs,enqueue_doc
 
 
 class CandlescanSettings(Document):
@@ -24,6 +24,8 @@ class CandlescanSettings(Document):
         for s in scanners:
             print("scanner: %s" % s.scanner)
             scanner = frappe.get_doc(s.scanner)
+            print("active: %s" % s.active)
             print(s.job_id)
             if s.active:
-                enqueue(scanner.start, queue='long', job_name=scanner.job_id, job_id=scanner.job_id)
+                enqueue_doc(s.scanner, name=None, method="start", queue='long')
+                #enqueue(scanner.start, queue='long', job_name=scanner.job_id, job_id=scanner.job_id)
