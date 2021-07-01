@@ -14,9 +14,9 @@ class PremarketScanner(Document):
 
 def signature():
     return [
-        {name:"symbol",title:"Symbol",align:"left"},
-        {name:"volume",title:"Volume",align:"left"},
-        {name:"price",title:"Price",align:"right"},
+        {"name":"symbol","title":"Symbol","align":"left"},
+        {"name":"volume","title":"Volume","align":"left"},
+        {"name":"price","title":"Price","align":"right"},
         ]
 
 def start(scanner_id):        
