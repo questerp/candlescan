@@ -97,7 +97,7 @@ def handle(result=False,msg='Call executed',data=None):
 
 @frappe.whitelist()
 def get_extra_data(symbols,fields):
-    logged_in()
+    #logged_in()
     if not (symbols or fields):
         return handle(False,"Data missing")
     
