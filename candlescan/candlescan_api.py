@@ -1,4 +1,4 @@
-import frappe
+import frappe, json
 from http import cookies
 from urllib.parse import unquote, urlparse
 
@@ -97,10 +97,13 @@ def handle(result=False,msg='Call executed',data=None):
 
 @frappe.whitelist()
 def get_extra_data(symbols,fields):
-    #logged_in()
+    logged_in()
     if not (symbols or fields):
         return handle(False,"Data missing")
-    print(symbols,fields)
+    symbols = json.loads(symbols)
+    fields = json.loads(fields)
+    
+    #print(symbols,fields)
     #return handle(True,"Success",[symbols,fields])
     sql_fields =  ' ,'.join(fields)
     sql_symbols =  ', '.join(['%s']*len(symbols))
