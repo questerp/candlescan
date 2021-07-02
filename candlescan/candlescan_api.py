@@ -100,11 +100,13 @@ def get_extra_data(symbols,fields):
     logged_in()
     if not (symbols or fields):
         return handle(False,"Data missing")
-    symbols = json.loads(symbols)
-    fields = json.loads(fields)
+    if symbols:
+        symbols = json.loads(symbols)
+    if fields:
+        fields = json.loads(fields)
     
     #print(symbols,fields)
-    #return handle(True,"Success",[symbols,fields])
+    return handle(True,"Success",[symbols,fields])
     sql_fields =  ' ,'.join(fields)
     sql_symbols =  ', '.join(['%s']*len(symbols))
     sql = """select {0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
