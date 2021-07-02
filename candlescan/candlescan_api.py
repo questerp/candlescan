@@ -97,15 +97,13 @@ def handle(result=False,msg='Call executed',data=None):
 
 @frappe.whitelist()
 def get_extra_data(symbols,fields):
-    #logged_in()
+    logged_in()
     if not (symbols or fields):
         return handle(False,"Data missing")
     
     sql_fields =  ' ,'.join(fields)
     sql_symbols =  ', '.join(['%s']*len(symbols))
-    print(sql_symbols)
     sql = """select {0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
-    print(sql)
     result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
     return handle(True,"Success",result)
     
