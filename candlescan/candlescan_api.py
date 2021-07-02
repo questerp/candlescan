@@ -103,8 +103,9 @@ def get_extra_data(symbols,fields):
     
     sql_fields =  ' ,'.join(fields)
     sql_symbols =  ', '.join(['%s']*len(symbols))
+    print(sql_symbols)
     sql = """select {0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
     print(sql)
-    result = frappe.db.sql(sql,tuple(fields),tuple(symbols),as_dict=True)
+    result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
     return handle(True,"Success",result)
     
