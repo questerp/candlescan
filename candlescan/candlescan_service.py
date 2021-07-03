@@ -1,5 +1,10 @@
+from __future__ import unicode_literals
 import frappe, random
-
+from frappe.model.document import Document
+from frappe.realtime import get_redis_server
+from frappe.utils.background_jobs import enqueue,get_redis_conn,get_jobs,enqueue_doc
+from rq.job import Job
+from rq.registry import StartedJobRegistry
 
 def after_signup(customer,method):
     if not customer:
