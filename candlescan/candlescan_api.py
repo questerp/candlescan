@@ -32,7 +32,7 @@ def get_scanners(user):
         extras = extras.splitlines()
         for ex in extras:
             name, label = ex.split(':')
-            fExtras.append({name:label})
+            fExtras.append({"name":name,"label":label})
     for scanner in scanners:
         method = "%s.signature" % scanner.method
         signature = frappe.call(method, **frappe.form_dict)
