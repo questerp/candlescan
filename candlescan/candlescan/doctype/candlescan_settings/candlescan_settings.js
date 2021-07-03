@@ -6,7 +6,7 @@ frappe.ui.form.on('Candlescan Settings', {
 		frm.add_custom_button("Reload scanners",
 							() => {
 								frappe.call({
-									method: 'candlescan.candlescan.candlescan_service.start_scanners',
+									method: 'candlescan.candlescan_service.start_scanners',
 									args: { },
 									callback(r) {
 										console.log(r);
