@@ -26,11 +26,12 @@ def get_scanners(user):
     if not user:
         return handle(Flase,"User is required")
     scanners = frappe.db.sql(""" select title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+    extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
     for scanner in scanners:
         method = "%s.signature" % scanner.method
         signature = frappe.call(method, **frappe.form_dict)
         scanner['signature'] = signature
-    return handle(True,"Success",scanners)
+    return handle(True,"Success",{"scanners":scanners:"extras":extras})
 
 @frappe.whitelist(allow_guest=True)
 def update_customer(name,customer_name,email):
