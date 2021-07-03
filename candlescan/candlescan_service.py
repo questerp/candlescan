@@ -13,3 +13,14 @@ def after_signup(customer,method):
     
     customer.save()
         
+
+@frappe.whitelist()
+def start_scanners():
+    scanners = frappe.db.sql(""" select name,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+    for s in scanners:
+        if s.active:
+            method = "%s.start" % s.method
+            frappe.cache().hset(s.scanner_id,"stop",0,shared=True)
+            q = enqueue(method,queue='default', job_name=s.scanner_id,scanner_id=s.scanner_id)
+        else:
+            frappe.cache().hset(s.scanner_id,"stop",1,shared=True)
