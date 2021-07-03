@@ -75,7 +75,7 @@ def login_customer(usr,pwd):
     password = frappe.utils.password.get_decrypted_password('Customer',user.name,fieldname='password')
     if password == pwd:
         return handle(True,"Logged in",user)
-        #return {'result':True,'msg':'mock op success','data':user}
+     return handle(False,"Incorrect email or password")
 
 def get_user(name,target='email'):
     user = frappe.db.get_value('Customer',{target:name},['name','customer_type','email_is_confirmed','referral','user_key','email','customer_name','image'],as_dict=True)
