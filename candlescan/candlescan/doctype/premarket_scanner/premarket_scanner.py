@@ -15,13 +15,14 @@ class PremarketScanner(Document):
 def signature():
     return [
         {"name":"symbol","title":"Symbol","align":"left"},
-        {"name":"volume","title":"Volume","align":"left"},
+        {"name":"gap","title":"Gap %","align":"left"},
         {"name":"price","title":"Price","align":"right"},
         ]
 
 def start(scanner_id):        
     redis = get_redis_server()
     val = 1
+    symbols = frappe.db.sql("""select name from tabSymbol""",as_dict=True)
     #doc = frappe.get_doc("Premarket Scanner")
     while(True):
         frappe.local.cache = {}
@@ -30,9 +31,10 @@ def start(scanner_id):
             break
         val=val+1 
         time.sleep(2)
-        rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
+        #rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
         rprice = random.randrange(2, 100)
-        rvol = random.randrange(10000000, 90000000)
+        rvol = random.randrange(10, 99)
         redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":[
-                                                     {"symbol":rsymb,"price":rprice,"volume":rvol}
+                                                        {"symbol":symbols[0].name,"price":rprice,"gap":rvol},
+                                                        {"symbol":symbols[1].name,"price":rprice,"gap":rvol}
                                                      ]}))
