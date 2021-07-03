@@ -31,7 +31,7 @@ def get_scanners(user):
         method = "%s.signature" % scanner.method
         signature = frappe.call(method, **frappe.form_dict)
         scanner['signature'] = signature
-    return handle(True,"Success",{"scanners":scanners:"extras":extras})
+    return handle(True,"Success",{"scanners":scanners,"extras":extras})
 
 @frappe.whitelist(allow_guest=True)
 def update_customer(name,customer_name,email):
