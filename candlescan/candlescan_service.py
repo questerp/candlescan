@@ -26,7 +26,7 @@ def start_workers(queue):
         redis_connection = get_redis_conn()
     with Connection(redis_connection):
         logging_level = "INFO"
-        print("Starting worker %s" % method)
+        print("Starting worker %s" % queue)
         Worker([queue], name=queue).work(logging_level = logging_level)
 
 @frappe.whitelist()
