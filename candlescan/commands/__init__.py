@@ -9,8 +9,7 @@ def call_command(cmd, context):
 	return click.Context(cmd, obj=context).forward(cmd)
 
 @click.command('start-workers')
-@pass_context
-def start_workers(context):
+def start_workers():
 	start_workers()
 
 commands = [
