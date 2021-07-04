@@ -124,7 +124,7 @@ def get_symbol_info(symbol):
         return handle(False,"Data missing")
     
     # return data fields
-    fields =  ' ,'.join(["company","country","floating_shares","sector","exchange"])
+    fields =  ' ,'.join(["symbol","company","country","floating_shares","sector","exchange"])
     data = frappe.db.sql(""" select {0} from tabSymbol where symbol='{1}'""".format(fields,symbol),as_dict=True)
     if(data and len(data)>0):
         return handle(True,"Success",data)
