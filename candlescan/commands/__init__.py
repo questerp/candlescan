@@ -10,7 +10,7 @@ def call_command(cmd, context):
 @click.command('start-candlescan-workers')
 @click.option('--queue', type=str)
 def start_candlescan_workers(queue):
-	print("Starting Candlescan Workers")
+	print("Starting Candlescan Workers %s" % queue)
 	from candlescan.candlescan_service import start_workers
 	start_workers(queue)
 
