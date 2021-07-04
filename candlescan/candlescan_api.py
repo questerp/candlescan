@@ -119,7 +119,7 @@ def get_extra_data(symbols,fields):
 
 @frappe.whitelist()
 def get_symbol_info(symbol):
-    #logged_in()
+    logged_in()
     if not symbol:
         return handle(False,"Data missing")
     
