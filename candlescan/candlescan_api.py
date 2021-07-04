@@ -116,4 +116,13 @@ def get_extra_data(symbols,fields):
     sql = """select name,{0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
     result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
     return handle(True,"Success",result)
+
+@frappe.whitelist()
+def get_symbol_info(symbol):
+    logged_in()
+    if not symbol:
+        return handle(False,"Data missing")
+    
+    data = frappe.db.sql(""" select * from tabSymbol where symbol='%s'"""%symbol,as_dict=True)
+    return handle(True,"Success",data)
     
