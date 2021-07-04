@@ -45,7 +45,8 @@ def start_scanners():
 
             kwargs = {
                 'connection': redis_connection,
-                'async': True
+                'async': True,
+                'scanner_id':s.scanner_id
             }
             #print("Starting Queue for the worker")
             q = Queue(s.scanner_id, **kwargs)
