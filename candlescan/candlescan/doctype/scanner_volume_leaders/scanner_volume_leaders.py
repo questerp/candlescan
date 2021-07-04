@@ -29,10 +29,10 @@ def signature():
 
 def start(scanner_id):        
 	redis = get_redis_server()
-    	val = 1
-    	symbols = frappe.db.sql("""select name from tabSymbol""",as_dict=True)
-   	 #doc = frappe.get_doc("Premarket Scanner")
-    	while(True):
+	val = 1
+	symbols = frappe.db.sql("""select name from tabSymbol""",as_dict=True)
+	#doc = frappe.get_doc("Premarket Scanner")	
+	while(True):
 		frappe.local.cache = {}
 		stop = frappe.cache().hget(scanner_id,"stop",shared=True)
 		if stop == 1:
