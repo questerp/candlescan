@@ -58,7 +58,9 @@ def start_scanners():
                 "event": None,
                 "job_name": cstr(method),
                 "is_async": True,
-                "kwargs": {}
+                "kwargs": {
+                     'scanner_id':s.scanner_id
+                }
             }
             q.enqueue_call(execute_job, timeout=60000,	kwargs=queue_args)
             #q = enqueue(method,queue="default", timeout=60000, job_name=s.scanner_id,scanner_id=s.scanner_id)
