@@ -1,0 +1,30 @@
+{
+ "creation": "2021-07-02 07:02:21.610813",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "symbol"
+ ],
+ "fields": [
+  {
+   "fieldname": "symbol",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Symbol",
+   "options": "Symbol",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-07-02 07:02:21.610813",
+ "modified_by": "Administrator",
+ "module": "CandleScan",
+ "name": "Watchlist symbol",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

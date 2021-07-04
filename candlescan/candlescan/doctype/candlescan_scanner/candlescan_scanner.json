@@ -1,0 +1,66 @@
+{
+ "creation": "2021-07-01 05:47:42.303867",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "scanner",
+  "title",
+  "description",
+  "active",
+  "scanner_id",
+  "method"
+ ],
+ "fields": [
+  {
+   "fieldname": "scanner",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Scanner",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "default": "0",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active"
+  },
+  {
+   "fieldname": "method",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "method",
+   "reqd": 1
+  },
+  {
+   "fieldname": "scanner_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Scanner id",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-07-02 20:22:16.930814",
+ "modified_by": "Administrator",
+ "module": "CandleScan",
+ "name": "Candlescan scanner",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

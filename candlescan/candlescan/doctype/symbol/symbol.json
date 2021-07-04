@@ -1,0 +1,89 @@
+{
+ "autoname": "field:symbol",
+ "creation": "2021-07-01 19:40:23.318040",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "symbol",
+  "company",
+  "exchange",
+  "column_break_4",
+  "sector",
+  "country",
+  "section_break_7",
+  "floating_shares"
+ ],
+ "fields": [
+  {
+   "fieldname": "symbol",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Symbol",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "exchange",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Exchange",
+   "options": "Stock Exchange",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sector",
+   "fieldtype": "Link",
+   "label": "Sector",
+   "options": "Market Sector"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "floating_shares",
+   "fieldtype": "Float",
+   "label": "Shares Float"
+  }
+ ],
+ "modified": "2021-07-03 18:25:19.223654",
+ "modified_by": "Administrator",
+ "module": "CandleScan",
+ "name": "Symbol",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
