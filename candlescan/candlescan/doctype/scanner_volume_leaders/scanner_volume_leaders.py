@@ -39,9 +39,9 @@ def start(scanner_id):
             break
         val=val+1 
         time.sleep(2)
-        #rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
-        rprice = random.randrange(200000, 15295900)
-	data = []
+	rprice = random.randrange(200000, 15295900)
+	resultdata = []
 	for i in symbols:
-		data.append(  {"symbol":i.name,"volume":rprice})
-        redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":data}))
+		resultdata.append(  {"symbol":i.name,"volume":rprice})
+		
+	redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
