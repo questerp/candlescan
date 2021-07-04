@@ -32,13 +32,14 @@ def start_scanners():
             if not workers or (method not in [w.name for w in workers]):
                 with Connection(redis_connection):
                     logging_level = "INFO"
+                    print("Starting worker %s" % method)
                     Worker([s.scanner_id], name=s.scanner_id).work(logging_level = logging_level)
 
             kwargs = {
                 'connection': redis_connection,
                 'async': True
             }
-
+            print("Starting Queue for the worker")
             q = Queue(s.scanner_id, **kwargs)
             queue_args = {
                 "site": frappe.local.site,
