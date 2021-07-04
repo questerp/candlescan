@@ -19,15 +19,13 @@ def after_signup(customer,method):
     
     customer.save()
         
-def start_workers():
-    scanners = frappe.db.sql(""" select scanner_id,method from `tabCandlescan scanner` """,as_dict=True)
+def start_workers(queue):
+    #scanners = frappe.db.sql(""" select scanner_id,method from `tabCandlescan scanner` """,as_dict=True)
     redis_connection = get_redis_conn()
     with Connection(redis_connection):
         logging_level = "INFO"
-        for s in scanners:
-            method = "%s.start" % s.method
-            print("Starting worker %s" % method)
-            Worker([s.scanner_id], name=s.scanner_id).work(logging_level = logging_level)
+        print("Starting worker %s" % method)
+        Worker([queue], name=queue).work(logging_level = logging_level)
 
 @frappe.whitelist()
 def start_scanners():
@@ -44,10 +42,10 @@ def start_scanners():
             #        print("Starting worker %s" % method)
             #       Worker([s.scanner_id], name=s.scanner_id).work(logging_level = logging_level)
 
-            #kwargs = {
-            #    'connection': redis_connection,
-            #    'async': True
-            #}
+            kwargs = {
+                'connection': redis_connection,
+                'async': True
+            }
             #print("Starting Queue for the worker")
             q = Queue(s.scanner_id, **kwargs)
             queue_args = {
