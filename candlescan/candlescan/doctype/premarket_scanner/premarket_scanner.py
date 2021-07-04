@@ -12,6 +12,14 @@ from frappe.realtime import get_redis_server
 class PremarketScanner(Document):
     pass
 
+# feed_type : ["list","socket","once"]
+
+def get_config():
+	return {
+		"feed_type":"socket",
+		"can_reorder":False
+	}
+
 def signature():
     return [
         {"name":"symbol","title":"Symbol","align":"left","value_type":"string"},
