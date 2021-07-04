@@ -8,8 +8,9 @@ from candlescan.candlescan_service import start_workers
 def call_command(cmd, context):
 	return click.Context(cmd, obj=context).forward(cmd)
 
-@click.command('start-workers')
+@click.command('start-candlescan-workers')
 def start_workers():
+	print("Starting Candlescan Workers")
 	start_workers()
 
 commands = [
