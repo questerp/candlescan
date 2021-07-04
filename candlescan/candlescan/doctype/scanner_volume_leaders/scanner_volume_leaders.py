@@ -22,26 +22,26 @@ def get_config():
 	}
 
 def signature():
-    return [
-        {"name":"symbol","title":"Symbol","align":"left","value_type":"string"},
-        {"name":"volume","title":"Volume","align":"left","value_type":"number"},
-        ]
+	return [
+	{"name":"symbol","title":"Symbol","align":"left","value_type":"string"},
+	{"name":"volume","title":"Volume","align":"left","value_type":"number"},
+	]
 
 def start(scanner_id):        
-    redis = get_redis_server()
-    val = 1
-    symbols = frappe.db.sql("""select name from tabSymbol""",as_dict=True)
-    #doc = frappe.get_doc("Premarket Scanner")
-    while(True):
-        frappe.local.cache = {}
-        stop = frappe.cache().hget(scanner_id,"stop",shared=True)
-        if stop == 1:
-            break
-        val=val+1 
-        time.sleep(2)
-	rprice = random.randrange(200000, 15295900)
-	resultdata = []
-	for i in symbols:
-		resultdata.append(  {"symbol":i.name,"volume":rprice})
-		
-	redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
+	redis = get_redis_server()
+    	val = 1
+    	symbols = frappe.db.sql("""select name from tabSymbol""",as_dict=True)
+   	 #doc = frappe.get_doc("Premarket Scanner")
+    	while(True):
+		frappe.local.cache = {}
+		stop = frappe.cache().hget(scanner_id,"stop",shared=True)
+		if stop == 1:
+			break
+		val=val+1 
+		time.sleep(2)
+		rprice = random.randrange(200000, 15295900)
+		resultdata = []
+		for i in symbols:
+			resultdata.append(  {"symbol":i.name,"volume":rprice})
+
+		redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
