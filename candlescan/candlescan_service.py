@@ -19,7 +19,7 @@ def after_signup(customer,method):
     
     customer.save()
         
-def start_workers():
+def start_workers(bootinfo):
     scanners = frappe.db.sql(""" select scanner_id,method from `tabCandlescan scanner` """,as_dict=True)
     redis_connection = get_redis_conn()
     with Connection(redis_connection):
