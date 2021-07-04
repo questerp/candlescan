@@ -11,8 +11,8 @@ def call_command(cmd, context):
 @click.command('start-workers')
 @pass_context
 def start_workers(context):
-  start_workers()
+	start_workers()
 
 commands = [
-	make_demo
+	start_workers
 ]
