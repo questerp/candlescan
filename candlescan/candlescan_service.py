@@ -22,7 +22,8 @@ def after_signup(customer,method):
         
 def start_workers(queue):
     #scanners = frappe.db.sql(""" select scanner_id,method from `tabCandlescan scanner` """,as_dict=True)
-    redis_connection = get_redis_conn()
+    with frappe.init_site():
+        redis_connection = get_redis_conn()
     with Connection(redis_connection):
         logging_level = "INFO"
         print("Starting worker %s" % method)
