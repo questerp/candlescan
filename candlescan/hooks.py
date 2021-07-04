@@ -11,7 +11,7 @@ app_color = "green"
 app_email = "ovresko@gmail.com"
 app_license = "MIT"
 
-boot_session = "candlescan.candlescan_service.start_workers"
+#boot_session = "candlescan.candlescan_service.start_workers"
 
 # Includes in <head>
 # ------------------
