@@ -34,9 +34,12 @@ def get_scanners(user):
             name, label, value_type = ex.split(':')
             fExtras.append({"name":name,"label":label,"value_type":value_type})
     for scanner in scanners:
-        method = "%s.signature" % scanner.method
-        signature = frappe.call(method, **frappe.form_dict)
+        signautre_method = "%s.signature" % scanner.method
+        config_method = "%s.get_config" % scanner.method
+        signature = frappe.call(signautre_method, **frappe.form_dict)
+        config = frappe.call(config_method, **frappe.form_dict)
         scanner['signature'] = signature
+        scanner['config'] = config
     return handle(True,"Success",{"scanners":scanners,"extras":fExtras})
 
 @frappe.whitelist(allow_guest=True)
