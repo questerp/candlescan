@@ -26,7 +26,7 @@ def get_alerts(user):
     if not user:
         return handle(Flase,"User is required")
     
-    alerts = frappe.db.sql(""" select name,user, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
+    alerts = frappe.db.sql(""" select name,user, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     return handle(True,"Success",alerts)
 
 
@@ -41,7 +41,7 @@ def toggle_alert(user,name,active):
 
 
 @frappe.whitelist()        
-def add_alert(user,symbol,filters):
+def add_alert(user,symbol,filters,notify):
     logged_in()
     if not (user or symbol):
         return handle(False,"No user found")
@@ -57,7 +57,8 @@ def add_alert(user,symbol,filters):
         'triggered':False,
         'enabled':True,
         'symbol':symbol,
-        'filters_script':fs
+        'filters_script':fs,
+        'notify_by_email':notify
     })
     c = alert.insert(ignore_permissions=1)
     return handle(True,"Success",c)
