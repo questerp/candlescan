@@ -19,6 +19,14 @@ def logged_in():
     if user_key != original:
         frappe.throw('Forbiden, Please login to continue.')
 
+@frappe.whitelist()        
+def get_alerts(user):
+    logged_in()
+    if not user:
+        return handle(Flase,"User is required")
+    
+    alerts = frappe.db.sql(""" select user,condition,symbol,price from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
+    return handle(True,"Success",alerts)
 
 @frappe.whitelist()
 def get_scanners(user):
