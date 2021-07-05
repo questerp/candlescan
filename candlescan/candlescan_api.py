@@ -37,10 +37,9 @@ def add_alert(user,symbol,filters):
     if not (user or symbol):
         return handle(False,"No user found")
     
-    filters = json.loads(filters)
     res = []
     for f in filters:
-        r = {f.field:[f.operator,f.value]}
+        r = {f['field']:[f['operator'],f['value']]}
         res.append(r)
     fs = cstr(res)
     alert = frappe.get_doc({
