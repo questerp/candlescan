@@ -12,7 +12,14 @@
   "sector",
   "country",
   "section_break_7",
-  "floating_shares"
+  "floating_shares",
+  "market_cap",
+  "column_break_10",
+  "price",
+  "52w_heigh",
+  "volume",
+  "section_break_14",
+  "volume_avg"
  ],
  "fields": [
   {
@@ -62,9 +69,42 @@
    "fieldname": "floating_shares",
    "fieldtype": "Float",
    "label": "Shares Float"
+  },
+  {
+   "fieldname": "market_cap",
+   "fieldtype": "Float",
+   "label": "Market cap"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Float",
+   "label": "Last price"
+  },
+  {
+   "fieldname": "52w_heigh",
+   "fieldtype": "Float",
+   "label": "52 Week high"
+  },
+  {
+   "fieldname": "volume",
+   "fieldtype": "Float",
+   "label": "Volume"
+  },
+  {
+   "fieldname": "section_break_14",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "volume_avg",
+   "fieldtype": "Float",
+   "label": "Avg Volume"
   }
  ],
- "modified": "2021-07-03 18:25:19.223654",
+ "modified": "2021-07-04 16:39:10.951893",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Symbol",
