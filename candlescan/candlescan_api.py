@@ -50,6 +50,7 @@ def add_alert(user,symbol,filters):
         'filters_script':fs
     })
     c = alert.insert(ignore_permissions=1)
+    return handle(True,"Success",c)
 
 @frappe.whitelist()
 def get_scanners(user):
