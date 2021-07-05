@@ -1,6 +1,7 @@
 import frappe, json
 from http import cookies
 from urllib.parse import unquote, urlparse
+from frappe.utils import cstr
 
 def logged_in():
     cookie = cookies.BaseCookie()
@@ -27,6 +28,22 @@ def get_alerts(user):
     
     alerts = frappe.db.sql(""" select user, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     return handle(True,"Success",alerts)
+
+@frappe.whitelist()        
+def add_alert(user,symbol,filters):
+    logged_in()
+    if not (user or symbol):
+        return handle(False,"No user found")
+    
+    fs = cstr(filters)
+    alert = frappe.get_doc({
+        'doctype': 'Price Alert'
+        'user': user,
+        triggered:False,
+        symbol:symbol,
+        filters_script:fs
+    })
+    c = alert.insert(ignore_permissions=1)
 
 @frappe.whitelist()
 def get_scanners(user):
