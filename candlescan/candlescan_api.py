@@ -36,7 +36,7 @@ def toggle_alert(user,name,enabled):
     logged_in()
     if not (user or name):
         return handle(False,"Missing data")
-    frappe.db.set_value('Price Alert', name, "enabled", active)
+    frappe.db.set_value('Price Alert', name, "enabled", enabled)
     return handle(True,"Success")
 
 
