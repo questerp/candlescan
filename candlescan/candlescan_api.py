@@ -37,11 +37,11 @@ def add_alert(user,symbol,filters):
     
     fs = cstr(filters)
     alert = frappe.get_doc({
-        'doctype': 'Price Alert'
+        'doctype': 'Price Alert',
         'user': user,
-        triggered:False,
-        symbol:symbol,
-        filters_script:fs
+        'triggered':False,
+        'symbol':symbol,
+        'filters_script':fs
     })
     c = alert.insert(ignore_permissions=1)
 
