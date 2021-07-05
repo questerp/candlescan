@@ -41,13 +41,13 @@ def add_alert(user,symbol,filters):
     for f in filters:
         r = {f['field']:[f['operator'],f['value']]}
         res.append(r)
-    #fs = cstr(res)
+    fs = json.dumps(res)
     alert = frappe.get_doc({
         'doctype': 'Price Alert',
         'user': user,
         'triggered':False,
         'symbol':symbol,
-        'filters_script':res
+        'filters_script':fs
     })
     c = alert.insert(ignore_permissions=1)
     return handle(True,"Success",c)
