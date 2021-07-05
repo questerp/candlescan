@@ -29,13 +29,19 @@ def get_alerts(user):
     alerts = frappe.db.sql(""" select user, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     return handle(True,"Success",alerts)
 
+
+
 @frappe.whitelist()        
 def add_alert(user,symbol,filters):
     logged_in()
     if not (user or symbol):
         return handle(False,"No user found")
     
-    fs = cstr(filters)
+    res = []
+    for f in filters:
+        r = {f.field:[f.operator,f.value]}
+        res.append(r)
+    fs = cstr(res)
     alert = frappe.get_doc({
         'doctype': 'Price Alert',
         'user': user,
