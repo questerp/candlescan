@@ -32,6 +32,15 @@ def get_alerts(user):
 
 
 @frappe.whitelist()        
+def toggle_alert(user,name,active):
+    logged_in()
+    if not (user or name):
+        return handle(False,"Missing data")
+    frappe.db.set_value('Price Alert', name, "enabled", active)
+    return handle(True,"Success")
+
+
+@frappe.whitelist()        
 def add_alert(user,symbol,filters):
     logged_in()
     if not (user or symbol):
@@ -46,6 +55,7 @@ def add_alert(user,symbol,filters):
         'doctype': 'Price Alert',
         'user': user,
         'triggered':False,
+        'enabled':True,
         'symbol':symbol,
         'filters_script':fs
     })
