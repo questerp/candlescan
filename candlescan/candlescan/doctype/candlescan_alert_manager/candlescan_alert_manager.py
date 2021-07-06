@@ -18,7 +18,7 @@ def process_alerts():
 	if not alerts:
 		return
 	for alert in alerts:
-		print("processing alert)
+		print("processing alert")
 		print(alert)
 		price = frappe.db.get_value("Symbol",alert.symbol,"price")
 		socket_id = frappe.db.get_value("Customer",alert.user,"socket_id")
