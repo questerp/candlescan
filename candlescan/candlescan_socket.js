@@ -46,4 +46,5 @@ subscriber.on('message',function(channel,message){
 	}
 
 });
-subscriber.subscribe('candlesocket');
+subscriber.subscribe('candlescan_all');
+subscriber.subscribe('candlescan_single');
