@@ -12,15 +12,18 @@ class CandlescanAlertManager(Document):
 
 
 @frappe.whitelist()        
-def proccess_alerts():
+def process_alerts():
 	redis = get_redis_server()
 	alerts = frappe.db.sql(""" select user,symbol,filters_script from `tabPrice Alert` where enabled=1 and triggered=0 """,as_dict=True)
 	if not alerts:
 		return
 	for alert in alerts:
+		print("processing alert)
+		print(alert)
 		price = frappe.db.get_value("Symbol",alert.symbol,"price")
 		socket_id = frappe.db.get_value("Customer",alert.user,"socket_id")
 		# decode filter script here (filter_script -> sql condition)
 		if price and socket_id:
+		      	print(price,socket_id)
 			redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s price is above $_X_' % alert.symbol}))
 		
