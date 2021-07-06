@@ -15,7 +15,7 @@ server.listen(9001);
 
 io.on('connection',function(socket){
 	//console.log("connected");
-	socket.emit('candlesocket',"Welcome");
+	socket.emit('welcome',socket.id);
 	//socket.on('candlesocket',function(data){
 	//	console.log('getting msg from web',data);
 	//});
@@ -26,8 +26,19 @@ io.on('connection',function(socket){
 var conf = get_conf();
 var subscriber = get_redis_subscriber();
 subscriber.on('message',function(channel,message){
-
-	if(channel=='candlesocket'){
+	
+	if(channel=='candlescan_single'){
+		message = JSON.parse(message);
+		if(message.socket_id) {
+			sockets = await io.in(message.socket_id).fetchSockets();
+			if(sockets){
+				socket = sockets[0];
+				socket.emit(message.scanner_id,message.data);
+			}
+			
+		}
+	}
+	if(channel=='candlescan_all'){
 		message = JSON.parse(message);
 		if(message.scanner_id) {
 			io.sockets.emit(message.scanner_id,message.data);
