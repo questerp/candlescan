@@ -34,7 +34,7 @@ def get_alerts(user):
             name, label, value_type = ex.split(':')
             fAlerts.append({"name":name,"label":label,"value_type":value_type})
     alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
-    return handle(True,"Success",{"alerts":alerts,"alert_fields":fAlerts)
+    return handle(True,"Success",{"alerts":alerts,"alert_fields":fAlerts})
 
 
 @frappe.whitelist()        
