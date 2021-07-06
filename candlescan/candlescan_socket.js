@@ -19,6 +19,10 @@ io.on('connection',function(socket){
 	socket.on('get_socket',function(data){
 		socket.emit('get_socket',socket.id);
 	});
+	socket.on('join_scanner',function(scanner_id){
+		socket.join(scanner_id);
+		//socket.emit('get_socket',socket.id);
+	});
 })
 
 
@@ -42,7 +46,8 @@ subscriber.on('message', function(channel,message){
 	if(channel=='candlescan_all'){
 		message = JSON.parse(message);
 		if(message.scanner_id) {
-			io.sockets.emit(message.scanner_id,message.data);
+			io.to(message.scanner_id).emit(message.scanner_id,message.data);
+			//io.sockets.emit(message.scanner_id,message.data);
 		}
 	}
 
