@@ -6,7 +6,10 @@
  "field_order": [
   "monthly_item",
   "yearly_item",
+  "section_break_1",
   "extras",
+  "section_break_2",
+  "alert_fields",
   "section_break_3",
   "scanners"
  ],
@@ -42,10 +45,23 @@
    "fieldtype": "Table",
    "label": "Candlescan scanner",
    "options": "Candlescan scanner"
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "alert_fields",
+   "fieldtype": "Long Text",
+   "label": "Alert Fields"
   }
  ],
  "issingle": 1,
- "modified": "2021-07-02 20:25:03.946450",
+ "modified": "2021-07-06 07:01:13.970403",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Candlescan Settings",
