@@ -33,7 +33,7 @@ subscriber.on('message',function(channel,message){
 			sockets = await io.in(message.socket_id).fetchSockets();
 			if(sockets){
 				socket = sockets[0];
-				socket.emit(message.scanner_id,message.data);
+				socket.emit("alert",message.data);
 			}
 			
 		}
