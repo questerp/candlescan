@@ -25,7 +25,7 @@ io.on('connection',function(socket){
 
 var conf = get_conf();
 var subscriber = get_redis_subscriber();
-subscriber.on('message',function(channel,message){
+subscriber.on('message',async function(channel,message){
 	
 	if(channel=='candlescan_single'){
 		message = JSON.parse(message);
