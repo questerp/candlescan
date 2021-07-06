@@ -26,8 +26,15 @@ def get_alerts(user):
     if not user:
         return handle(Flase,"User is required")
     
+    alert_fields = frappe.db.get_single_value('Candlescan Settings', 'alert_fields')
+    fAlerts = []
+    if alert_fields:
+        alert_fields = alert_fields.splitlines()
+        for ex in alert_fields:
+            name, label, value_type = ex.split(':')
+            fAlerts.append({"name":name,"label":label,"value_type":value_type})
     alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
-    return handle(True,"Success",alerts)
+    return handle(True,"Success",{"alerts":alerts,"alert_fields":fAlerts)
 
 
 @frappe.whitelist()        
@@ -85,13 +92,7 @@ def get_scanners(user):
         return handle(Flase,"User is required")
     scanners = frappe.db.sql(""" select title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
-    alert_fields = frappe.db.get_single_value('Candlescan Settings', 'alert_fields')
-    fAlerts = []
-    if alert_fields:
-        alert_fields = alert_fields.splitlines()
-        for ex in alert_fields:
-            name, label, value_type = ex.split(':')
-            fAlerts.append({"name":name,"label":label,"value_type":value_type})
+    
     fExtras = []
     if extras:
         extras = extras.splitlines()
@@ -105,7 +106,7 @@ def get_scanners(user):
         config = frappe.call(config_method, **frappe.form_dict)
         scanner['signature'] = signature
         scanner['config'] = config
-    return handle(True,"Success",{"scanners":scanners,"extras":fExtras,"alert_fields":fAlerts})
+    return handle(True,"Success",{"scanners":scanners,"extras":fExtras})
 
 @frappe.whitelist(allow_guest=True)
 def update_customer(name,customer_name,email):
