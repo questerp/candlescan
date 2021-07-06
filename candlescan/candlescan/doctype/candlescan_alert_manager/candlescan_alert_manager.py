@@ -26,4 +26,3 @@ def process_alerts():
 		if price and socket_id:
 		      	print(price,socket_id)
 			redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s price is above $_X_' % alert.symbol}))
-		
