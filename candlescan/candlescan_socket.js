@@ -16,9 +16,9 @@ server.listen(9001);
 io.on('connection',function(socket){
 	//console.log("connected");
 	socket.emit('welcome',socket.id);
-	//socket.on('candlesocket',function(data){
-	//	console.log('getting msg from web',data);
-	//});
+	socket.on('get_socket',function(data){
+		socket.emit('get_socket',socket.id);
+	});
 })
 
 
