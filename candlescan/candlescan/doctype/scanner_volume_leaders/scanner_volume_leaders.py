@@ -44,5 +44,5 @@ def start(scanner_id):
 		for i in symbols:
 			resultdata.append(  {"symbol":i.name,"volume":rprice})
 
-		redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
+		redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
 		#redis.publish("candlesocket",frappe.as_json({"scanner_id":"alerts","data":{"symbol":"AAPL","price":152}}))
