@@ -32,13 +32,13 @@ def update_socket(user,socket_id):
         
 @frappe.whitelist()        
 def get_platform_data(user):    
-	logged_in()
+    logged_in()
     if not user:
         return handle(Flase,"User is required")
     alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
     scanners = frappe.db.sql(""" select title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
-    
+
     fExtras = []
     if extras:
         extras = extras.splitlines()
@@ -52,7 +52,7 @@ def get_platform_data(user):
         config = frappe.call(config_method, **frappe.form_dict)
         scanner['signature'] = signature
         scanner['config'] = config
-    
+
     return handle(True,"Success",{"scanners":scanners,"extras":fExtras,"alerts":alerts})
             
 #@frappe.whitelist()        
