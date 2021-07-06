@@ -12,7 +12,7 @@ class CandlescanAlertManager(Document):
 
 
 @frappe.whitelist()        
-def proccess_alerts:
+def proccess_alerts():
 	redis = get_redis_server()
 	alerts = frappe.db.sql(""" select user,symbol,filters_script from `tabPrice Alert` where enabled=1 and triggered=0 """,as_dict=True)
 	if not alerts:
