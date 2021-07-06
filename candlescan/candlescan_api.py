@@ -20,6 +20,16 @@ def logged_in():
     if user_key != original:
         frappe.throw('Forbiden, Please login to continue.')
 
+        
+        
+@frappe.whitelist()        
+def update_socket(user,socket_id):
+    logged_in()
+    if not (user or socket_id):
+        return handle(Flase,"User is required")
+    frappe.db.set_value("Customer",user,"socket_id",socket_id)
+    return handle(True,"Success")
+        
 @frappe.whitelist()        
 def get_alerts(user):
     logged_in()
