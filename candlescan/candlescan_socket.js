@@ -25,16 +25,17 @@ io.on('connection',function(socket){
 
 var conf = get_conf();
 var subscriber = get_redis_subscriber();
-subscriber.on('message',async function(channel,message){
+subscriber.on('message', function(channel,message){
 	
 	if(channel=='candlescan_single'){
 		message = JSON.parse(message);
 		if(message.socket_id) {
-			sockets = await io.in(message.socket_id).fetchSockets();
-			if(sockets){
-				socket = sockets[0];
-				socket.emit("alert",message.data);
-			}
+			io.to(message.socket_id).emit("alert",message.data);
+			//sockets = await io.in(message.socket_id).fetchSockets();
+			//if(sockets){
+			//	socket = sockets[0];
+			//	socket.emit("alert",message.data);
+			//}
 			
 		}
 	}
