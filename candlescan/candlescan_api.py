@@ -26,7 +26,7 @@ def get_alerts(user):
     if not user:
         return handle(Flase,"User is required")
     
-    alerts = frappe.db.sql(""" select name,user, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
+    alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     return handle(True,"Success",alerts)
 
 
