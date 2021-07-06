@@ -42,7 +42,7 @@ def start(scanner_id):
         #rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
         rprice = random.randrange(2, 100)
         rvol = random.randrange(10, 99)
-        redis.publish("candlesocket",frappe.as_json({"scanner_id":scanner_id,"data":[
+        redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":[
                                                         {"symbol":symbols[0].name,"price":rprice,"gap":rvol},
                                                         {"symbol":symbols[1].name,"price":rprice,"gap":rvol}
                                                      ]}))
