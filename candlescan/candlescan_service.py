@@ -36,7 +36,7 @@ def start_scanners():
     for s in scanners:
         if s.active:
             q = Queue(s.scanner_id, connection=redis_connection)
-            if q:
+            if q.job_ids:
                return
             method = "%s.start" % s.method
             frappe.cache().hset(s.scanner_id,"stop",0,shared=True)
