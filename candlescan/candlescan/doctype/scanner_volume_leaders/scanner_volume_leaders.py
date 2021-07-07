@@ -24,7 +24,7 @@ def get_config():
 def signature():
 	return [
 	{"name":"symbol","title":"Symbol","align":"left","value_type":"string"},
-	{"name":"volume","title":"Volume","align":"left","value_type":"number"},
+	
 	]
 
 def start(scanner_id):        
@@ -39,10 +39,10 @@ def start(scanner_id):
 			break
 		val=val+1 
 		time.sleep(20)
-		rprice = random.randrange(200000, 15295900)
+		
 		resultdata = []
 		for i in symbols:
-			resultdata.append(  {"symbol":i.name,"volume":rprice})
+			resultdata.append(  {"symbol":i.name})
 
 		redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
 		#redis.publish("candlesocket",frappe.as_json({"scanner_id":"alerts","data":{"symbol":"AAPL","price":152}}))
