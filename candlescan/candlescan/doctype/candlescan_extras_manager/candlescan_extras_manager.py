@@ -17,13 +17,14 @@ def process_extras():
 	offset = 0
 	count = frappe.db.count("Symbol")
 	pages = int(count / batch_size) + 1
-	for page in range(0,pages,1):
-		offset = offset * page
-		symbols = frappe.db.sql("""SELECT name FROM `tabSymbol` LIMIT %s OFFSET %s """ % (batch_size,offset),as_dict=True)
-		for symbol in symbols:
-			volume = random.randrange(2000000, 5000000)
-			frappe.db.set_value("Symbol",symbol.name,"volume",volume)
-			
-		frappe.db.commit()
+	while(True):
+		for page in range(0,pages,1):
+			offset = offset * page
+			symbols = frappe.db.sql("""SELECT name FROM `tabSymbol` LIMIT %s OFFSET %s """ % (batch_size,offset),as_dict=True)
+			for symbol in symbols:
+				volume = random.randrange(2000000, 5000000)
+				frappe.db.set_value("Symbol",symbol.name,"volume",volume)
+
+			frappe.db.commit()
 		
 		# API CALL to get data
