@@ -28,6 +28,40 @@ def start_workers(queue):
         logging_level = "INFO"
         print("Starting worker %s" % queue)
         Worker([queue], name=queue).work(logging_level = logging_level)
+        
+def start_srevices():
+    from candlescan.candlescan.doctype.candlescan_extras_manager.candlescan_extras_manager import process_extras
+    from candlescan.candlescan.doctype.candlescan_alert_manager.candlescan_alert_manager import process_alerts
+    redis_connection = get_redis_conn()
+    kwargs = {
+        'connection': redis_connection,
+        'async': True,
+        'scanner_id':s.scanner_id
+    }
+    q = Queue("process_extras", **kwargs)
+    queue_args = {
+        "site": frappe.local.site,
+        "user": None,
+        "method": process_extras,
+        "event": None,
+        "job_name": cstr(process_extras),
+        "is_async": True,
+        "kwargs": {}
+    }
+    q.enqueue_call(execute_job, timeout=60000,	kwargs=queue_args)
+    
+    q = Queue("process_alerts", **kwargs)
+    queue_args = {
+        "site": frappe.local.site,
+        "user": None,
+        "method": process_alerts,
+        "event": None,
+        "job_name": cstr(process_alerts),
+        "is_async": True,
+        "kwargs": {}
+    }
+    q.enqueue_call(execute_job, timeout=60000,	kwargs=queue_args)
+    
 
 @frappe.whitelist()
 def start_scanners():
