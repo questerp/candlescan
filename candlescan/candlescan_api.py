@@ -21,6 +21,14 @@ def logged_in():
         frappe.throw('Forbiden, Please login to continue.')
 
 @frappe.whitelist()        
+def delete_layout(user,name):
+    logged_in()
+    if not (user or name):
+        return handle(Flase,"User is required")
+    frappe.delete_doc('Candlescan Layout', name)
+    return handle(True,"Success")
+    
+@frappe.whitelist()        
 def save_layout(user,layout,layout_name,target,name=None):
     logged_in()
     if not (user or layout or layout_name or target):
