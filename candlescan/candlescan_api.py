@@ -61,6 +61,7 @@ def get_platform_data(user):
     alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
     scanners = frappe.db.sql(""" select title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+    layouts = frappe.db.sql(""" select layout_name,name,user,layout,target from `tabCandlescan Layout` where user='%s' """ % (user),as_dict=True)
 
     fExtras = []
     if extras:
@@ -76,7 +77,7 @@ def get_platform_data(user):
         scanner['signature'] = signature
         scanner['config'] = config
 
-    return handle(True,"Success",{"scanners":scanners,"extras":fExtras,"alerts":alerts})
+    return handle(True,"Success",{"scanners":scanners,"extras":fExtras,"alerts":alerts,"layouts":layouts})
             
 #@frappe.whitelist()        
 #def get_alerts(user):
