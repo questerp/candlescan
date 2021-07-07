@@ -41,7 +41,7 @@ def start_scanners():
                 return
             if workers:
                 worker = workers[0]
-                if worker and worker.state == "started":
+                if worker and (worker.state != "idle" or worker.state != "suspended"):
                     return
                     
             method = "%s.start" % s.method
