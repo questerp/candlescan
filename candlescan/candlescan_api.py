@@ -21,9 +21,9 @@ def logged_in():
         frappe.throw('Forbiden, Please login to continue.')
 
 @frappe.whitelist()        
-def save_layout(user,layout,layout_name,name=None):
+def save_layout(user,layout,layout_name,target,name=None):
     logged_in()
-    if not (user or layout or layout_name):
+    if not (user or layout or layout_name or target):
         return handle(Flase,"User is required")
     layout_obj = None
     if name:
@@ -32,6 +32,7 @@ def save_layout(user,layout,layout_name,name=None):
         layout_obj = frappe.get_doc({
             'doctype':"Candlescan Layout",
             'user': user
+            'target':target
         })
         
     layout_obj.layout_name = layout_name
