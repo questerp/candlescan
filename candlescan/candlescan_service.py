@@ -36,7 +36,6 @@ def start_services():
     kwargs = {
         'connection': redis_connection,
         'async': True,
-        'scanner_id':s.scanner_id
     }
     q = Queue("process_extras", **kwargs)
     queue_args = {
