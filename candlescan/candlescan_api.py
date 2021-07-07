@@ -34,8 +34,8 @@ def get_select_values(doctype):
     logged_in()
     if not doctype:
         return handle(Flase,"Data required")
-    values = frappe.db.sql(""" select name from `tab%s`""" % doctype,as_dict=True)
-    return handle(True,"Success",values)
+    values = frappe.db.sql(""" select name from `tab%s` limit 100""" % doctype,as_dict=True)
+    return handle(True,"Success",[a.name for a in values])
     
 @frappe.whitelist()        
 def save_layout(user,layout,layout_name,target,name=None):
