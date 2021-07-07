@@ -65,4 +65,7 @@ def start_scanners():
             q.enqueue_call(execute_job, timeout=60000,	kwargs=queue_args)
             #q = enqueue(method,queue="default", timeout=60000, job_name=s.scanner_id,scanner_id=s.scanner_id)
         else:
+            q = Queue(s.scanner_id, connection=redis_connection)
+            q.empty()
+            q.delete(delete_jobs=True)
             frappe.cache().hset(s.scanner_id,"stop",1,shared=True)
