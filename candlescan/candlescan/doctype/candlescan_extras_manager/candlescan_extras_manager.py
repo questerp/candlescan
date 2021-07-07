@@ -19,7 +19,7 @@ def process_extras():
 	pages = int(count / batch_size) + 1
 	for page in range(0,pages,1):
 		offset = offset * page
-		symbols = frappe.db.sql("""SELECT name FROM TabSymbol OFFSET %s FETCH NEXT %s ROWS ONLY; // Where n is a number of rows """ % (offset,batch_size),as_dict=True)
+		symbols = frappe.db.sql("""SELECT name FROM TabSymbol OFFSET %s FETCH NEXT %s ROWS ONLY;  """ % (offset,batch_size),as_dict=True)
 		for symbol in symbols:
 			volume = random.randrange(2000000, 5000000)
 			frappe.db.set_value("Symbol",symbol.name,"volume",volume)
