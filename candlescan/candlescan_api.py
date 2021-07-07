@@ -28,6 +28,15 @@ def delete_layout(user,name):
     frappe.delete_doc('Candlescan Layout', name)
     return handle(True,"Success")
     
+
+@frappe.whitelist()        
+def get_select_values(doctype):
+    logged_in()
+    if not doctype:
+        return handle(Flase,"Data required")
+    values = frappe.db.sql(""" select name from `tab%s`""" % doctype,as_dict=True)
+    return handle(True;"Success",values)
+    
 @frappe.whitelist()        
 def save_layout(user,layout,layout_name,target,name=None):
     logged_in()
@@ -75,8 +84,8 @@ def get_platform_data(user):
     if extras:
         extras = extras.splitlines()
         for ex in extras:
-            name, label, value_type = ex.split(':')
-            fExtras.append({"name":name,"label":label,"value_type":value_type})
+            name, label, value_type,doctype = ex.split(':')
+            fExtras.append({"name":name,"label":label,"value_type":value_type,"doctype":doctype})
     for scanner in scanners:
         signautre_method = "%s.signature" % scanner.method
         config_method = "%s.get_config" % scanner.method
