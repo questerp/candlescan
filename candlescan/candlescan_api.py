@@ -39,7 +39,7 @@ def save_layout(user,layout,layout_name,name=None):
     if name:
         layout_obj = layout_obj.save()
     else:
-        layout_obj = layout_obj.inser()
+        layout_obj = layout_obj.insert()
         
     return handle(True,"Success",layout_obj)
         
