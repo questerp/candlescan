@@ -1,0 +1,68 @@
+{
+ "creation": "2021-07-06 20:41:32.813907",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "layout_name",
+  "user",
+  "column_break_3",
+  "layout",
+  "target"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "layout",
+   "fieldtype": "Long Text",
+   "in_list_view": 1,
+   "label": "Layout",
+   "reqd": 1
+  },
+  {
+   "fieldname": "layout_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target",
+   "fieldtype": "Data",
+   "label": "target",
+   "reqd": 1
+  }
+ ],
+ "modified": "2021-07-07 07:59:03.602068",
+ "modified_by": "Administrator",
+ "module": "CandleScan",
+ "name": "Candlescan Layout",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
