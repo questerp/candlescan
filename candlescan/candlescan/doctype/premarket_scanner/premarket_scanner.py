@@ -38,7 +38,7 @@ def start(scanner_id):
         if stop == 1:
             break
         val=val+1 
-        time.sleep(2)
         #rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
         for s in symbols:
-                redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":[{"symbol":s.name}]}))
+	 	time.sleep(2)
+                redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":[{"symbol":s.name,"gap":0}]}))
