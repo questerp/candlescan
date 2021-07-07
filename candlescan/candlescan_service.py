@@ -36,7 +36,7 @@ def start_scanners():
     for s in scanners:
         if s.active:
             q = Queue(s.scanner_id, connection=redis_connection)
-            workers = Worker.all(queue=s.scanner_id)
+            workers = Worker.all(queue=q)
             worker = workers[0]
             if q.job_ids:
                 return
