@@ -4,6 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe, random
+import time
 from frappe.model.document import Document
 from frappe.realtime import get_redis_server
 
@@ -18,6 +19,7 @@ def process_extras():
 	count = frappe.db.count("Symbol")
 	pages = int(count / batch_size) + 1
 	while(True):
+		time.sleep(5)
 		for page in range(0,pages,1):
 			offset = offset * page
 			symbols = frappe.db.sql("""SELECT name FROM `tabSymbol` LIMIT %s OFFSET %s """ % (batch_size,offset),as_dict=True)
