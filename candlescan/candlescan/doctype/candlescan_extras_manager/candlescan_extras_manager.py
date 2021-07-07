@@ -19,6 +19,9 @@ def process_extras():
 	count = frappe.db.count("Symbol")
 	pages = int(count / batch_size) + 1
 	while(True):
+		extras_manager  = frappe.get_doc("Candlescan Extras Manager")
+		if not extras_manager.activate:
+			break;
 		time.sleep(5)
 		for page in range(0,pages,1):
 			offset = offset * page
