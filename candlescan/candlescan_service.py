@@ -28,7 +28,8 @@ def start_workers(queue):
         logging_level = "INFO"
         print("Starting worker %s" % queue)
         Worker([queue], name=queue).work(logging_level = logging_level)
-        
+
+@frappe.whitelist()
 def start_services():
     from candlescan.candlescan.doctype.candlescan_extras_manager.candlescan_extras_manager import process_extras
     from candlescan.candlescan.doctype.candlescan_alert_manager.candlescan_alert_manager import process_alerts
