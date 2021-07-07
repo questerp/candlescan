@@ -38,7 +38,7 @@ def start(scanner_id):
 		if stop == 1:
 			break
 		val=val+1 
-		time.sleep(2)
+		time.sleep(20)
 		rprice = random.randrange(200000, 15295900)
 		resultdata = []
 		for i in symbols:
