@@ -35,6 +35,10 @@ def start_scanners():
     scanners = frappe.db.sql(""" select name,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     for s in scanners:
         if s.active:
+            q = Queue(s.scanner_id, connection=redis_connection)
+            if q:
+                q.empty()
+                q.delete(delete_jobs=True)
             method = "%s.start" % s.method
             frappe.cache().hset(s.scanner_id,"stop",0,shared=True)
             #workers = Worker.all(connection=redis_connection)
