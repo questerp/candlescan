@@ -6,6 +6,9 @@
  "field_order": [
   "monthly_item",
   "yearly_item",
+  "section_break_11",
+  "api_key",
+  "api_secret",
   "section_break_1",
   "extras",
   "section_break_2",
@@ -58,10 +61,24 @@
    "fieldname": "alert_fields",
    "fieldtype": "Long Text",
    "label": "Alert Fields"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Data",
+   "label": "API key"
+  },
+  {
+   "fieldname": "api_secret",
+   "fieldtype": "Data",
+   "label": "API secret"
   }
  ],
  "issingle": 1,
- "modified": "2021-07-06 07:01:13.970403",
+ "modified": "2021-07-07 10:30:34.992492",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Candlescan Settings",

@@ -1,31 +1,24 @@
 {
- "creation": "2021-07-07 10:25:37.897219",
+ "creation": "2021-07-07 19:10:20.946684",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "activate",
-  "batch_size"
+  "active"
  ],
  "fields": [
   {
    "default": "0",
-   "fieldname": "activate",
+   "fieldname": "active",
    "fieldtype": "Check",
-   "label": "Activate"
-  },
-  {
-   "default": "100",
-   "fieldname": "batch_size",
-   "fieldtype": "Int",
-   "label": "Batch size"
+   "label": "Active"
   }
  ],
  "issingle": 1,
- "modified": "2021-07-07 10:37:43.594472",
+ "modified": "2021-07-07 19:10:20.946684",
  "modified_by": "Administrator",
  "module": "CandleScan",
- "name": "Candlescan Extras Manager",
+ "name": "Scanner Halts",
  "owner": "Administrator",
  "permissions": [
   {
