@@ -20,6 +20,28 @@ def logged_in():
     if user_key != original:
         frappe.throw('Forbiden, Please login to continue.')
 
+@frappe.whitelist()        
+def save_layout(user,layout,layout_name,name=None):
+    logged_in()
+    if not (user or layout or layout_name):
+        return handle(Flase,"User is required")
+    layout_obj = None
+    if name:
+        layout_obj = frappe.get_doc("Candlescan Layout",name)
+    else:
+        layout_obj = frappe.get_doc({
+            'doctype':"Candlescan Layout",
+            'user': user
+        })
+        
+    layout_obj.layout_name = layout_name
+    layout_obj.layout = layout
+    if name:
+        layout_obj = layout_obj.save()
+    else:
+        layout_obj = layout_obj.inser()
+        
+    return handle(True,"Success",layout_obj)
         
         
 @frappe.whitelist()        
