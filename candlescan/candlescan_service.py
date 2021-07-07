@@ -37,8 +37,7 @@ def start_scanners():
         if s.active:
             q = Queue(s.scanner_id, connection=redis_connection)
             if q:
-                q.empty()
-                q.delete(delete_jobs=True)
+               return
             method = "%s.start" % s.method
             frappe.cache().hset(s.scanner_id,"stop",0,shared=True)
             #workers = Worker.all(connection=redis_connection)
