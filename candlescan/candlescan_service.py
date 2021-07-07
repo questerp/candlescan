@@ -29,7 +29,7 @@ def start_workers(queue):
         print("Starting worker %s" % queue)
         Worker([queue], name=queue).work(logging_level = logging_level)
         
-def start_srevices():
+def start_services():
     from candlescan.candlescan.doctype.candlescan_extras_manager.candlescan_extras_manager import process_extras
     from candlescan.candlescan.doctype.candlescan_alert_manager.candlescan_alert_manager import process_alerts
     redis_connection = get_redis_conn()
