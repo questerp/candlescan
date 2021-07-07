@@ -31,7 +31,7 @@ def save_layout(user,layout,layout_name,target,name=None):
     else:
         layout_obj = frappe.get_doc({
             'doctype':"Candlescan Layout",
-            'user': user
+            'user': user,
             'target':target
         })
         
