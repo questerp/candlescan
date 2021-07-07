@@ -42,7 +42,7 @@ def start_scanners():
                 return
             if workers:
                 worker = workers[0]
-                if worker and worker.current_job:
+                if worker and worker.state == "started":
                     return
                     
             method = "%s.start" % s.method
