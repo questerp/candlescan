@@ -23,8 +23,7 @@ def get_config():
 def signature():
     return [
         {"name":"symbol","title":"Symbol","align":"left","value_type":"string"},
-        {"name":"gap","title":"Gap %","align":"left","value_type":"number"},
-        {"name":"price","title":"Price","align":"right","value_type":"number"},
+        {"name":"gap","title":"Gap %","align":"left","value_type":"number"}
         ]
 
 def start(scanner_id):        
