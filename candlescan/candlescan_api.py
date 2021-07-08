@@ -39,16 +39,23 @@ def get_select_values(doctype):
     return handle(True,"Success",values)
 
 @frappe.whitelist()        
-def save_watchlist(user,name):
+def save_watchlist(user,name,symbols='',watchlist_id=None):
     logged_in()
     if not (user or name):
         return handle(Flase,"User is required")
-    watchlist = frappe.get_doc({
-        'doctype':'Watchlist',
-        'watchlist':name,
-        'user':user,
-    })
-    w = watchlist.insert()
+    if not watchlist_id:
+        watchlist = frappe.get_doc({
+            'doctype':'Watchlist',
+            'watchlist':name,
+            'user':user,
+        })
+        w = watchlist.insert()
+    else:
+        watchlist = frappe.get_doc("Watchlist",id)
+        watchlist.watchlist = name
+        watchlist.stmbols = symbols
+        watchlist.save()
+     
     return handle(True,"Success",w)
     
     
