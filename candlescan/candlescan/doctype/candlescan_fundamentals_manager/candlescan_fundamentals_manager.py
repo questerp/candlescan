@@ -24,7 +24,8 @@ def process():
 	if offset >= count:
 		offset = 0
 	symbols = frappe.db.sql(""" select name,exchange from `tabSymbol` LIMIT %s OFFSET %s """ % (batch,offset),as_dict=True)
-	frappe.db.set_value("Candlescan Fundamentals Manager","offset",batch)
+	settings.offset = batch
+	settings.save()
 	yf = YF([a['name'] for a in symbols])
 	data = yf.get_key_statistics_data()
 	for s in symbols:
