@@ -55,7 +55,7 @@ def save_watchlist(user,name,symbols='',watchlist_id=None):
     else:
         watchlist = frappe.get_doc("Watchlist",watchlist_id)
         watchlist.watchlist = name
-        watchlist.stmbols = symbols
+        watchlist.symbols = symbols
         watchlist.save()
      
         return handle(True,"Success",watchlist)
