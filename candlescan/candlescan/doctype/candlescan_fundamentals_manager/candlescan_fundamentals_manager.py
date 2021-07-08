@@ -16,8 +16,8 @@ def process():
 	activate = settings.activate
 	if not activate:
 		return
-	batch = frappe.db.get_value("Candlescan Fundamentals Manager","batch")
-	offset =  frappe.db.get_value("Candlescan Fundamentals Manager","offset")
+	batch = settings.batch
+	offset =  settings.offset
 	count = frappe.db.count("Symbol")
 	print(count)
 	print(offset)
