@@ -26,7 +26,7 @@ def check_symbol(user,symbol):
     if not (user or symbol):
         return handle(Flase,"User is required")
     exists =  frappe.db.exists("Symbol", symbol)
-    return handle(True,"Success",exists)
+    return handle(True,"Success",{"exists":exists})
         
 @frappe.whitelist()        
 def delete_layout(user,name):
