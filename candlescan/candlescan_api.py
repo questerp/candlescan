@@ -21,6 +21,14 @@ def logged_in():
         frappe.throw('Forbiden, Please login to continue.')
 
 @frappe.whitelist()        
+def check_symbol(user,symbol):
+    logged_in()
+    if not (user or symbol):
+        return handle(Flase,"User is required")
+    exists =  frappe.db.exists("Symbol", symbol)
+    return handle(True,"Success",exists)
+        
+@frappe.whitelist()        
 def delete_layout(user,name):
     logged_in()
     if not (user or name):
