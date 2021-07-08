@@ -177,18 +177,18 @@ def add_alert(user,symbol,filters,notify):
     if not (user or symbol):
         return handle(False,"No user found")
     
-    res = []
-    for f in filters:
-        r = {f['field']:[f['operator'],f['value']]}
-        res.append(r)
-    fs = json.dumps(res)
+    #res = []
+    #for f in filters:
+    #    r = {f['field']:[f['operator'],f['value']]}
+    #    res.append(r)
+    #fs = json.dumps(res)
     alert = frappe.get_doc({
         'doctype': 'Price Alert',
         'user': user,
         'triggered':False,
         'enabled':True,
         'symbol':symbol,
-        'filters_script':fs,
+        'filters_script':filters,
         'notify_by_email':notify
     })
     c = alert.insert(ignore_permissions=1)
