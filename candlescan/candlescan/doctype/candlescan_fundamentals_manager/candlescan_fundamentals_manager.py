@@ -3,7 +3,7 @@
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
-# import frappe
+import frappe
 from frappe.model.document import Document
 from yahoofinancials import YahooFinancials as YF
 
@@ -27,6 +27,7 @@ def process():
 	data = yf.get_key_statistics_data()
 	for s in symbols:
 		stats = data[s.name]
+		print(stats)
 		frappe.db.set_value("Symbol","key_statistics_data",stats)
 		
 	frappe.db.commit()
