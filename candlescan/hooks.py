@@ -90,23 +90,22 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"candlescan.tasks.all"
-# 	],
-# 	"daily": [
-# 		"candlescan.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"candlescan.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"candlescan.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"candlescan.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+ 	"all": [
+		"candlescan.doctype.candlescan_fundamentals_manager.candlescan_fundamentals_manager.process"
+ 	],
+ 	"daily": [
+ 	],
+ 	"hourly": [
+		
+ 	],
+	"daily_long":[
+	],
+ 	"weekly": [
+ 	]
+ 	"monthly": [
+ 	]
+ }
 
 # Testing
 # -------
