@@ -19,7 +19,9 @@
   "52w_heigh",
   "volume",
   "section_break_14",
-  "volume_avg"
+  "volume_avg",
+  "section_break_16",
+  "key_statistics_data"
  ],
  "fields": [
   {
@@ -102,9 +104,18 @@
    "fieldname": "volume_avg",
    "fieldtype": "Float",
    "label": "Avg Volume"
+  },
+  {
+   "fieldname": "section_break_16",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "key_statistics_data",
+   "fieldtype": "Long Text",
+   "label": "Key statistics data"
   }
  ],
- "modified": "2021-07-04 16:39:10.951893",
+ "modified": "2021-07-08 18:05:02.192189",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Symbol",
