@@ -8,7 +8,8 @@
   "user",
   "column_break_3",
   "layout",
-  "target"
+  "target",
+  "scanner"
  ],
  "fields": [
   {
@@ -42,9 +43,15 @@
    "fieldtype": "Data",
    "label": "target",
    "reqd": 1
+  },
+  {
+   "fieldname": "scanner",
+   "fieldtype": "Data",
+   "label": "Scanner",
+   "reqd": 1
   }
  ],
- "modified": "2021-07-07 07:59:03.602068",
+ "modified": "2021-07-08 13:09:20.969103",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Candlescan Layout",
