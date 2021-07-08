@@ -38,6 +38,15 @@ def get_select_values(doctype):
     values = [a['name'] for a in values]
     return handle(True,"Success",values)
 
+
+@frappe.whitelist()        
+def delete_watchlist(user,watchlist_id):
+    logged_in()
+    if not (user or watchlist_id):
+        return handle(Flase,"User is required")
+    frappe.delete_doc('Watchlist', watchlist_id)
+    return handle(True,"Success")
+    
 @frappe.whitelist()        
 def save_watchlist(user,name,symbols='',watchlist_id=None):
     logged_in()
