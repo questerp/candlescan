@@ -62,11 +62,9 @@ def save_watchlist(user,watchlist,symbols='',name=None):
         return handle(True,"Success",w)
         
     else:
+        frappe.db.set_value("Watchlist",name,"watchlist",watchlist)
+        frappe.db.set_value("Watchlist",name,"symbols",symbols)
         w = frappe.get_doc("Watchlist",name)
-        w.watchlist = watchlist
-        w.symbols = symbols
-        w.save()
-     
         return handle(True,"Success",w)
     
     
