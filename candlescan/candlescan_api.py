@@ -50,7 +50,7 @@ def delete_watchlist(user,watchlist_id):
 @frappe.whitelist()        
 def save_watchlist(user,watchlist,symbols='',name=None):
     logged_in()
-    if not (user or name):
+    if not (user or watchlist):
         return handle(Flase,"User is required")
     if not name:
         watchlist = frappe.get_doc({
