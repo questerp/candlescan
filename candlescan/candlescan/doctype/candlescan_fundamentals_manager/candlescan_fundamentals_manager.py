@@ -31,7 +31,9 @@ def process():
 	for s in symbols:
 		stats = data[s.name]
 		print(stats)
-		frappe.db.set_value("Symbol","key_statistics_data",stats)
+		if stats:
+			clean =  json.dumps(stats) 
+			frappe.db.set_value("Symbol","key_statistics_data",clean)
 		
 	frappe.db.commit()
 	
