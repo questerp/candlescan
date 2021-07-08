@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import frappe, json
 from frappe.model.document import Document
 from yahoofinancials import YahooFinancials as YF
+from frappe.utils import cstr
 
 class CandlescanFundamentalsManager(Document):
 	pass
@@ -32,7 +33,7 @@ def process():
 		stats = data[s.name]
 		print(stats)
 		if stats:
-			clean =  json.dumps(stats) 
+			clean =  cstr(json.dumps(stats))
 			frappe.db.set_value("Symbol","key_statistics_data",clean)
 		
 	frappe.db.commit()
