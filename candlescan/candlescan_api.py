@@ -53,21 +53,21 @@ def save_watchlist(user,watchlist,symbols='',name=None):
     if not (user or watchlist):
         return handle(Flase,"User is required")
     if not name:
-        watchlist = frappe.get_doc({
+        w = frappe.get_doc({
             'doctype':'Watchlist',
             'watchlist':watchlist,
             'user':user,
         })
-        w = watchlist.insert()
+        w = w.insert()
         return handle(True,"Success",w)
         
     else:
-        watchlist = frappe.get_doc("Watchlist",name)
-        watchlist.watchlist = watchlist
-        watchlist.symbols = symbols
-        watchlist.save()
+        w = frappe.get_doc("Watchlist",name)
+        w.watchlist = watchlist
+        w.symbols = symbols
+        w.save()
      
-        return handle(True,"Success",watchlist)
+        return handle(True,"Success",w)
     
     
 @frappe.whitelist()        
