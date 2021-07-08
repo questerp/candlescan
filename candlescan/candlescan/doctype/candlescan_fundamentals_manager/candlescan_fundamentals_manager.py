@@ -34,6 +34,7 @@ def process():
 		
 		if stats:
 			clean =  cstr(json.dumps(stats))
+			clean = `%s` % clean
 			print(clean)
 			frappe.db.set_value("Symbol","key_statistics_data",clean)
 		
