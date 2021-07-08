@@ -97,12 +97,11 @@ scheduler_events = {
  	"daily": [
  	],
  	"hourly": [
-		
  	],
 	"daily_long":[
 	],
  	"weekly": [
- 	]
+ 	],
  	"monthly": [
  	]
  }
