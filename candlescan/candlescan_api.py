@@ -50,13 +50,15 @@ def save_watchlist(user,name,symbols='',watchlist_id=None):
             'user':user,
         })
         w = watchlist.insert()
+        return handle(True,"Success",w)
+        
     else:
-        watchlist = frappe.get_doc("Watchlist",id)
+        watchlist = frappe.get_doc("Watchlist",watchlist_id)
         watchlist.watchlist = name
         watchlist.stmbols = symbols
         watchlist.save()
      
-    return handle(True,"Success",w)
+        return handle(True,"Success",watchlist)
     
     
 @frappe.whitelist()        
