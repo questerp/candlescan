@@ -69,9 +69,9 @@ def save_watchlist(user,watchlist,symbols='',name=None):
     
     
 @frappe.whitelist()        
-def save_layout(user,layout,layout_name,target,name=None):
+def save_layout(user,layout,scanner,layout_name,target,name=None):
     logged_in()
-    if not (user or layout or layout_name or target):
+    if not (user or layout or layout_name or target or scanner):
         return handle(Flase,"User is required")
     layout_obj = None
     if name:
@@ -85,6 +85,8 @@ def save_layout(user,layout,layout_name,target,name=None):
         
     layout_obj.layout_name = layout_name
     layout_obj.layout = layout
+    layout_obj.scanner = scanner
+    
     if name:
         layout_obj = layout_obj.save()
     else:
@@ -109,7 +111,7 @@ def get_platform_data(user):
     alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
     scanners = frappe.db.sql(""" select title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
-    layouts = frappe.db.sql(""" select layout_name,name,user,layout,target from `tabCandlescan Layout` where user='%s' """ % (user),as_dict=True)
+    layouts = frappe.db.sql(""" select layout_name,scanner,name,user,layout,target from `tabCandlescan Layout` where user='%s' """ % (user),as_dict=True)
     watchlists = frappe.db.sql(""" select name,watchlist,symbols from `tabWatchlist` where user='%s' """ % (user),as_dict=True)
     fExtras = []
     if extras:
