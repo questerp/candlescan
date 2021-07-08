@@ -31,9 +31,10 @@ def process():
 	data = yf.get_key_statistics_data()
 	for s in symbols:
 		stats = data[s.name]
-		print(stats)
+		
 		if stats:
 			clean =  cstr(json.dumps(stats))
+			print(clean)
 			frappe.db.set_value("Symbol","key_statistics_data",clean)
 		
 	frappe.db.commit()
