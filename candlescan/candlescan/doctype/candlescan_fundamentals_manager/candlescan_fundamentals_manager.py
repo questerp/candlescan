@@ -19,6 +19,8 @@ def process():
 	batch = frappe.db.get_value("Candlescan Fundamentals Manager","batch")
 	offset =  frappe.db.get_value("Candlescan Fundamentals Manager","offset")
 	count = frappe.db.count("Symbol")
+	print(count)
+	print(offset)
 	if offset >= count:
 		offset = 0
 	symbols = frappe.db.sql(""" select name,exchange from `tabSymbol` LIMIT %s OFFSET %s """ % (batch,offset),as_dict=True)
