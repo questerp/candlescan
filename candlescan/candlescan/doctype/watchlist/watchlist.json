@@ -6,9 +6,7 @@
  "field_order": [
   "watchlist",
   "user",
-  "description",
-  "section_break_4",
-  "watchlist_symbols"
+  "symbols"
  ],
  "fields": [
   {
@@ -27,23 +25,12 @@
    "reqd": 1
   },
   {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
-   "label": "Description"
-  },
-  {
-   "fieldname": "section_break_4",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "watchlist_symbols",
-   "fieldtype": "Table",
-   "label": "Watchlist symbols",
-   "options": "Watchlist symbol",
-   "reqd": 1
+   "fieldname": "symbols",
+   "fieldtype": "Long Text",
+   "label": "Symbols"
   }
  ],
- "modified": "2021-07-02 07:02:30.888412",
+ "modified": "2021-07-08 05:51:34.025382",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Watchlist",
@@ -62,7 +49,6 @@
    "write": 1
   }
  ],
- "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "track_changes": 1

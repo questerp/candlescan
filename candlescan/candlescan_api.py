@@ -37,6 +37,19 @@ def get_select_values(doctype):
     values = frappe.db.sql(""" select name from `tab%s` limit 100""" % doctype,as_dict=True)
     values = [a['name'] for a in values]
     return handle(True,"Success",values)
+
+@frappe.whitelist()        
+def save_watchlist(user,name):
+    logged_in()
+    if not (user or name):
+        return handle(Flase,"User is required")
+    watchlist = frappe.get_doc({
+        'doctype':'Watchlist',
+        'user':user,
+    })
+    w = watchlist.insert()
+    return handle(True,"Success",w)
+    
     
 @frappe.whitelist()        
 def save_layout(user,layout,layout_name,target,name=None):
