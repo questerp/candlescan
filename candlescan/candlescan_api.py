@@ -45,6 +45,7 @@ def save_watchlist(user,name):
         return handle(Flase,"User is required")
     watchlist = frappe.get_doc({
         'doctype':'Watchlist',
+        'watchlist':name,
         'user':user,
     })
     w = watchlist.insert()
