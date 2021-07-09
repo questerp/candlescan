@@ -75,7 +75,11 @@ def process():
 		offset = 0
 	symbols = frappe.db.sql(""" select name,exchange from `tabSymbol` LIMIT %s OFFSET %s """ % (batch,offset),as_dict=True)
 	settings.save()
-	yf = YF([a['name'] for a in symbols])
+	if batch == 1 && len(symbols) == 1:
+		_symbol = symbols[0]
+		global yf = YF(_symbol.name)
+	else:
+		global yf = YF([a['name'] for a in symbols])
 	data = yf.get_key_statistics_data()
 	summaries = yf.get_stock_profile_data()
 	prices = yf.get_stock_price_data()
