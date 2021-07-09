@@ -37,7 +37,7 @@ def process():
 		price = prices[s.name]
 		sumdata = sumdatas[s.name]
 		if sumdata:
-			clean_sumdata =  cstr(json.dumps(price))
+			clean_sumdata =  cstr(json.dumps(sumdata))
 			frappe.db.set_value("Symbol",s.name,"stock_summary_detail",clean_sumdata,update_modified=False)
 			
 		if price:
