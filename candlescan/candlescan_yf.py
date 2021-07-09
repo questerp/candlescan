@@ -579,6 +579,12 @@ class YahooFinanceETL(object):
 # Class containing methods to create stock data extracts
 class YahooFinancials(YahooFinanceETL):
    
+    def get_stock_summary_detail(self, reformat=True):
+        if reformat:
+            return self.get_clean_data(self.get_stock_data(report_name='summaryDetail'), '')
+        else:
+            return self.get_stock_data(report_name='summaryDetail')
+         
     def get_stock_profile_data(self, reformat=True):
         if reformat:
             return self.get_clean_data(self.get_stock_data(statement_type='profile', tech_type='', report_name='assetProfile'), 'earnings')
