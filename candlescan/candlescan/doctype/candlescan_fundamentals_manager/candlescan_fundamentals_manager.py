@@ -82,10 +82,10 @@ def process():
 	sumdatas = yf.get_stock_summary_detail()
 	for s in symbols:
 		print("Fetching %s" % s.name)
-		stats = data[s.name]
-		summary = summaries[s.name]
-		price = prices[s.name]
-		sumdata = sumdatas[s.name]
+		stats = data[s.name] if s.name in data else []
+		summary = summaries[s.name] if s.name in summaries else []
+		price = prices[s.name] if s.name in prices else []
+		sumdata = sumdatas[s.name] if s.name in sumdatas else []
 		if sumdata:
 			clean_sumdata =  cstr(json.dumps(sumdata))
 			frappe.db.set_value("Symbol",s.name,"stock_summary_detail",clean_sumdata,update_modified=False)
