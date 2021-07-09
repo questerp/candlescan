@@ -579,8 +579,6 @@ class YahooFinanceETL(object):
 # Class containing methods to create stock data extracts
 class YahooFinancials(YahooFinanceETL):
    
-   def get_company_summary(self,
-
     # Private method that handles financial statement extraction
     def _run_financial_stmt(self, statement_type, report_num, reformat):
         report_name = self.YAHOO_FINANCIAL_TYPES[statement_type][report_num]
