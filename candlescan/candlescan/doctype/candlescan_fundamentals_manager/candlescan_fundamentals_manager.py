@@ -30,10 +30,16 @@ def process():
 	data = yf.get_key_statistics_data()
 	summaries = yf.get_stock_profile_data()
 	prices = yf.get_stock_price_data()
+	sumdatas = yf.get_stock_summary_detail()
 	for s in symbols:
 		stats = data[s.name]
 		summary = summaries[s.name]
 		price = prices[s.name]
+		sumdata = sumdatas[s.name]
+		if sumdata:
+			clean_sumdata =  cstr(json.dumps(price))
+			frappe.db.set_value("Symbol",s.name,"stock_summary_detail",clean_sumdata,update_modified=False)
+			
 		if price:
 			clean_price =  cstr(json.dumps(price))
 			short_name = price['shortName']
