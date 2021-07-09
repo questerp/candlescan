@@ -92,12 +92,12 @@ doc_events = {
 
 scheduler_events = {
  	"all": [
-		"candlescan.candlescan.doctype.candlescan_fundamentals_manager.candlescan_fundamentals_manager.process"
+		
  	],
  	"daily": [
  	],
  	"hourly": [
-		
+		"candlescan.candlescan.doctype.candlescan_fundamentals_manager.candlescan_fundamentals_manager.process"
  	],
 	"daily_long":[
 		"candlescan.candlescan.doctype.candlescan_fundamentals_manager.candlescan_fundamentals_manager.get_tickers"
