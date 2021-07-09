@@ -81,6 +81,7 @@ def process():
 	prices = yf.get_stock_price_data()
 	sumdatas = yf.get_stock_summary_detail()
 	for s in symbols:
+		print("Fetching %s" % s.name)
 		stats = data[s.name]
 		summary = summaries[s.name]
 		price = prices[s.name]
@@ -91,8 +92,8 @@ def process():
 			
 		if price:
 			clean_price =  cstr(json.dumps(price))
-			short_name = price['shortName']
-			exchange = price['exchangeName']
+			short_name = price['shortName'] if 'shortName' in price else ''
+			exchange = price['exchangeName'] if 'exchangeName' in price else ''
 			frappe.db.set_value("Symbol",s.name,"key_price_data",clean_price,update_modified=False)
 			frappe.db.set_value("Symbol",s.name,"company",short_name,update_modified=False)
 			frappe.db.set_value("Symbol",s.name,"exchange",exchange,update_modified=False)
@@ -103,10 +104,10 @@ def process():
 			frappe.db.set_value("Symbol",s.name,"key_statistics_data",clean,update_modified=False)
 			
 		if summary:
-			website = summary['website']
-			industry = summary['industry']
-			sector = summary['sector']
-			company_summary = summary['longBusinessSummary']
+			website =  summary['website'] if 'website' in summary else ''
+			industry = summary['industry'] if 'industry' in summary else ''
+			sector = summary['sector']  if 'sector' in summary else ''
+			company_summary = summary['longBusinessSummary']  if 'longBusinessSummary' in summary else ''
 			clean_summary =  cstr(json.dumps(summary))
 			frappe.db.set_value("Symbol",s.name,"key_summary_data",clean_summary,update_modified=False)
 			frappe.db.set_value("Symbol",s.name,"summary",company_summary,update_modified=False)
@@ -114,7 +115,7 @@ def process():
 			frappe.db.set_value("Symbol",s.name,"industry_type",industry,update_modified=False)
 			frappe.db.set_value("Symbol",s.name,"website",website,update_modified=False)
 		
-	frappe.db.commit()
+			frappe.db.commit()
 	
 
 	
