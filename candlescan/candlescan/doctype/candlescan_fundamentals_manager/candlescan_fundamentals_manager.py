@@ -16,7 +16,8 @@ def get_tickers():
 	#NYSE=True, NASDAQ=True, AMEX=True
 	tickers = gt(NYSE=True, NASDAQ=False, AMEX=False)
 	for ticker in tickers:
-		ticker['symbol'] = ticker['symbol'].replace('^','p')	
+		ticker['symbol'] = ticker['symbol'].replace('^','p')
+		ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
 		exist = frappe.db.exists("Symbol",ticker['symbol'])
 		if not exist:
 			print(ticker)
@@ -32,6 +33,7 @@ def get_tickers():
 	tickers = gt(NYSE=False, NASDAQ=True, AMEX=False)
 	for ticker in tickers:
 		ticker['symbol'] = ticker['symbol'].replace('^','p')	
+		ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
 		exist = frappe.db.exists("Symbol",ticker['symbol'])
 		if not exist:
 			print(ticker['symbol'])
@@ -46,6 +48,7 @@ def get_tickers():
 	tickers = gt(NYSE=False, NASDAQ=False, AMEX=True)
 	for ticker in tickers:
 		ticker['symbol'] = ticker['symbol'].replace('^','p')	
+		ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
 		exist = frappe.db.exists("Symbol",ticker['symbol'])
 		if not exist:
 			print(ticker['symbol'])
