@@ -16,38 +16,43 @@ def get_tickers():
 	#NYSE=True, NASDAQ=True, AMEX=True
 	tickers = gt(NYSE=True, NASDAQ=False, AMEX=False)
 	for ticker in tickers:
-		exist = frappe.db.exists("Symbol",ticker)
+		ticker['symbol'] = ticker['symbol'].replace('^','p')	
+		exist = frappe.db.exists("Symbol",ticker['symbol'])
 		if not exist:
-			print(ticker)
+			print(ticker['symbol'])
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
-				'symbol':ticker,
-				'company':ticker,
+				'symbol':ticker['symbol'],
+				'company':ticker['name'],
 				'exchange':'NYSE'
 			})
 			symbol.insert()
+			
 	tickers = gt(NYSE=False, NASDAQ=True, AMEX=False)
 	for ticker in tickers:
-		exist = frappe.db.exists("Symbol",ticker)
+		ticker['symbol'] = ticker['symbol'].replace('^','p')	
+		exist = frappe.db.exists("Symbol",ticker['symbol'])
 		if not exist:
-			print(ticker)
+			print(ticker['symbol'])
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
-				'symbol':ticker,
-				'company':ticker,
+				'symbol':ticker['symbol'],
+				'company':ticker['name'],
 				'exchange':'NASDAQ'
 			})
 			symbol.insert()
+			
 	tickers = gt(NYSE=False, NASDAQ=False, AMEX=True)
 	for ticker in tickers:
-		exist = frappe.db.exists("Symbol",ticker)
+		ticker['symbol'] = ticker['symbol'].replace('^','p')	
+		exist = frappe.db.exists("Symbol",ticker['symbol'])
 		if not exist:
-			print(ticker)
+			print(ticker['symbol'])
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
-				'symbol':ticker,
-				'company':ticker,
-				'exchange':'NASDAQ'
+				'symbol':ticker['symbol'],
+				'company':ticker['name'],
+				'exchange':'AMEX'
 			})
 			symbol.insert()
 	frappe.db.commit()
