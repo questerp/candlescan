@@ -25,7 +25,7 @@ def get_tickers():
 				'company':ticker,
 				'exchange':'NYSE'
 			})
-			symbol.inser()
+			symbol.insert()
 	tickers = gt(NYSE=False, NASDAQ=True, AMEX=False)
 	for ticker in tickers:
 		exist = frappe.db.exists("Symbol",ticker)
@@ -37,7 +37,7 @@ def get_tickers():
 				'company':ticker,
 				'exchange':'NASDAQ'
 			})
-			symbol.inser()
+			symbol.insert()
 	tickers = gt(NYSE=False, NASDAQ=False, AMEX=True)
 	for ticker in tickers:
 		exist = frappe.db.exists("Symbol",ticker)
@@ -49,7 +49,7 @@ def get_tickers():
 				'company':ticker,
 				'exchange':'NASDAQ'
 			})
-			symbol.inser()
+			symbol.insert()
 	frappe.db.commit()
 
 def process():
