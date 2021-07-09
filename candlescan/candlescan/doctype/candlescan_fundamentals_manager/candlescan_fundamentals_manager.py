@@ -7,10 +7,50 @@ import frappe, json
 from frappe.model.document import Document
 from candlescan.candlescan_yf import YahooFinancials as YF
 from frappe.utils import cstr
+from candlescan.get_tickers import get_tickers as gt
 
 class CandlescanFundamentalsManager(Document):
 	pass
 
+def get_tickers():
+	#NYSE=True, NASDAQ=True, AMEX=True
+	tickers = gt(NYSE=True, NASDAQ=False, AMEX=False)
+	for ticker in tickers:
+		exist = frappe.exists("Symbol",ticker)
+		if not exist:
+			print(ticker)
+			symbol = frappe.get_doc({
+				'doctype':'Symbol',
+				'symbol':ticker,
+				'company':ticker,
+				'exchange':'NYSE'
+			})
+			symbol.inser()
+	tickers = gt(NYSE=False, NASDAQ=True, AMEX=False)
+	for ticker in tickers:
+		exist = frappe.exists("Symbol",ticker)
+		if not exist:
+			print(ticker)
+			symbol = frappe.get_doc({
+				'doctype':'Symbol',
+				'symbol':ticker,
+				'company':ticker,
+				'exchange':'NASDAQ'
+			})
+			symbol.inser()
+	tickers = gt(NYSE=False, NASDAQ=False, AMEX=True)
+	for ticker in tickers:
+		exist = frappe.exists("Symbol",ticker)
+		if not exist:
+			print(ticker)
+			symbol = frappe.get_doc({
+				'doctype':'Symbol',
+				'symbol':ticker,
+				'company':ticker,
+				'exchange':'NASDAQ'
+			})
+			symbol.inser()
+	frappe.db.commit()
 
 def process():
 	settings =frappe.get_doc("Candlescan Fundamentals Manager")
