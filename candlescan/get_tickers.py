@@ -222,7 +222,7 @@ def __exchange2list(exchange,regions=None,sectors=None,countries=None,analystRat
     #df_filtered = df[~df['symbol'].str.contains("\.|\^")]
     if df.empty:
         return []
-    return df['symbol','name'].tolist()
+    return df.to_dict('records')
 
 
 # save the tickers to a CSV
