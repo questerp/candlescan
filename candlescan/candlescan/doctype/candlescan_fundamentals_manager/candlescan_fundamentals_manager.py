@@ -28,7 +28,7 @@ def process():
 	settings.save()
 	yf = YF([a['name'] for a in symbols])
 	data = yf.get_key_statistics_data()
-	summaries = yf.get_stock_data("profile","assetProfile")
+	summaries = yf.get_stock_profile_data()
 	prices = yf.get_stock_price_data()
 	for s in symbols:
 		stats = data[s.name]
