@@ -75,7 +75,7 @@ def process():
 		offset = 0
 	symbols = frappe.db.sql(""" select name,exchange from `tabSymbol` LIMIT %s OFFSET %s """ % (batch,offset),as_dict=True)
 	settings.save()
-	if batch == 1 && len(symbols) == 1:
+	if batch == 1 and len(symbols) == 1:
 		_symbol = symbols[0]
 		global yf = YF(_symbol.name)
 	else:
