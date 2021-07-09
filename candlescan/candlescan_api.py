@@ -22,7 +22,7 @@ def logged_in():
 
 @frappe.whitelist()        
 def check_symbol(user,symbol):
-    logged_in()
+    #logged_in()
     if not (user or symbol):
         return handle(Flase,"User is required")
     exists =  frappe.db.exists("Symbol", symbol)
