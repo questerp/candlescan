@@ -2,3 +2,4 @@ frappe
 lxml==3.4.2
 yahoofinancials
 yfinance
+FundamentalAnalysis
