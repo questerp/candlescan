@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 import frappe, json
 from frappe.model.document import Document
-from yahoofinancials import YahooFinancials as YF
+from candlescan.candlescan_yf import YahooFinancials as YF
 from frappe.utils import cstr
 
 class CandlescanFundamentalsManager(Document):
