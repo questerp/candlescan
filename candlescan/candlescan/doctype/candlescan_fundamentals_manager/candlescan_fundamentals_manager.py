@@ -19,6 +19,7 @@ def get_tickers():
 		ticker['symbol'] = ticker['symbol'].replace('^','p')	
 		exist = frappe.db.exists("Symbol",ticker['symbol'])
 		if not exist:
+			print(ticker)
 			print(ticker['symbol'])
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
