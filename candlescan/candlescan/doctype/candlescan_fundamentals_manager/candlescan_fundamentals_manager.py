@@ -16,7 +16,7 @@ def get_tickers():
 	#NYSE=True, NASDAQ=True, AMEX=True
 	tickers = gt(NYSE=True, NASDAQ=False, AMEX=False)
 	for ticker in tickers:
-		exist = frappe.exists("Symbol",ticker)
+		exist = frappe.db.exists("Symbol",ticker)
 		if not exist:
 			print(ticker)
 			symbol = frappe.get_doc({
@@ -28,7 +28,7 @@ def get_tickers():
 			symbol.inser()
 	tickers = gt(NYSE=False, NASDAQ=True, AMEX=False)
 	for ticker in tickers:
-		exist = frappe.exists("Symbol",ticker)
+		exist = frappe.db.exists("Symbol",ticker)
 		if not exist:
 			print(ticker)
 			symbol = frappe.get_doc({
@@ -40,7 +40,7 @@ def get_tickers():
 			symbol.inser()
 	tickers = gt(NYSE=False, NASDAQ=False, AMEX=True)
 	for ticker in tickers:
-		exist = frappe.exists("Symbol",ticker)
+		exist = frappe.db.exists("Symbol",ticker)
 		if not exist:
 			print(ticker)
 			symbol = frappe.get_doc({
