@@ -87,7 +87,8 @@ class YahooFinanceETL(object):
         'balance': ['balance-sheet', 'balanceSheetHistory', 'balanceSheetHistoryQuarterly', 'balanceSheetStatements'],
         'cash': ['cash-flow', 'cashflowStatementHistory', 'cashflowStatementHistoryQuarterly', 'cashflowStatements'],
         'keystats': ['key-statistics'],
-        'history': ['history']
+        'history': ['history'],
+        'profile':  ['profile']
     }
 
     # Interval value translation dictionary
@@ -577,6 +578,8 @@ class YahooFinanceETL(object):
 
 # Class containing methods to create stock data extracts
 class YahooFinancials(YahooFinanceETL):
+   
+   def get_company_summary(self,
 
     # Private method that handles financial statement extraction
     def _run_financial_stmt(self, statement_type, report_num, reformat):
