@@ -115,7 +115,7 @@ def process():
 			frappe.db.set_value("Symbol",s.name,"industry_type",industry,update_modified=False)
 			frappe.db.set_value("Symbol",s.name,"website",website,update_modified=False)
 		
-			frappe.db.commit()
+	frappe.db.commit()
 	
 
 	
