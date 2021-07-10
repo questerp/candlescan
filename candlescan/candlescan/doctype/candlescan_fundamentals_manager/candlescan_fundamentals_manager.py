@@ -68,11 +68,13 @@ def get_tickers():
 	r = requests.get('https://api.iextrading.com/1.0/ref-data/symbols')
 	data = r.json()
 	for s in data:
+		if not s['symbol']:
+			continue
 		if not frappe.db.exists("Symbol",s['symbol']):
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
 				'symbol':s['symbol'],
-				'company':s['name'],
+				'company':s['name'] or 'N/A',
 				'exchange':'N/A'
 			})
 			symbol.insert()
