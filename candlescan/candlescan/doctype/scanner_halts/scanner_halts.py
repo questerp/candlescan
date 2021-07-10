@@ -31,7 +31,8 @@ def signature():
 	#{"field":"company","header":"Company","align":"left","value_type":"string"},
 	#{"field":"exchange","header":"Exchange","align":"left","value_type":"string"},
 	{"field":"hcode","header":"Code","align":"left","value_type":"string"},
-	{"field":"resumption","header":"Resumption","align":"left","value_type":"string"},
+	{"field":"resumption_date","header":"Resumption Date","align":"left","value_type":"string"},
+	{"field":"resumption_time","header":"Resumption Time","align":"left","value_type":"string"},
 	]
 
 def start(scanner_id):        
@@ -52,12 +53,13 @@ def start(scanner_id):
 			halt['symbol'] = entry.ndaq_issuesymbol
 			halt['hdate'] = entry.ndaq_haltdate
 			halt['htime'] = entry.ndaq_halttime
-			#halt['company'] = entry.ndaq_issuename
-			#halt['exchange'] = entry.ndaq_market
+			halt['resumption_date'] = entry.ndaq_resumptiondate
+			halt['resumption_time'] = entry.ndaq_resumptiontradetime
+			
 			halt['hcode'] = entry.ndaq_reasoncode
-			if halt['htime']:
+			if halt['htime'] and not halt['resumption_time']:
 				res = parser.parse(halt['htime']) + timedelta(minutes=5)
-				halt['resumption'] = res.strftime("%H:%M:%S")
+				halt['resumption_time'] = res.strftime("%H:%M:%S")
 				
 			resultdata.append(halt)
 		if resultdata:
