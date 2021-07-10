@@ -23,7 +23,7 @@ def get_config():
 
 def signature():
 	return [
-	{"name":"symbol","title":"Symbol","align":"left","value_type":"string"},
+	{"field":"symbol","header":"Symbol","align":"left","value_type":"string"},
 	
 	]
 
