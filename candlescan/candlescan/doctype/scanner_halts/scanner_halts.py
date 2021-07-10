@@ -28,8 +28,8 @@ def signature():
 	{"field":"symbol","header":"Symbol","align":"left","value_type":"string"},
 	{"field":"hdate","header":"Date","align":"left","value_type":"string"},
 	{"field":"htime","header":"Time","align":"left","value_type":"string"},
-	{"field":"company","header":"Company","align":"left","value_type":"string"},
-	{"field":"exchange","header":"Exchange","align":"left","value_type":"string"},
+	#{"field":"company","header":"Company","align":"left","value_type":"string"},
+	#{"field":"exchange","header":"Exchange","align":"left","value_type":"string"},
 	{"field":"hcode","header":"Code","align":"left","value_type":"string"},
 	{"field":"resumption","header":"Resumption","align":"left","value_type":"string"},
 	]
@@ -52,8 +52,8 @@ def start(scanner_id):
 			halt['symbol'] = entry.ndaq_issuesymbol
 			halt['hdate'] = entry.ndaq_haltdate
 			halt['htime'] = entry.ndaq_halttime
-			halt['company'] = entry.ndaq_issuename
-			halt['exchange'] = entry.ndaq_market
+			#halt['company'] = entry.ndaq_issuename
+			#halt['exchange'] = entry.ndaq_market
 			halt['hcode'] = entry.ndaq_reasoncode
 			if halt['htime']:
 				res = parser.parse(halt['htime']) + timedelta(minutes=5)
