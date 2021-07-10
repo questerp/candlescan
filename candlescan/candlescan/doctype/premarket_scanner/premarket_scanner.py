@@ -29,7 +29,7 @@ def signature():
 def start(scanner_id):        
     redis = get_redis_server()
     val = 1
-    symbols = frappe.db.sql("""select name from tabSymbol where LIKE 'AA%' limit 200""",as_dict=True)
+    symbols = frappe.db.sql("""select name from tabSymbol where LIKE %(txt)s   limit 200""",dict(txt='AA%',as_dict=True)
     #doc = frappe.get_doc("Premarket Scanner")
     while(True):
         frappe.local.cache = {}
