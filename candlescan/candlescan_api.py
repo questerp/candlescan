@@ -126,7 +126,7 @@ def get_platform_data(user):
         extras = extras.splitlines()
         for ex in extras:
             name, label, value_type,doctype = ex.split(':')
-            fExtras.append({"name":name,"label":label,"value_type":value_type,"doctype":doctype})
+            fExtras.append({"field":name,"header":label,"value_type":value_type,"doctype":doctype})
     for scanner in scanners:
         signautre_method = "%s.signature" % scanner.method
         config_method = "%s.get_config" % scanner.method
