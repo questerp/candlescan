@@ -57,7 +57,7 @@ def start(scanner_id):
 			halt['hcode'] = entry.ndaq_reasoncode
 			if halt['htime']:
 				res = parser.parse(halt['htime']) + timedelta(minutes=5)
-				halt['resumption'] = res
+				halt['resumption'] = res.strftime("%H:%M:%S")
 				
 			resultdata.append(halt)
 		if resultdata:
