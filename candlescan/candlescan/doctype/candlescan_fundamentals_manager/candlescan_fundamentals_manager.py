@@ -69,7 +69,7 @@ def process():
 	batch = settings.batch
 	offset =  settings.offset
 	count = frappe.db.count("Symbol")
-	settings.offset = batch
+	settings.offset = offset + batch
 	if offset >= count:
 		settings.offset = 0
 		offset = 0
