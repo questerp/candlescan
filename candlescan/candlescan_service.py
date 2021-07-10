@@ -48,7 +48,7 @@ def start_services():
         "is_async": True,
         "kwargs": {}
     }
-    q.enqueue_call(execute_job, timeout=60000,	kwargs=queue_args)
+    q.enqueue_call(execute_job, timeout=-1,	kwargs=queue_args)
     
     q = Queue("process_alerts", **kwargs)
     queue_args = {
@@ -60,7 +60,7 @@ def start_services():
         "is_async": True,
         "kwargs": {}
     }
-    q.enqueue_call(execute_job, timeout=60000,	kwargs=queue_args)
+    q.enqueue_call(execute_job, timeout=-1,	kwargs=queue_args)
     
 
 @frappe.whitelist()
@@ -105,7 +105,7 @@ def start_scanners():
                      'scanner_id':s.scanner_id
                 }
             }
-            q.enqueue_call(execute_job, timeout=60000,	kwargs=queue_args)
+            q.enqueue_call(execute_job, timeout=-1,	kwargs=queue_args)
             #q = enqueue(method,queue="default", timeout=60000, job_name=s.scanner_id,scanner_id=s.scanner_id)
         else:
             q = Queue(s.scanner_id, connection=redis_connection)
