@@ -29,7 +29,7 @@ def signature():
 def start(scanner_id):        
     redis = get_redis_server()
     val = 1
-    symbols = frappe.db.sql("""select name from tabSymbol limit 20""",as_dict=True)
+    symbols = frappe.db.sql("""select name from tabSymbol limit 200""",as_dict=True)
     #doc = frappe.get_doc("Premarket Scanner")
     while(True):
         frappe.local.cache = {}
@@ -39,5 +39,5 @@ def start(scanner_id):
         val=val+1 
         #rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
         for s in symbols:
-                time.sleep(2)
+                time.sleep(3)
                 redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":[{"symbol":s.name,"gap":0}]}))
