@@ -26,11 +26,11 @@ def get_config():
 def signature():
 	return [
 	{"field":"symbol","header":"Symbol","align":"left","value_type":"string"},
-	{"field":"date","header":"Date","align":"left","value_type":"string"},
-	{"field":"time","header":"Time","align":"left","value_type":"string"},
+	{"field":"hdate","header":"Date","align":"left","value_type":"string"},
+	{"field":"htime","header":"Time","align":"left","value_type":"string"},
 	{"field":"company","header":"Company","align":"left","value_type":"string"},
 	{"field":"exchange","header":"Exchange","align":"left","value_type":"string"},
-	{"field":"code","header":"Code","align":"left","value_type":"string"},
+	{"field":"hcode","header":"Code","align":"left","value_type":"string"},
 	{"field":"resumption","header":"Resumption","align":"left","value_type":"string"},
 	]
 
