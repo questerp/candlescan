@@ -38,7 +38,7 @@ def start(scanner_id):
 	URL = "http://www.nasdaqtrader.com/rss.aspx?feed=tradehalts"
 	redis = get_redis_server()
 	
-	While(True):
+	while(True):
 		active = frappe.db.get_value("Scanner Halts","active")
 		if not active:
 			break;
