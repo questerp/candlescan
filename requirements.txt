@@ -1,3 +1,4 @@
 frappe
 lxml==3.4.2
 FundamentalAnalysis
+rss-parser
