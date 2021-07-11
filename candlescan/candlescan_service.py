@@ -10,9 +10,9 @@ from rq.registry import StartedJobRegistry
 from rq import Connection, Queue, Worker
 from candlescan import handle
 
-def get_last_broadcast(doctype,scanner_id):
-    if not (doctype or scanner_id):
-        return handle(False,'No scanner_id')
+def get_last_broadcast(doctype):
+    if not doctype:
+        return handle(False,'No doctype')
     raw_state = frappe.db.get_value(doctype,None,"state")
     if raw_state:
         data = json.loads(raw_state)
