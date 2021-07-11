@@ -8,7 +8,9 @@
   "public_name",
   "short_description",
   "update_ms",
-  "job_id"
+  "job_id",
+  "section_break_6",
+  "state"
  ],
  "fields": [
   {
@@ -42,10 +44,19 @@
    "fieldname": "job_id",
    "fieldtype": "Data",
    "label": "Job id"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Long Text",
+   "label": "State"
   }
  ],
  "issingle": 1,
- "modified": "2021-06-30 19:06:31.336496",
+ "modified": "2021-07-11 05:35:45.489899",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Premarket Scanner",

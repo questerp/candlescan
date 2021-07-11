@@ -6,5 +6,5 @@ from __future__ import unicode_literals
 # import frappe
 import unittest
 
-class TestCandlescanLayout(unittest.TestCase):
+class TestCustomScanner(unittest.TestCase):
 	pass

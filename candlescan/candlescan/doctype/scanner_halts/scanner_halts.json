@@ -4,7 +4,9 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "active"
+  "active",
+  "interval",
+  "state"
  ],
  "fields": [
   {
@@ -12,10 +14,20 @@
    "fieldname": "active",
    "fieldtype": "Check",
    "label": "Active"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Long Text",
+   "label": "State"
+  },
+  {
+   "fieldname": "interval",
+   "fieldtype": "Int",
+   "label": "Interval"
   }
  ],
  "issingle": 1,
- "modified": "2021-07-07 19:10:20.946684",
+ "modified": "2021-07-11 06:16:24.712746",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Scanner Halts",

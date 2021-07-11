@@ -7,9 +7,12 @@
  "field_order": [
   "symbol",
   "company",
+  "website",
   "exchange",
   "column_break_4",
   "sector",
+  "industry_type",
+  "summary",
   "country",
   "section_break_7",
   "floating_shares",
@@ -21,7 +24,11 @@
   "section_break_14",
   "volume_avg",
   "section_break_16",
-  "key_statistics_data"
+  "key_statistics_data",
+  "key_price_data",
+  "section_break_22",
+  "key_summary_data",
+  "stock_summary_detail"
  ],
  "fields": [
   {
@@ -113,9 +120,44 @@
    "fieldname": "key_statistics_data",
    "fieldtype": "Long Text",
    "label": "Key statistics data"
+  },
+  {
+   "fieldname": "industry_type",
+   "fieldtype": "Link",
+   "label": "Industry Type",
+   "options": "Industry Type"
+  },
+  {
+   "fieldname": "summary",
+   "fieldtype": "Long Text",
+   "label": "Summary"
+  },
+  {
+   "fieldname": "website",
+   "fieldtype": "Data",
+   "label": "Website"
+  },
+  {
+   "fieldname": "key_price_data",
+   "fieldtype": "Long Text",
+   "label": "Key price data"
+  },
+  {
+   "fieldname": "section_break_22",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "key_summary_data",
+   "fieldtype": "Long Text",
+   "label": "Key summary data"
+  },
+  {
+   "fieldname": "stock_summary_detail",
+   "fieldtype": "Long Text",
+   "label": "stock_summary_detail"
   }
  ],
- "modified": "2021-07-08 18:05:02.192189",
+ "modified": "2021-07-09 11:26:05.712349",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Symbol",

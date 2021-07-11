@@ -54,7 +54,7 @@
  "modified": "2021-07-08 13:09:20.969103",
  "modified_by": "Administrator",
  "module": "CandleScan",
- "name": "Candlescan Layout",
+ "name": "Custom Scanner",
  "owner": "Administrator",
  "permissions": [
   {
