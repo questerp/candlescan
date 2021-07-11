@@ -2,6 +2,7 @@ import frappe, json
 from http import cookies
 from urllib.parse import unquote, urlparse
 from frappe.utils import cstr
+from candlescan.candlescan_service import get_last_broadcast
 
 def logged_in():
     cookie = cookies.BaseCookie()
@@ -20,6 +21,14 @@ def logged_in():
     if user_key != original:
         frappe.throw('Forbiden, Please login to continue.')
 
+@frappe.whitelist()        
+def get_last_broadcast(user,scanner_id):
+    logged_in()
+    if not (user or scanner_id):
+        return handle(Flase,"User is required")
+    doctype =  frappe.db.get_value("Candlescan scanner", {"scanner_id":scanner_id})
+    return get_last_broadcast(doctype,scanner_id)
+       
 @frappe.whitelist()        
 def check_symbol(user,symbol):
     #logged_in()
