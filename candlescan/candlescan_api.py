@@ -21,6 +21,14 @@ def logged_in():
     if user_key != original:
         frappe.throw('Forbiden, Please login to continue.')
 
+
+@frappe.whitelist()        
+def get_plans():
+    logged_in()
+    settins = frappe.get_doc("Candlescan Settings")
+    data = {"monthly":settings.monthly_item,"annual":settings.yearly}
+    return handle(True,"Success",data)
+    
 @frappe.whitelist()        
 def last_broadcast(user,scanner):
     logged_in()
