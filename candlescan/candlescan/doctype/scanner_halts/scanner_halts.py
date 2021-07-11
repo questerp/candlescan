@@ -12,6 +12,7 @@ from frappe.realtime import get_redis_server
 import feedparser
 from dateutil import parser
 from datetime import timedelta
+from candlescan.candlescan_service import broadcast
 
 class ScannerHalts(Document):
 	pass
@@ -36,7 +37,7 @@ def signature():
 def start(scanner_id):        
 	URL = "http://www.nasdaqtrader.com/rss.aspx?feed=tradehalts"
 	redis = get_redis_server()
-	
+	interval = 30
 	while(True):
 		active = frappe.db.get_value("Scanner Halts","active")
 		if not active:
@@ -61,6 +62,7 @@ def start(scanner_id):
 				
 			resultdata.append(halt)
 		if resultdata:
-			redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
-		time.sleep(30)
+			broadcast("Scanner Halts",scanner_id,interval,resultdata)
+			#redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
+		#time.sleep(30)
 		#redis.publish("candlesocket",frappe.as_json({"scanner_id":"alerts","data":{"symbol":"AAPL","price":152}}))
