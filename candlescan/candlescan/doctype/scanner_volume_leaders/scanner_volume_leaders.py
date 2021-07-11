@@ -35,7 +35,7 @@ def start(scanner_id):
 	symbols = frappe.db.sql("""select name from tabSymbol limit 30""",as_dict=True)
 	#doc = frappe.get_doc("Premarket Scanner")	
 	while(True):
-		active = frappe.db.get_value("Scanner Volume Leaders","active")
+		active = frappe.db.get_value("Scanner Volume Leaders",None,"active")
 		#frappe.local.cache = {}
 		#stop = frappe.cache().hget(scanner_id,"stop",shared=True)
 		if not active:
