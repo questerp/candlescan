@@ -29,7 +29,7 @@ def broadcast(doctype,scanner_id,interval,data):
         doc.state=parsed_data
         doc.save(ignore_permissions=1)
         #frappe.db.set_value(doctype,None,"state",parsed_data,update_modified=False)
-        #frappe.db.commit()
+        frappe.db.commit()
         
     redis.publish("candlescan_all",parsed_data)
     if interval and interval > 0:
