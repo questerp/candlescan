@@ -52,7 +52,7 @@ def get_historical(user,doctype,date):
     if not (user or doctype or date):
         return handle(Flase,"Data missing")
     
-    values = frappe.db.sql(""" select data from `tabVersion` where ref_doctype='%s' and creation>='%s' limit 1""" % (doctype,date),as_dict=True)
+    values = frappe.db.sql(""" select data from `tabVersion` where ref_doctype='%s' and creation<='%s' order by creation DESC limit 1""" % (doctype,date),as_dict=True)
     if values:
         values = values[0]
         odata = json.loads(values.data)
