@@ -25,7 +25,7 @@ def logged_in():
 @frappe.whitelist()        
 def get_plans():
     logged_in()
-    settins = frappe.get_doc("Candlescan Settings")
+    settings = frappe.get_doc("Candlescan Settings")
     monthly = frappe.get_doc("Subscription Plan",settings.monthly_item)
     annual = frappe.get_doc("Subscription Plan",settings.annual_item)
     return handle(True,"Success",[monthly,annual])
