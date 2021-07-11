@@ -47,12 +47,13 @@ def delete_custom_scanner(user,name):
     
 
 @frappe.whitelist()        
-def get_historical(user,doctype,date):
+def get_historical(user,doctype,date,feed_type):
     logged_in()
     if not (user or doctype or date):
         return handle(Flase,"Data missing")
-    
-    values = frappe.db.sql(""" select data from `tabVersion` where ref_doctype='%s' and creation<='%s' order by creation DESC limit 1""" % (doctype,date),as_dict=True)
+    lmt = 1 if feed_type == "list" else 20
+        
+    values = frappe.db.sql(""" select data from `tabVersion` where ref_doctype='%s' and creation<='%s' order by creation DESC limit %s""" % (doctype,date,lmt),as_dict=True)
     if values:
         values = values[0]
         odata = json.loads(values.data)
