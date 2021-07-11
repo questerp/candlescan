@@ -4,9 +4,31 @@ from frappe.model.document import Document
 from frappe.realtime import get_redis_server
 from frappe.utils.background_jobs import enqueue,get_redis_conn,get_jobs,enqueue_doc,execute_job
 from rq.job import Job
+import time
 from frappe.utils import cstr
 from rq.registry import StartedJobRegistry
 from rq import Connection, Queue, Worker
+from candlescan.candlescan_api import handle
+
+def get_last_broadcast(doctype,scanner_id):
+    if not (doctype or scanner_id):
+        return
+    raw_state = frappe.db.get_value(doctype,"state")
+    if raw_state:
+        data = json.loads(raw_state)
+        parsed_data = frappe.as_json({"scanner_id":scanner_id,"data":data})
+        return handle(True,'Success',parsed_data)
+    return handle(True,'Success')
+
+def broadcast(doctype,scanner_id,interval,data):
+    redis = get_redis_server()
+    parsed_data = frappe.as_json({"scanner_id":scanner_id,"data":data})
+    if doctype:
+        frappe.db.set_value(doctype"state",parsed_data,,update_modified=False)
+    
+    redis.publish("candlescan_all",parsed_data))
+    if interval and interval > 0:
+        time.sleep(interval)
 
 def after_signup(customer,method):
     if not customer:
