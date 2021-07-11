@@ -54,10 +54,11 @@ def get_historical(user,doctype,date):
     
     values = frappe.db.sql(""" select data from `tabVersion` where ref_doctype='%s' and creation>='%s' limit 1""" % (doctype,date),as_dict=True)
     if values:
-        jdata = json.loads(values[0][0])
-        data = jdata['changed'][0][1]
-        if data:
-            return handle(True,"Success",data)
+        values = values[0]
+        odata = json.loads(values.data)
+        state = json.loads(odata['changed'][0][1])
+        if state:
+            return handle(True,"Success",state)
     return handle(True,"Success")
     
 @frappe.whitelist()        
