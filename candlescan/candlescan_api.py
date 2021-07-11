@@ -22,7 +22,7 @@ def logged_in():
         frappe.throw('Forbiden, Please login to continue.')
 
 @frappe.whitelist()        
-def get_last_broadcast(user,scanner_id):
+def last_broadcast(user,scanner_id):
     logged_in()
     if not (user or scanner_id):
         return handle(Flase,"User is required")
