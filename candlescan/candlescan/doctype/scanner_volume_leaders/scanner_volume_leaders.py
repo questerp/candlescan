@@ -8,6 +8,8 @@ import time
 from frappe.utils.background_jobs import enqueue_doc
 from frappe.model.document import Document
 from frappe.realtime import get_redis_server
+from candlescan.candlescan_service import broadcast
+
 
 class ScannerVolumeLeaders(Document):
 	pass
@@ -29,20 +31,19 @@ def signature():
 
 def start(scanner_id):        
 	redis = get_redis_server()
-	val = 1
+	interval = 5
 	symbols = frappe.db.sql("""select name from tabSymbol limit 30""",as_dict=True)
 	#doc = frappe.get_doc("Premarket Scanner")	
 	while(True):
-		frappe.local.cache = {}
-		stop = frappe.cache().hget(scanner_id,"stop",shared=True)
-		if stop == 1:
+		active = frappe.db.get_value("Scanner Volume Leaders","active")
+		#frappe.local.cache = {}
+		#stop = frappe.cache().hget(scanner_id,"stop",shared=True)
+		if not active:
 			break
-		val=val+1 
-		time.sleep(20)
 		
 		resultdata = []
 		for i in symbols:
 			resultdata.append(  {"symbol":i.name})
-
-		redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
+		broadcast("Scanner Volume Leaders",scanner_id,interval,resultdata)
+		#redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
 		#redis.publish("candlesocket",frappe.as_json({"scanner_id":"alerts","data":{"symbol":"AAPL","price":152}}))
