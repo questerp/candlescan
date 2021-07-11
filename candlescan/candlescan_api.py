@@ -64,6 +64,15 @@ def delete_watchlist(user,watchlist_id):
     frappe.delete_doc('Watchlist', watchlist_id)
     return handle(True,"Success")
   
+
+@frappe.whitelist()        
+def delete_layout(user,name):
+    logged_in()
+    if not (user or name):
+        return handle(Flase,"User is required")
+    frappe.delete_doc('Layout', name)
+    return handle(True,"Success")
+    
 @frappe.whitelist()        
 def save_layout(user,title,config,name=None):
     logged_in()
