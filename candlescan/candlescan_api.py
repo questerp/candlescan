@@ -28,8 +28,7 @@ def get_plans():
     settins = frappe.get_doc("Candlescan Settings")
     monthly = frappe.get_doc("Subscription Plan",settings.monthly_item)
     annual = frappe.get_doc("Subscription Plan",settings.annual_item)
-    data = {"monthly":monthly,"annual":annual}
-    return handle(True,"Success",data)
+    return handle(True,"Success",[monthly,annual])
     
 @frappe.whitelist()        
 def last_broadcast(user,scanner):
