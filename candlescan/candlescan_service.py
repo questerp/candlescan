@@ -16,9 +16,9 @@ def get_last_broadcast(doctype,scanner_id):
     raw_state = frappe.db.get_value(doctype,"state")
     if raw_state:
         data = json.loads(raw_state)
-        parsed_data = frappe.as_json({"scanner_id":scanner_id,"data":data})
-        if data and parsed_data:
-            return handle(True,'Success',parsed_data)
+        #parsed_data = frappe.as_json({"scanner_id":scanner_id,"data":data})
+        if data:
+            return handle(True,'Success',data)
     return handle(True,'No history')
 
 def broadcast(doctype,scanner_id,interval,data):
