@@ -26,7 +26,7 @@ def broadcast(doctype,scanner_id,interval,data):
     if doctype:
         frappe.db.set_value(doctype,"state",parsed_data,update_modified=False)
     
-    redis.publish("candlescan_all",parsed_data))
+    redis.publish("candlescan_all",parsed_data)
     if interval and interval > 0:
         time.sleep(interval)
 
