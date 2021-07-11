@@ -23,10 +23,8 @@ io.on('connection',function(socket){
 		socket.join(scanner_id);
 		//socket.emit('get_socket',socket.id);
 	});
-	socket.on('ping',function(callback){
-		 callback({
-		      status: "ok"
-		    });
+	socket.on('ping',(data) => {
+		 socket.emit('pong','ok');
 	});
 })
 
