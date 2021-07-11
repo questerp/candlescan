@@ -23,6 +23,9 @@ io.on('connection',function(socket){
 		socket.join(scanner_id);
 		//socket.emit('get_socket',socket.id);
 	});
+	socket.on('ping',function(scanner_id){
+		socket.emit('pong','pong');
+	});
 })
 
 
