@@ -29,7 +29,7 @@ def signature():
 
 def start(scanner_id):        
     redis = get_redis_server()
-    interval = 5
+    interval = 2
     symbols = frappe.db.sql("""select name from tabSymbol where name LIKE %(txt)s   limit 200""",dict(txt='AA%'),as_dict=True)
     #doc = frappe.get_doc("Premarket Scanner")
     while(True):
@@ -40,5 +40,5 @@ def start(scanner_id):
 	resuls = []
         for s in symbols:
 		resuls.append({"symbol":s.name,"gap":0})
-	broadcast("Premarket Scanner",scanner_id,interval,resuls)
+		broadcast("Premarket Scanner",scanner_id,interval,resuls)
 
