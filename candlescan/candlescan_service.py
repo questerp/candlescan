@@ -8,7 +8,7 @@ import time
 from frappe.utils import cstr
 from rq.registry import StartedJobRegistry
 from rq import Connection, Queue, Worker
-from candlescan.candlescan_api import handle
+from candlescan import handle
 
 def get_last_broadcast(doctype,scanner_id):
     if not (doctype or scanner_id):
