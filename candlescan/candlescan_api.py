@@ -38,11 +38,11 @@ def check_symbol(user,symbol):
     return handle(True,"Success",{"exists":exists})
         
 @frappe.whitelist()        
-def delete_layout(user,name):
+def delete_custom_scanner(user,name):
     logged_in()
     if not (user or name):
         return handle(Flase,"User is required")
-    frappe.delete_doc('Candlescan Layout', name)
+    frappe.delete_doc('Custom Scanner', name)
     return handle(True,"Success")
     
 
@@ -86,30 +86,30 @@ def save_watchlist(user,watchlist,symbols='',name=None):
     
     
 @frappe.whitelist()        
-def save_layout(user,layout,scanner,layout_name,target,name=None):
+def save_customer_scanner(user,config,scanner,title,target,name=None):
     logged_in()
-    if not (user or layout or layout_name or target or scanner):
+    if not (user or config or title or target or scanner):
         return handle(Flase,"User is required")
-    layout_obj = None
+    scanner_obj = None
     if name:
-        layout_obj = frappe.get_doc("Candlescan Layout",name)
+        scanner_obj = frappe.get_doc("Custom Scanner",name)
     else:
-        layout_obj = frappe.get_doc({
-            'doctype':"Candlescan Layout",
+        scanner_obj = frappe.get_doc({
+            'doctype':"Custom Scanner",
             'user': user,
             'target':target
         })
         
-    layout_obj.layout_name = layout_name
-    layout_obj.layout = layout
-    layout_obj.scanner = scanner
+    scanner_obj.title = title
+    scanner_obj.config = config
+    scanner_obj.scanner = scanner
     
     if name:
-        layout_obj = layout_obj.save()
+        scanner_obj = scanner_obj.save()
     else:
-        layout_obj = layout_obj.insert()
+        scanner_obj = scanner_obj.insert()
         
-    return handle(True,"Success",layout_obj)
+    return handle(True,"Success",scanner_obj)
         
         
 @frappe.whitelist()        
@@ -128,7 +128,7 @@ def get_platform_data(user):
     alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
     scanners = frappe.db.sql(""" select title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
-    layouts = frappe.db.sql(""" select layout_name,scanner,name,user,layout,target from `tabCandlescan Layout` where user='%s' """ % (user),as_dict=True)
+    customScanners = frappe.db.sql(""" select title,scanner,name,user,config,target from `tabCustom Scanner` where user='%s' """ % (user),as_dict=True)
     watchlists = frappe.db.sql(""" select name,watchlist,symbols from `tabWatchlist` where user='%s' """ % (user),as_dict=True)
     fExtras = []
     if extras:
@@ -144,7 +144,7 @@ def get_platform_data(user):
         scanner['signature'] = signature
         scanner['config'] = config
 
-    return handle(True,"Success",{"scanners":scanners,"extras":fExtras,"alerts":alerts,"layouts":layouts,"watchlists":watchlists})
+    return handle(True,"Success",{"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
             
 #@frappe.whitelist()        
 #def get_alerts(user):
