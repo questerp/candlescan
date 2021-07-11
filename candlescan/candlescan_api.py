@@ -2,7 +2,7 @@ import frappe, json
 from http import cookies
 from urllib.parse import unquote, urlparse
 from frappe.utils import cstr
-from candlescan_service import get_last_broadcast
+from candlescan.candlescan_service import get_last_broadcast
 
 def logged_in():
     cookie = cookies.BaseCookie()
