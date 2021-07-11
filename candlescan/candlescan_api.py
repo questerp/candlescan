@@ -22,12 +22,12 @@ def logged_in():
         frappe.throw('Forbiden, Please login to continue.')
 
 @frappe.whitelist()        
-def last_broadcast(user,scanner):
+def last_broadcast(user,scanner,scanner_id):
     logged_in()
     if not (user or scanner):
         return handle(Flase,"User is required")
     #doctype =  frappe.db.get_value("Candlescan scanner", {"scanner_id":scanner_id},"scanner")
-    return get_last_broadcast(scanner,scanner_id)
+    return get_last_broadcast(scanner)
        
 @frappe.whitelist()        
 def check_symbol(user,symbol):
