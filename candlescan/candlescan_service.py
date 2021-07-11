@@ -90,7 +90,7 @@ def start_services():
 @frappe.whitelist()
 def start_scanners():
     redis_connection = get_redis_conn()
-    scanners = frappe.db.sql(""" select name,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+    scanners = frappe.db.sql(""" select name,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     for s in scanners:
         method = "%s.start" % s.method
         kwargs = {
