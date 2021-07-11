@@ -63,7 +63,28 @@ def delete_watchlist(user,watchlist_id):
         return handle(Flase,"User is required")
     frappe.delete_doc('Watchlist', watchlist_id)
     return handle(True,"Success")
-    
+  
+@frappe.whitelist()        
+def save_layout(user,title,config,name=None):
+    logged_in()
+    if not (user or title):
+        return handle(Flase,"User is required")
+    if not name:
+        w = frappe.get_doc({
+            'doctype':'Layout',
+            'title':title,
+            'config':config,
+            'user':user,
+        })
+        w = w.insert()
+        return handle(True,"Success",w)
+        
+    else:
+        frappe.db.set_value("Layout",name,"config",config)
+        frappe.db.set_value("Layout",name,"title",title)
+        w = frappe.get_doc("Layout",name)
+        return handle(True,"Success",w)
+        
 @frappe.whitelist()        
 def save_watchlist(user,watchlist,symbols='',name=None):
     logged_in()
