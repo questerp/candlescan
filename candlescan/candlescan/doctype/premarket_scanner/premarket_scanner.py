@@ -8,6 +8,7 @@ import time
 from frappe.utils.background_jobs import enqueue_doc
 from frappe.model.document import Document
 from frappe.realtime import get_redis_server
+from candlescan.candlescan_service import broadcast
 
 class PremarketScanner(Document):
     pass
@@ -28,16 +29,14 @@ def signature():
 
 def start(scanner_id):        
     redis = get_redis_server()
-    val = 1
+    interval = 5
     symbols = frappe.db.sql("""select name from tabSymbol where name LIKE %(txt)s   limit 200""",dict(txt='AA%'),as_dict=True)
     #doc = frappe.get_doc("Premarket Scanner")
     while(True):
-        frappe.local.cache = {}
-        stop = frappe.cache().hget(scanner_id,"stop",shared=True)
-        if stop == 1:
+        active = frappe.db.get_value("Premarket Scanner",None,"active")
+        if not active:
             break
-        val=val+1 
         #rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
         for s in symbols:
-                time.sleep(3)
-                redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":[{"symbol":s.name,"gap":0}]}))
+                broadcast("Premarket Scanner",scanner_id,interval,[{"symbol":s.name,"gap":0}])
+
