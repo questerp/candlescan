@@ -26,7 +26,7 @@ def last_broadcast(user,scanner_id):
     logged_in()
     if not (user or scanner_id):
         return handle(Flase,"User is required")
-    doctype =  frappe.db.get_value("Candlescan scanner", {"scanner_id":scanner_id})
+    doctype =  frappe.db.get_value("Candlescan scanner", {"scanner_id":scanner_id},"scanner")
     return get_last_broadcast(doctype,scanner_id)
        
 @frappe.whitelist()        
