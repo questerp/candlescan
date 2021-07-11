@@ -37,6 +37,8 @@ def start(scanner_id):
         if not active:
             break
         #rsymb = ''.join(random.choice('AZFQDFEZEF') for _ in range(3))
+	resuls = []
         for s in symbols:
-                broadcast("Premarket Scanner",scanner_id,interval,[{"symbol":s.name,"gap":0}])
+		resuls.append({"symbol":s.name,"gap":0})
+	broadcast("Premarket Scanner",scanner_id,interval,resuls)
 
