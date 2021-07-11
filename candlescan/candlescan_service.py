@@ -92,47 +92,23 @@ def start_scanners():
     redis_connection = get_redis_conn()
     scanners = frappe.db.sql(""" select name,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     for s in scanners:
-        if s.active:
-            q = Queue(s.scanner_id, connection=redis_connection)
-            workers = Worker.all(queue=q)
-            if q.job_ids:
-                return
-            if workers:
-                worker = workers[0]
-                if worker and (worker.state == "started" or worker.state == "busy"):
-                    return
-                    
-            method = "%s.start" % s.method
-            frappe.cache().hset(s.scanner_id,"stop",0,shared=True)
-            #workers = Worker.all(connection=redis_connection)
-            #if not workers or (method not in [w.name for w in workers]):
-            #    with Connection(redis_connection):
-            #       logging_level = "INFO"
-            #        print("Starting worker %s" % method)
-            #       Worker([s.scanner_id], name=s.scanner_id).work(logging_level = logging_level)
-
-            kwargs = {
-                'connection': redis_connection,
-                'async': True,
-                'scanner_id':s.scanner_id
+        method = "%s.start" % s.method
+        kwargs = {
+            'connection': redis_connection,
+            'async': True,
+            'scanner_id':s.scanner_id
+        }
+        q = Queue(s.scanner_id, **kwargs)
+        queue_args = {
+            "site": frappe.local.site,
+            "user": None,
+            "method": method,
+            "event": None,
+            "job_name": cstr(method),
+            "is_async": True,
+            "kwargs": {
+                 'scanner_id':s.scanner_id
             }
-            #print("Starting Queue for the worker")
-            q = Queue(s.scanner_id, **kwargs)
-            queue_args = {
-                "site": frappe.local.site,
-                "user": None,
-                "method": method,
-                "event": None,
-                "job_name": cstr(method),
-                "is_async": True,
-                "kwargs": {
-                     'scanner_id':s.scanner_id
-                }
-            }
-            q.enqueue_call(execute_job, timeout=-1,	kwargs=queue_args)
-            #q = enqueue(method,queue="default", timeout=60000, job_name=s.scanner_id,scanner_id=s.scanner_id)
-        else:
-            q = Queue(s.scanner_id, connection=redis_connection)
-            q.empty()
-            q.delete(delete_jobs=True)
-            frappe.cache().hset(s.scanner_id,"stop",1,shared=True)
+        }
+        q.enqueue_call(execute_job, timeout=-1,	kwargs=queue_args)
+           
