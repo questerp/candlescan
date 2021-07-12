@@ -346,7 +346,7 @@ def add_alert(user,symbol,filters,notify):
         'filters_script':filters,
         'notify_by_email':notify
     })
-    c = alert.insert(ignore_permissions=1)
+    c = alert.insert()
     return handle(True,"Success",c)
 
 #@frappe.whitelist()
