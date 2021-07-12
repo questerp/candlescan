@@ -40,8 +40,16 @@ def new_subscription(user,date,plan,qty):
     sub.append('plans',	{'qty':qty,'plan':plan})
     sub.save()
     return handle(True,"Success",sub)
-    
-    
+
+
+@frappe.whitelist()        
+def get_subscription(user):
+    logged_in()
+    if not user:
+        return handle(False,"Missing data")
+    subs = frappe.db.get_all("Subscription",filters={'customer': user},fields=['*'])
+    return handle(True,"Success",subs)
+                             
 @frappe.whitelist()        
 def get_plans():
     logged_in()
