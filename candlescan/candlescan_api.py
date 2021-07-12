@@ -6,7 +6,7 @@ from candlescan.candlescan_service import get_last_broadcast
 from frappe.utils import getdate
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
 
-
+@frappe.whitelist()
 def get_session():
     return handle(True,"Session",frappe.session)
 
