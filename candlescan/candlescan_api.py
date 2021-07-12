@@ -3,7 +3,7 @@ from http import cookies
 from urllib.parse import unquote, urlparse
 from frappe.utils import cstr
 from candlescan.candlescan_service import get_last_broadcast
-from frappe.utils import getdate
+from frappe.utils import getdate,today
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
 
 @frappe.whitelist()
@@ -102,8 +102,15 @@ def get_subscription(user):
     logged_in()
     if not user:
         return handle(False,"Missing data")
-    subs = frappe.db.get_all("Subscription",filters={'customer': user},fields=['*'])
-    return handle(True,"Success",subs)
+    subs = frappe.db.get_all("Subscription",filters={'customer': user},fields=['name'])
+    results =[]
+    for sub in subs:
+        doc = frappe.get_doc("Subscription",sub.name)
+        doc['invoiced'] = doc.is_new_subscription()
+        doc['not_payed'] = doc.has_outstanding_invoice()
+        doc['date_diff'] = date_diff(today(), doc.current_invoice_end) if doc.current_invoice_end else 0
+        results.append(doc)
+    return handle(True,"Success",results)
                              
 @frappe.whitelist()        
 def get_plans():
