@@ -417,7 +417,7 @@ def update_customer(name,customer_name,email):
         return handle(False,"Missing data")
     frappe.db.set_value("Customer",name,"customer_name",customer_name)
     frappe.db.set_value("Customer",name,"email",email)
-    frappe.db.commit()
+    #frappe.db.commit()
     return handle(True,"Success",get_user(name,'name'))
 
 
@@ -429,7 +429,7 @@ def confirm_email(customer,code):
     ocode = frappe.db.get_value("Customer",{"name":customer},"confirm")
     if code == ocode:
         frappe.db.set_value("Customer","email_is_confirmed",1)
-        frappe.db.commit()
+        #frappe.db.commit()
         return handle(True,"Email is confirmed",True)
     return handle(True,"Wrong confirmation code, please try again",False)
 
@@ -465,7 +465,7 @@ def signup_customer(customer_name,email,password):
         'password':password
         })
     c = customer.insert(ignore_permissions=1)
-    frappe.db.commit()
+    #frappe.db.commit()
     customer = get_user(c.name,'name')
     return handle(True,"Success",customer)
 
