@@ -41,7 +41,7 @@ def get_subscription_status(user):
         "active":False})
     payed = []
     for c in current:
-        doc = frappe.get_doc("Subscription",c.name)
+        doc = frappe.get_doc("Subscription",c)
         if not doc.has_outstanding_invoice() and not doc.is_new_subscription():
             payed.append(doc)
     #payed = [a for a in subs if (a and (frappe.get_doc("Subscription",a.name).has_outstanding_invoice() == False) and (len(a.invoices or []) > 0))]
