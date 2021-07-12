@@ -90,8 +90,8 @@ def new_subscription(user,date,plan,qty):
         })
         sub.days_until_due = 0
         sub.append('plans',	{'qty':1,'plan':plan})
-        sub.save(ignore_permissions=True)
-        #sub.process()
+        sub.save()
+        sub.process()
         subs.append(sub)
     return handle(True,"Success",subs)
 
