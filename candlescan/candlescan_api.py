@@ -430,8 +430,8 @@ def confirm_email(customer,code):
     if code == ocode:
         frappe.db.set_value("Customer","email_is_confirmed",1)
         frappe.db.commit()
-        return handle(True,"Email is confirmed")
-    return handle(False,"Wrong confirmation code, please try again")
+        return handle(True,"Email is confirmed",True)
+    return handle(True,"Wrong confirmation code, please try again",False)
 
 
 @frappe.whitelist(allow_guest=True)
