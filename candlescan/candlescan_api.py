@@ -107,7 +107,7 @@ def get_subscription(user):
     for sub in subs:
         doc = frappe.get_doc("Subscription",sub.name)
         doc['invoiced'] = doc.is_new_subscription()
-        doc['not_payed'] = doc.has_outstanding_invoice()
+        doc['not_paied'] = doc.has_outstanding_invoice()
         doc['date_diff'] = date_diff(today(), doc.current_invoice_end) if doc.current_invoice_end else 0
         results.append(doc)
     return handle(True,"Success",results)
