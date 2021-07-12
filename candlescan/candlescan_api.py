@@ -106,10 +106,15 @@ def get_subscription(user):
     results =[]
     for sub in subs:
         doc = frappe.get_doc("Subscription",sub.name)
-        doc['invoiced'] = doc.is_new_subscription()
-        doc['not_paied'] = doc.has_outstanding_invoice()
-        doc['date_diff'] = date_diff(today(), doc.current_invoice_end) if doc.current_invoice_end else 0
-        results.append(doc)
+        invoiced = doc.is_new_subscription()
+        not_paied = doc.has_outstanding_invoice()
+        date_diff = date_diff(today(), doc.current_invoice_end) if doc.current_invoice_end else 0
+        data = doc.as_dict()
+        data['invoiced'] = invoiced
+        data['not_paied'] = not_paied
+        data['date_diff'] = date_diff
+        
+        results.append(data)
     return handle(True,"Success",results)
                              
 @frappe.whitelist()        
