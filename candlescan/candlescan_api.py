@@ -46,7 +46,7 @@ def get_subscription_print(user,name):
     req = frappe.get_doc("Subscription",name)
     req.send_pdf = True
     req.save()
-    frappe.db.set_value("Subscription",sub.name,"send_pdf",False)
+    frappe.db.set_value("Subscription",name,"send_pdf",False)
     #frappe.db.commit()
     return handle(True,"Success")
     
