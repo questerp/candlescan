@@ -39,7 +39,7 @@ def new_subscription(user,date,plan,qty):
     
     sub.append('plans',	{'qty':qty,'plan':plan})
     sub.save()
-    return sub
+    return handle(True,"Success",sub)
     
     
 @frappe.whitelist()        
