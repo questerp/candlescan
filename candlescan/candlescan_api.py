@@ -30,8 +30,8 @@ def get_subscription_status(user):
         return handle(False,"Missing data")
     
     # result = {"status":"active/unpaid"}
-    subs = get_subscription(user)
-    current = [sub for sub in subs if (getdate(nowdate()) >= getdate(sub.start) and getdate(nowdate()) <= getdate(sub.current_invoice_end ))]
+    subs = frappe.db.get_all("Subscription",filters={'customer': user},fields=['*'])
+    current = [sub.name for sub in subs if (getdate(nowdate()) >= getdate(sub.start) and getdate(nowdate()) <= getdate(sub.current_invoice_end ))]
     payed = [a for a in subs if a.is_not_outstanding()]
     payed_names = []
     active = len(payed)>0
