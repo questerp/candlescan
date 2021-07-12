@@ -5,6 +5,7 @@ from frappe.utils import cstr
 from candlescan.candlescan_service import get_last_broadcast
 from frappe.utils import getdate,today
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
+import requests
 
 @frappe.whitelist()
 def get_session():
@@ -36,7 +37,16 @@ def logged_in():
         frappe.throw('Forbiden, Please login to continue.')
     if frappe.session['user'] == 'noreply@candlescan.com':
         set_session()
-
+        
+@frappe.whitelist()        
+def get_subscription_print(user,name):
+    logged_in()
+    if not (user or name):
+        return handle(False,"Missing data")
+    req = requests.get("http://localhost/printview?doctype=Subscription&name=%s" % name)
+    html = req.content
+    return handle(True,"",html)
+    
 @frappe.whitelist()        
 def get_subscription_status(user):
     logged_in()
