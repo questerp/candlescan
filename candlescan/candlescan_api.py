@@ -3,6 +3,7 @@ from http import cookies
 from urllib.parse import unquote, urlparse
 from frappe.utils import cstr
 from candlescan.candlescan_service import get_last_broadcast
+from frappe.utils import getdate
 
 def logged_in():
     cookie = cookies.BaseCookie()
@@ -23,6 +24,25 @@ def logged_in():
 
 
 @frappe.whitelist()        
+def new_subscription(user,date,plan,qty):        
+    logged_in()
+    if not (user or date or plan or qty):
+        return handle(False,"Missing data")
+    
+    sub = frappe.get_doc({
+        'doctype':'Subscription',
+        'customer': user,
+        'start':getdate(date)
+        'cancel_at_period_end':True,
+        'generate_invoice_at_period_start':True,
+    })
+    
+    sub.append('plans',	{'qty':qty,'plan':plan})
+    sub.save()
+    return sub
+    
+    
+@frappe.whitelist()        
 def get_plans():
     logged_in()
     settings = frappe.get_doc("Candlescan Settings")
@@ -34,7 +54,7 @@ def get_plans():
 def last_broadcast(user,scanner):
     logged_in()
     if not (user or scanner):
-        return handle(Flase,"User is required")
+        return handle(False,"User is required")
     #doctype =  frappe.db.get_value("Candlescan scanner", {"scanner_id":scanner_id},"scanner")
     return get_last_broadcast(scanner)
        
@@ -42,7 +62,7 @@ def last_broadcast(user,scanner):
 def check_symbol(user,symbol):
     #logged_in()
     if not (user or symbol):
-        return handle(Flase,"User is required")
+        return handle(False,"User is required")
     exists =  frappe.db.exists("Symbol", symbol)
     return handle(True,"Success",{"exists":exists})
         
@@ -50,7 +70,7 @@ def check_symbol(user,symbol):
 def delete_custom_scanner(user,name):
     logged_in()
     if not (user or name):
-        return handle(Flase,"User is required")
+        return handle(False,"User is required")
     frappe.delete_doc('Custom Scanner', name)
     return handle(True,"Success")
     
@@ -59,7 +79,7 @@ def delete_custom_scanner(user,name):
 def get_historical(user,doctype,date,feed_type):
     logged_in()
     if not (user or doctype or date):
-        return handle(Flase,"Data missing")
+        return handle(False,"Data missing")
     lmt = 1 if feed_type == "list" else 20
         
     values = frappe.db.sql(""" select data from `tabVersion` where ref_doctype='%s' and creation<='%s' order by creation DESC limit %s""" % (doctype,date,lmt),as_dict=True)
