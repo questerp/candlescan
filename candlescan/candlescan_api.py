@@ -44,7 +44,7 @@ def get_subscription_print(user,name):
     if not (user or name):
         return handle(False,"Missing data")
     req = requests.get("http://localhost/printview?doctype=Subscription&name=%s" % name)
-    html = req.content
+    html = req.text
     return handle(True,"",html)
     
 @frappe.whitelist()        
