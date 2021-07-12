@@ -32,7 +32,7 @@ def new_subscription(user,date,plan,qty):
     sub = frappe.get_doc({
         'doctype':'Subscription',
         'customer': user,
-        'start':getdate(date)
+        'start':getdate(date),
         'cancel_at_period_end':True,
         'generate_invoice_at_period_start':True,
     })
