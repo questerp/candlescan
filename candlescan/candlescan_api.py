@@ -86,7 +86,19 @@ def get_subscription_status(user):
         "start":start ,
         "end":end,
         "active":active})
-    
+
+
+
+@frappe.whitelist()        
+def delete_subscription(user,name):   
+    logged_in()
+    if not (user or name):
+        return handle(False,"Missing data")
+    doc = frappe.get_doc("Subscription",name)
+    if not doc.has_outstanding_invoice() and not doc.is_new_subscription():
+        return handle(True,"Can't delete active subscriptions")
+    frappe.delete_doc('Subscription', name)
+    return handle(True,"Success")
 
 @frappe.whitelist()        
 def new_subscription(user,date,plan,qty):        
