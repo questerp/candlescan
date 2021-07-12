@@ -11,7 +11,7 @@ def get_session():
     return handle(True,"Session",frappe.session)
 
 def set_session():
-    dsession = frappe.db.sql("""select * from tabSessions where user='Administrator'""",as_dict)
+    dsession = frappe.db.sql("""select * from tabSessions where user='Administrator'""",as_dict=True)
     if dsession:
         session=dsession[0]
         frappe.session = session
