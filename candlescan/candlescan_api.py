@@ -31,7 +31,7 @@ def get_subscription_status(user):
     
     # result = {"status":"active/unpaid"}
     subs = get_subscription(user)
-    current = [a.name for a in subs if getdate(nowdate()) >= a.start and getdate(nowdate()) <= a.end]
+    current = [a.name for a in subs if getdate(nowdate()) >= getdate(a.start) and getdate(nowdate()) <= getdate(a.end)]
     payed = [a for a in subs if a.is_not_outstanding()]
     payed_names = []
     active = len(payed)>0
