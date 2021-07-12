@@ -39,7 +39,7 @@ def get_subscription_status(user):
         "start":'' ,
         "end":'',
         "active":False})
-    payed = [a for a in subs if (a and a.has_outstanding_invoice() == False and a.is_new_subscription() == False)]
+    payed = [a for a in subs if (a and frappe.get_doc("Subscription",a.name).has_outstanding_invoice() == False and len(a.invoices) > 0)]
     payed_names = []
     active = len(payed)>0
     start = None
