@@ -10,11 +10,11 @@ from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_l
 def get_session():
     return handle(True,"Session",frappe.session)
 
-def set_session():
-    dsession = frappe.db.sql("""select * from tabSessions where user='Administrator'""",as_dict=True)
-    if dsession:
-        session=dsession[0]
-        frappe.session = session
+#def set_session():
+#    dsession = frappe.db.sql("""select * from tabSessions where user='Administrator'""",as_dict=True)
+#    if dsession:
+#        session=dsession[0]
+#        frappe.session = session
 
 
 def logged_in():
@@ -33,8 +33,8 @@ def logged_in():
     original = frappe.utils.password.get_decrypted_password('Customer',user_name,fieldname='user_key')
     if user_key != original:
         frappe.throw('Forbiden, Please login to continue.')
-    if frappe.session['user'] != 'Administrator':
-        set_session()
+#    if frappe.session['user'] != 'Administrator':
+#        set_session()
 
 @frappe.whitelist()        
 def get_subscription_status(user):
