@@ -43,9 +43,10 @@ def get_subscription_print(user,name):
     logged_in()
     if not (user or name):
         return handle(False,"Missing data")
-    req = requests.get("http://localhost/printview?doctype=Subscription&name=%s" % name)
-    html = req.text
-    return handle(True,"",html)
+    req = frappe.get_doc("Subscription",name)
+    req.send_pdf = True
+    req.save()
+    return handle(True,"Success")
     
 @frappe.whitelist()        
 def get_subscription_status(user):
