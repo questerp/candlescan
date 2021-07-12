@@ -6,6 +6,10 @@ from candlescan.candlescan_service import get_last_broadcast
 from frappe.utils import getdate
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
 
+
+def get_session():
+    return handle(True,"Session",frappe.session)
+
 def logged_in():
     cookie = cookies.BaseCookie()
     cookie_headers = frappe.request.headers.get('Cookie') 
