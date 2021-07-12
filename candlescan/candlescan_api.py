@@ -31,14 +31,14 @@ def get_subscription_status(user):
     
     # result = {"status":"active/unpaid"}
     subs = frappe.db.get_all("Subscription",filters={'customer': user},fields=['*'])
-    if not subs:
+    current = [sub.name for sub in subs if (getdate(nowdate()) >= getdate(sub.start) and getdate(nowdate()) <= getdate(sub.current_invoice_end ))]
+    if not current:
         return handle(True,"Success",{
         "current":[] ,
         "payed":[] ,
         "start":'' ,
         "end":'',
         "active":False})
-    current = [sub.name for sub in subs if (getdate(nowdate()) >= getdate(sub.start) and getdate(nowdate()) <= getdate(sub.current_invoice_end ))]
     payed = [a for a in subs if (a and a.has_outstanding_invoice() == False and a.is_new_subscription() == False)]
     payed_names = []
     active = len(payed)>0
