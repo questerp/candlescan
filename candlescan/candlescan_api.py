@@ -4,6 +4,7 @@ from urllib.parse import unquote, urlparse
 from frappe.utils import cstr
 from candlescan.candlescan_service import get_last_broadcast
 from frappe.utils import getdate
+from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
 
 def logged_in():
     cookie = cookies.BaseCookie()
@@ -22,24 +23,47 @@ def logged_in():
     if user_key != original:
         frappe.throw('Forbiden, Please login to continue.')
 
+@frappe.whitelist()        
+def get_subscription_status(user):
+    #logged_in()
+    if not user:
+        return handle(False,"Missing data")
+    
+    # result = {"status":"active/unpaid"}
+    subs = get_subscription(user)
+    current = [a.name for a in subs if getdate(nowdate()) >= a.start and getdate(nowdate()) <= a.end]
+    payed = [a for a in subs if a.is_not_outstanding()]
+    payed_names = []
+    active = len(payed)>0
+    start = None
+    end = None
+    if payed:
+        start = payed[0].start
+        end = payed[0].end
+        payed_names = [a.name for a in payed]
+    return handle(True,"Success",{"current":current ,"payed":payed_names , "start"start: ,"end":end "active":active}
+    
 
 @frappe.whitelist()        
 def new_subscription(user,date,plan,qty):        
     logged_in()
     if not (user or date or plan or qty):
         return handle(False,"Missing data")
-    
-    sub = frappe.get_doc({
-        'doctype':'Subscription',
-        'customer': user,
-        'start':getdate(date),
-        'cancel_at_period_end':True,
-        'generate_invoice_at_period_start':True,
-    })
-    
-    sub.append('plans',	{'qty':qty,'plan':plan})
-    sub.save()
-    return handle(True,"Success",sub)
+    subs = []
+    for p in range(qty):
+        sub = frappe.get_doc({
+            'doctype':'Subscription',
+            'customer': user,
+            'start':getdate(date),
+            'cancel_at_period_end':True,
+            'generate_invoice_at_period_start':True,
+        })
+        sub.days_until_due = 0
+        sub.append('plans',	{'qty':1,'plan':plan})
+        sub.save()
+        sub.process()
+        subs.append(sub)
+    return handle(True,"Success",subs)
 
 
 @frappe.whitelist()        
