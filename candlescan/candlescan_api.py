@@ -428,7 +428,7 @@ def confirm_email(customer,code):
         return handle(False,"Check data")
     ocode = frappe.db.get_value("Customer",{"name":customer},"confirm")
     if code == ocode:
-        frappe.db.set_value("Customer","email_is_confirmed",1)
+        frappe.db.set_value("Customer",customer,"email_is_confirmed",1)
         #frappe.db.commit()
         return handle(True,"Email is confirmed",True)
     return handle(True,"Wrong confirmation code, please try again",False)
