@@ -31,7 +31,7 @@ def get_subscription_status(user):
     
     # result = {"status":"active/unpaid"}
     subs = get_subscription(user)
-    current = [a for a in subs if getdate(nowdate()) >= getdate(a['start']) and getdate(nowdate()) <= getdate(a['current_invoice_end'])]
+    current = [sub for sub in subs if (getdate(nowdate()) >= getdate(sub.start) and getdate(nowdate()) <= getdate(sub.current_invoice_end ))]
     payed = [a for a in subs if a.is_not_outstanding()]
     payed_names = []
     active = len(payed)>0
@@ -42,7 +42,7 @@ def get_subscription_status(user):
         end = payed[0].end
         payed_names = [a.name for a in payed]
     return handle(True,"Success",{
-        "current":[z.name for z in current] ,
+        "current":current ,
         "payed":payed_names ,
         "start":start ,
         "end":end,
