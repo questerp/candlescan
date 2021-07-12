@@ -108,11 +108,11 @@ def get_subscription(user):
         doc = frappe.get_doc("Subscription",sub.name)
         invoiced = doc.is_new_subscription()
         not_paied = doc.has_outstanding_invoice()
-        date_diff = date_diff(today(), doc.current_invoice_end) if doc.current_invoice_end else 0
+        days_left = date_diff(today(), doc.current_invoice_end) if doc.current_invoice_end else 0
         data = doc.as_dict()
         data['invoiced'] = invoiced
         data['not_paied'] = not_paied
-        data['date_diff'] = date_diff
+        data['days_left'] = days_left
         
         results.append(data)
     return handle(True,"Success",results)
