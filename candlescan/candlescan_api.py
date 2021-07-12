@@ -25,7 +25,7 @@ def logged_in():
 
 @frappe.whitelist()        
 def get_subscription_status(user):
-    #logged_in()
+    logged_in()
     if not user:
         return handle(False,"Missing data")
     
