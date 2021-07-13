@@ -17,7 +17,7 @@ import frappe
 _lastget = 0
 
 def get_calendars():
-    tarets = ["earnings","splits","ipo","economic"]
+    targets = ["earnings","splits","ipo","economic"]
     for target in targets:
         url = 'https://finance.yahoo.com/calendar/'+target
         urlopener = UrlOpener()
