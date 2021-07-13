@@ -16,7 +16,7 @@ import frappe
 # track the last get timestamp to add a minimum delay between gets - be nice!
 _lastget = 0
 
-def get_calendars():
+def fetch_calendars():
     targets = ["earnings","splits","ipo","economic"]
     for target in targets:
         url = 'https://finance.yahoo.com/calendar/'+target
