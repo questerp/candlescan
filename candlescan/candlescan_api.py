@@ -46,11 +46,11 @@ def logged_in():
             frappe.throw('Forbiden, Please login to continue.')
         user_token = frappe.generate_hash("", 10)
         d = frappe.get_doc({
-			"doctype":"Web Session",
-			"user": user_name,
-            "token":user_token,
-            "user_key":user_key
-		})
+                        "doctype":"Web Session",
+                        "user": user_name,
+                        "token":user_token,
+                        "user_key":user_key
+                        })
         d.insert()
         frappe.db.commit()
         frappe.local.cookie_manager.set_cookie("user_token", user_token)
@@ -59,7 +59,7 @@ def logged_in():
 @frappe.whitelist()     
 def logout(user):
     logged_in()
-    frappe.db.sql(""" delete * from `tabWeb Session` where user=%s""" % user,as_dict=True)        
+    frappe.db.sql(""" delete from `tabWeb Session` where user=%s""" % user,as_dict=True)        
     frappe.local.cookie_manager.delete_cookie(["user_token", "user_name", "user_key"])
     return handle(True,"Success",user)
         
