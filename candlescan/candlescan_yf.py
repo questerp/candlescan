@@ -50,12 +50,12 @@ def fetch_calendars():
             if rows:
                 #print(rows)
                 for row in rows:
-                    print(row)
-                    if hasattr(row,'ticker'):
+                    #print(row)
+                    if 'ticker' in row:
                         ticker = row['ticker']
                         if ticker and not frappe.db.exists("Symbol",ticker):
-                            companyshortname = row['companyshortname'] if hasattr(row,'companyshortname') else ''
-                            exchange_short_name= row['exchange_short_name'] if hasattr(row,'exchange_short_name') else ''
+                            companyshortname = row['companyshortname'] if 'companyshortname' in row else ''
+                            exchange_short_name= row['exchange_short_name'] if 'exchange_short_name' in row else ''
                             print(ticker)
                             new_symbol = frappe.get_doc({
                                 'doctype':'Symbol',
