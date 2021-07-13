@@ -496,9 +496,10 @@ def login_customer(usr,pwd):
 
 def get_user(name,target='email'):
     user = frappe.db.get_value('Customer',{target:name},['name','customer_type','email_is_confirmed','referral','user_key','email','customer_name','image'],as_dict=True)
-    user_key = frappe.utils.password.get_decrypted_password('Customer',user.name,fieldname="user_key")
-    user['user_key'] = user_key
-    return user
+    if user:
+        user_key = frappe.utils.password.get_decrypted_password('Customer',user.name,fieldname="user_key")
+        user['user_key'] = user_key
+        return user
 
 @frappe.whitelist(allow_guest=True)
 def signup_customer(customer_name,email,password):
@@ -513,8 +514,10 @@ def signup_customer(customer_name,email,password):
     c = customer.insert(ignore_permissions=1)
     #frappe.db.commit()
     customer = get_user(c.name,'name')
-    user_token = set_token(customer.name,customer.user_key)
-    return handle(True,"Success",[True,customer,user_token])
+    if customer:
+        user_token = set_token(customer.name,customer.user_key)
+        return handle(True,"Success",[True,customer,user_token])
+    return handle(True,"Can't find any account linked to this email",[False])
 
 
 def handle(result=False,msg='Call executed',data=None):
