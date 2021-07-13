@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 import frappe, json
 from frappe.model.document import Document
-from candlescan.candlescan_yf import get_calendars,YahooFinancials as YF
+from candlescan.candlescan_yf import fetch_calendars,YahooFinancials as YF
 from frappe.utils import cstr
 from candlescan.get_tickers import get_tickers as gt
 import requests
