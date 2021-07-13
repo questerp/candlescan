@@ -36,6 +36,7 @@ def set_token(user,user_key):
     d.insert()
     frappe.db.commit()
     frappe.local.cookie_manager.set_cookie("user_token", user_token)
+    return user_token
 
 def logged_in():
     cookie = cookies.BaseCookie()
@@ -487,8 +488,8 @@ def login_customer(usr,pwd):
         #return {'result':False,'msg':'Wrong password and/or email'}
     password = frappe.utils.password.get_decrypted_password('Customer',user.name,fieldname='password')
     if password == pwd:
-        set_token(user.name,user.user_key)
-        return handle(True,"Logged in",user)
+        user_token = set_token(user.name,user.user_key)
+        return handle(True,"Logged in",[user,user_token])
     return handle(False,"Incorrect email or password")
 
 def get_user(name,target='email'):
@@ -510,7 +511,8 @@ def signup_customer(customer_name,email,password):
     c = customer.insert(ignore_permissions=1)
     #frappe.db.commit()
     customer = get_user(c.name,'name')
-    return handle(True,"Success",customer)
+    user_token = set_token(customer.name,customer.user_key)
+    return handle(True,"Success",[customer,user_token])
 
 
 def handle(result=False,msg='Call executed',data=None):
