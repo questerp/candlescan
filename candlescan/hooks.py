@@ -100,7 +100,8 @@ scheduler_events = {
 		"candlescan.candlescan.doctype.candlescan_fundamentals_manager.candlescan_fundamentals_manager.process"
  	],
 	"daily_long":[
-		"candlescan.candlescan.doctype.candlescan_fundamentals_manager.candlescan_fundamentals_manager.get_tickers"
+		"candlescan.candlescan.doctype.candlescan_fundamentals_manager.candlescan_fundamentals_manager.get_tickers",
+		"candlescan.candlescan.doctype.candlescan_fundamentals_manager.candlescan_fundamentals_manager.get_calendars"
 	],
  	"weekly": [
  	],
