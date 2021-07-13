@@ -24,15 +24,14 @@ def set_session():
     #    session=dsession[0]
     #    frappe.session = session
 
-def set_token(user,user_key,cookie):
+def set_token(user,user_key):
     clear_sessions(user)
     user_token = frappe.generate_hash("", 10)
     d = frappe.get_doc({
                     "doctype":"Web Session",
                     "user": user,
                     "token":user_token,
-                    "user_key":user_key,
-                    "cookie": json.dumps(cookie)
+                    "user_key":user_key
                     })
     d.insert()
     frappe.db.commit()
@@ -62,7 +61,7 @@ def logged_in():
         original = frappe.utils.password.get_decrypted_password('Customer',user_name,fieldname='user_key')
         if user_key != original:
             frappe.throw('Forbiden, Please login to continue.')
-        set_token(user_name,user_key,cookie)
+        set_token(user_name,user_key)
         set_session()
         
 @frappe.whitelist()     
