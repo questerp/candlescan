@@ -65,7 +65,7 @@ def logout(user):
     logged_in()
     sessions = frappe.db.sql(""" select name from  `tabWeb Session` where user='%s'""" % user,as_dict=True)
     for s in sessions:
-        frappe.delete_doc("bWeb Session",s.name,force=True)
+        frappe.delete_doc("Web Session",s.name,force=True)
     #frappe.db.sql(""" delete from `tabWeb Session` where user='%s'""" % user,as_dict=True)        
     frappe.local.cookie_manager.delete_cookie(["user_token", "user_name", "user_key"])
     return handle(True,"Success",user)
