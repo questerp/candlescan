@@ -27,7 +27,9 @@ def logged_in():
         cookie.load(cookie_headers)
     user_name = unquote(cookie["user_name"].value)
     user_key = unquote(cookie["user_key"].value)
-    user_token = unquote(cookie["user_token"].value)
+    user_token = None
+    if hasattr(cookie, 'user_token'):
+        user_token = unquote(cookie["user_token"].value)
 
     if not (user_name or user_key or user_token):
         headd = " %s %s --- " %(user_name,user_key)
