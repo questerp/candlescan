@@ -1,47 +1,3 @@
-"""
-==============================
-The Yahoo Financials Module
-Version: 1.6
-==============================
-
-Author: Connor Sanders
-Email: sandersconnor1@gmail.com
-Version Released: 10/18/2020
-Tested on Python 2.7, 3.3, 3.4, 3.5, 3.6, and 3.7
-
-Copyright (c) 2020 Connor Sanders
-MIT License
-
-List of Included Functions:
-
-1) get_financial_stmts(frequency, statement_type, reformat=True)
-   - frequency can be either 'annual' or 'quarterly'.
-   - statement_type can be 'income', 'balance', 'cash'.
-   - reformat optional value defaulted to true. Enter False for unprocessed raw data from Yahoo Finance.
-2) get_stock_price_data(reformat=True)
-   - reformat optional value defaulted to true. Enter False for unprocessed raw data from Yahoo Finance.
-3) get_stock_earnings_data(reformat=True)
-   - reformat optional value defaulted to true. Enter False for unprocessed raw data from Yahoo Finance.
-4) get_summary_data(reformat=True)
-   - reformat optional value defaulted to true. Enter False for unprocessed raw data from Yahoo Finance.
-5) get_stock_quote_type_data()
-6) get_historical_price_data(start_date, end_date, time_interval)
-   - Gets historical price data for currencies, stocks, indexes, cryptocurrencies, and commodity futures.
-   - start_date should be entered in the 'YYYY-MM-DD' format. First day that financial data will be pulled.
-   - end_date should be entered in the 'YYYY-MM-DD' format. Last day that financial data will be pulled.
-   - time_interval can be either 'daily', 'weekly', or 'monthly'. Parameter determines the time period interval.
-
-Usage Examples:
-from yahoofinancials import YahooFinancials
-#tickers = 'AAPL'
-#or
-tickers = ['AAPL', 'WFC', 'F', 'JPY=X', 'XRP-USD', 'GC=F']
-yahoo_financials = YahooFinancials(tickers)
-balance_sheet_data = yahoo_financials.get_financial_stmts('quarterly', 'balance')
-earnings_data = yahoo_financials.get_stock_earnings_data()
-historical_prices = yahoo_financials.get_historical_price_data('2015-01-15', '2017-10-15', 'weekly')
-"""
-
 import sys
 import calendar
 import re
@@ -55,11 +11,45 @@ try:
     from urllib import FancyURLopener
 except:
     from urllib.request import FancyURLopener
-
-
+from frappe.utils import getdate,today
+     
 # track the last get timestamp to add a minimum delay between gets - be nice!
 _lastget = 0
 
+def get_calendars():
+    url = 'https://finance.yahoo.com/calendar/earnings'
+    urlopener = UrlOpener()
+    # Try to open the URL up to 10 times sleeping random time if something goes wrong
+    max_retry = 10
+    data = None
+    for i in range(0, max_retry):
+       response = urlopener.open(url)
+       if response.getcode() != 200:
+           time.sleep(random.randrange(10, 20))
+       else:
+           response_content = response.read()
+           soup = BeautifulSoup(response_content, "html.parser")
+           re_script = soup.find("script", text=re.compile("root.App.main"))
+           if re_script is not None:
+               script = re_script.text
+               # bs4 4.9.0 changed so text from scripts is no longer considered text
+               if not script:
+                   script = re_script.string
+               data = loads(re.search("root.App.main\s+=\s+(\{.*\})", script).group(1))
+               response.close()
+               break
+           else:
+               time.sleep(random.randrange(10, 20))
+       if i == max_retry - 1:
+           break
+
+    if data:
+        rows = data["context"]["dispatcher"]["stores"]["ScreenerResultsStore"]["results"]["rows"]
+        if rows:
+            print(rows)
+            json_rows = json.dumps(rows)
+            frappe.db.set_value("Candlescan Fundamentals Manager",None,"calendar",json_rows)
+            frappe.db.commit()
 
 # Custom Exception class to handle custom error
 class ManagedException(Exception):
@@ -863,6 +853,11 @@ class YahooFinancials(YahooFinanceETL):
                 else:
                     ret_obj.update({tick: None})
             return ret_obj
+        
+     
+
+
+
 
     def get_num_shares_outstanding(self, price_type='current'):
         today_low = self._stock_summary_data('dayHigh')
@@ -903,3 +898,4 @@ class YahooFinancials(YahooFinanceETL):
                 else:
                     ret_obj.update({tick: None})
             return ret_obj
+        
