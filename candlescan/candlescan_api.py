@@ -58,6 +58,8 @@ def logged_in():
         if web_session and web_session[0].user_key == user_key:
             set_session()
             return
+        else:
+            frappe.throw('Forbiden, Please login to continue.')
     else:
         original = frappe.utils.password.get_decrypted_password('Customer',user_name,fieldname='user_key')
         if user_key != original:
