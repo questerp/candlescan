@@ -11,6 +11,11 @@ import requests
 def get_session():
     return handle(True,"Session",frappe.session)
 
+def clear_sessions(user):
+    sessions = frappe.db.sql(""" select name from  `tabWeb Session` where user='%s'""" % user,as_dict=True)
+    for s in sessions:
+        frappe.delete_doc("Web Session",s.name,force=True)
+
 def set_session():
     if frappe.session['user'] == 'noreply@candlescan.com':
         frappe.session.user = 'Administrator'
@@ -20,6 +25,7 @@ def set_session():
     #    frappe.session = session
 
 def set_token(user,user_key,cookie):
+    clear_sessions(user)
     user_token = frappe.generate_hash("", 10)
     d = frappe.get_doc({
                     "doctype":"Web Session",
@@ -63,9 +69,7 @@ def logged_in():
 @frappe.whitelist()     
 def logout(user):
     logged_in()
-    sessions = frappe.db.sql(""" select name from  `tabWeb Session` where user='%s'""" % user,as_dict=True)
-    for s in sessions:
-        frappe.delete_doc("Web Session",s.name,force=True)
+    clear_sessions(user)
     #frappe.db.sql(""" delete from `tabWeb Session` where user='%s'""" % user,as_dict=True)        
     frappe.local.cookie_manager.delete_cookie(["user_token", "user_name", "user_key"])
     return handle(True,"Success",user)
