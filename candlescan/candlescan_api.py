@@ -19,6 +19,18 @@ def set_session():
     #    session=dsession[0]
     #    frappe.session = session
 
+def set_token(user,user_key,cookie):
+    user_token = frappe.generate_hash("", 10)
+    d = frappe.get_doc({
+                    "doctype":"Web Session",
+                    "user": user,
+                    "token":user_token,
+                    "user_key":user_key,
+                    "cookie": json.dumps(cookie)
+                    })
+    d.insert()
+    frappe.db.commit()
+    frappe.local.cookie_manager.set_cookie("user_token", user_token)
 
 def logged_in():
     cookie = cookies.BaseCookie()
@@ -38,23 +50,14 @@ def logged_in():
     if user_token:
         web_session = frappe.db.sql(""" select token, user_key from `tabWeb Session` where token=%s limit 1""" % user_token,as_dict=True)
         if web_session and web_session[0].user_key == user_key:
+            set_token(user_name,user_key,cookie)
             set_session()
             return
     else:
         original = frappe.utils.password.get_decrypted_password('Customer',user_name,fieldname='user_key')
         if user_key != original:
             frappe.throw('Forbiden, Please login to continue.')
-        user_token = frappe.generate_hash("", 10)
-        d = frappe.get_doc({
-                        "doctype":"Web Session",
-                        "user": user_name,
-                        "token":user_token,
-                        "user_key":user_key,
-                        "cookie": json.dumps(cookie)
-                        })
-        d.insert()
-        frappe.db.commit()
-        frappe.local.cookie_manager.set_cookie("user_token", user_token)
+        
         set_session()
         
 @frappe.whitelist()     
@@ -479,6 +482,7 @@ def login_customer(usr,pwd):
         #return {'result':False,'msg':'Wrong password and/or email'}
     password = frappe.utils.password.get_decrypted_password('Customer',user.name,fieldname='password')
     if password == pwd:
+        set_token(user_name,user.user_key,'{}')
         return handle(True,"Logged in",user)
     return handle(False,"Incorrect email or password")
 
