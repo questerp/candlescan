@@ -482,17 +482,17 @@ def confirm_email(customer,code):
 @frappe.whitelist(allow_guest=True)
 def login_customer(usr,pwd):
     if not (usr or pwd):
-        return {'result':False,'msg':'Missing email and/or password'}
+        return handle(True,"Missing password and/or email",[False])
     user = get_user(usr)
     #user = frappe.db.get_value('Customer',{'email':usr},['name','customer_type','email_is_confirmed','referral','user_key','email','customer_name','image'],as_dict=True)
     if not user:
-        return handle(False,"Wrong password and/or email")
+        return handle(True,"Wrong password and/or email",[False])
         #return {'result':False,'msg':'Wrong password and/or email'}
     password = frappe.utils.password.get_decrypted_password('Customer',user.name,fieldname='password')
     if password == pwd:
         user_token = set_token(user.name,user.user_key)
-        return handle(True,"Logged in",[user,user_token])
-    return handle(False,"Incorrect email or password")
+        return handle(True,"Logged in",[True,user,user_token])
+    return handle(True,"Incorrect email or password",False)
 
 def get_user(name,target='email'):
     user = frappe.db.get_value('Customer',{target:name},['name','customer_type','email_is_confirmed','referral','user_key','email','customer_name','image'],as_dict=True)
@@ -503,7 +503,7 @@ def get_user(name,target='email'):
 @frappe.whitelist(allow_guest=True)
 def signup_customer(customer_name,email,password):
     if not (customer_name or email or password):
-        return handle(False,"Check data")
+        return handle(True,"Some fields are required",[False])
     customer = frappe.get_doc({
         'doctype':"Customer",
         'customer_name':customer_name,
@@ -514,7 +514,7 @@ def signup_customer(customer_name,email,password):
     #frappe.db.commit()
     customer = get_user(c.name,'name')
     user_token = set_token(customer.name,customer.user_key)
-    return handle(True,"Success",[customer,user_token])
+    return handle(True,"Success",[True,customer,user_token])
 
 
 def handle(result=False,msg='Call executed',data=None):
