@@ -56,14 +56,13 @@ def logged_in():
     if user_token:
         web_session = frappe.db.sql(""" select token, user_key from `tabWeb Session` where token=%s limit 1""" % user_token,as_dict=True)
         if web_session and web_session[0].user_key == user_key:
-            set_token(user_name,user_key,cookie)
             set_session()
             return
     else:
         original = frappe.utils.password.get_decrypted_password('Customer',user_name,fieldname='user_key')
         if user_key != original:
             frappe.throw('Forbiden, Please login to continue.')
-        
+        set_token(user_name,user_key,cookie)
         set_session()
         
 @frappe.whitelist()     
