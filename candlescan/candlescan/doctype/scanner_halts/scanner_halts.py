@@ -27,6 +27,7 @@ def get_config():
 def signature():
 	return [
 	{"field":"symbol","header":"Symbol","align":"left","value_type":"string"},
+	{"field":"status","header":"Status","align":"left","value_type":"string"},
 	{"field":"hdate","header":"Date","align":"left","value_type":"string"},
 	{"field":"htime","header":"Time","align":"left","value_type":"string"},
 	{"field":"hcode","header":"Code","align":"left","value_type":"string"},
@@ -50,6 +51,7 @@ def start(scanner_id):
 		for entry in entries:
 			halt = {}
 			halt['symbol'] = entry.ndaq_issuesymbol
+			halt['status'] = "Halted" if not entry.ndaq_resumptiontradetime else "Resumed"
 			halt['hdate'] = entry.ndaq_haltdate
 			halt['htime'] = entry.ndaq_halttime
 			halt['resumption_date'] = entry.ndaq_resumptiondate
