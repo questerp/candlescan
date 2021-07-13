@@ -17,39 +17,42 @@ import frappe
 _lastget = 0
 
 def get_calendars():
-    url = 'https://finance.yahoo.com/calendar/earnings'
-    urlopener = UrlOpener()
-    # Try to open the URL up to 10 times sleeping random time if something goes wrong
-    max_retry = 10
-    data = None
-    for i in range(0, max_retry):
-       response = urlopener.open(url)
-       if response.getcode() != 200:
-           time.sleep(random.randrange(10, 20))
-       else:
-           response_content = response.read()
-           soup = BeautifulSoup(response_content, "html.parser")
-           re_script = soup.find("script", text=re.compile("root.App.main"))
-           if re_script is not None:
-               script = re_script.text
-               # bs4 4.9.0 changed so text from scripts is no longer considered text
-               if not script:
-                   script = re_script.string
-               data = loads(re.search("root.App.main\s+=\s+(\{.*\})", script).group(1))
-               response.close()
-               break
-           else:
+    tarets = ["earnings","splits","ipo","economic"]
+    for target in targets:
+        url = 'https://finance.yahoo.com/calendar/'+target
+        urlopener = UrlOpener()
+        # Try to open the URL up to 10 times sleeping random time if something goes wrong
+        max_retry = 10
+        data = None
+        for i in range(0, max_retry):
+           response = urlopener.open(url)
+           if response.getcode() != 200:
                time.sleep(random.randrange(10, 20))
-       if i == max_retry - 1:
-           break
+           else:
+               response_content = response.read()
+               soup = BeautifulSoup(response_content, "html.parser")
+               re_script = soup.find("script", text=re.compile("root.App.main"))
+               if re_script is not None:
+                   script = re_script.text
+                   # bs4 4.9.0 changed so text from scripts is no longer considered text
+                   if not script:
+                       script = re_script.string
+                   data = loads(re.search("root.App.main\s+=\s+(\{.*\})", script).group(1))
+                   response.close()
+                   break
+               else:
+                   time.sleep(random.randrange(10, 20))
+           if i == max_retry - 1:
+               break
 
-    if data:
-        rows = data["context"]["dispatcher"]["stores"]["ScreenerResultsStore"]["results"]["rows"]
-        if rows:
-            print(rows)
-            json_rows = dumps(rows)
-            frappe.db.set_value("Candlescan Fundamentals Manager",None,"calendar",json_rows)
-            frappe.db.commit()
+        if data:
+            rows = data["context"]["dispatcher"]["stores"]["ScreenerResultsStore"]["results"]["rows"]
+            if rows:
+                print(rows)
+                json_rows = dumps(rows)
+                frappe.db.set_value("Candlescan Fundamentals Manager",None,target,json_rows)
+                time.sleep(3)
+    frappe.db.commit()
 
 # Custom Exception class to handle custom error
 class ManagedException(Exception):
