@@ -40,9 +40,11 @@ def logged_in():
 
         
 @frappe.whitelist()        
-def get_calendar():
+def get_calendar(target):
     logged_in()
-    calendar = frappe.db.get_value("Candlescan Fundamentals Manager",None,"calendar")
+    if not target:
+        return handle(False,"Missing data")
+    calendar = frappe.db.get_value("Candlescan Fundamentals Manager",None,target)
     return handle(True,"Success",calendar)
         
 @frappe.whitelist()        
