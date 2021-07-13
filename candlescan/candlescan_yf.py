@@ -11,7 +11,7 @@ try:
     from urllib import FancyURLopener
 except:
     from urllib.request import FancyURLopener
-from frappe.utils import getdate,today
+from frappe
      
 # track the last get timestamp to add a minimum delay between gets - be nice!
 _lastget = 0
