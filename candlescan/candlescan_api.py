@@ -37,6 +37,13 @@ def logged_in():
         frappe.throw('Forbiden, Please login to continue.')
     if frappe.session['user'] == 'noreply@candlescan.com':
         set_session()
+
+        
+@frappe.whitelist()        
+def get_calendar():
+    logged_in()
+    calendar = frappe.db.get_value("Candlescan Fundamentals Manager",None,"calendar")
+    return handle(True,"Success",calendar)
         
 @frappe.whitelist()        
 def get_subscription_print(user,name):
