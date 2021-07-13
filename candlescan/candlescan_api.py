@@ -66,7 +66,15 @@ def logged_in():
             frappe.throw('Forbiden, Please login to continue.')
         set_token(user_name,user_key)
         set_session()
-        
+
+@frappe.whitelist()     
+def set_default_layout(user,layout):
+    logged_in()
+    if not (user or layout):
+        return handle(False,"Missing data")   
+    frappe.db.set_value("Customer",user,"default_layout",layout)
+    return handle(True,"Success")
+    
 @frappe.whitelist()     
 def logout(user):
     logged_in()
