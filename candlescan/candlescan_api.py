@@ -503,7 +503,7 @@ def login_customer(usr,pwd):
     return handle(True,"Incorrect email or password",False)
 
 def get_user(name,target='email'):
-    user = frappe.db.get_value('Customer',{target:name},['name','customer_type','email_is_confirmed','referral','user_key','email','customer_name','image'],as_dict=True)
+    user = frappe.db.get_value('Customer',{target:name},['name','default_layout','customer_type','email_is_confirmed','referral','user_key','email','customer_name','image'],as_dict=True)
     if user:
         user_key = frappe.utils.password.get_decrypted_password('Customer',user.name,fieldname="user_key")
         user['user_key'] = user_key
