@@ -48,7 +48,9 @@ def fetch_calendars():
         if data:
             rows = data["context"]["dispatcher"]["stores"]["ScreenerResultsStore"]["results"]["rows"]
             if rows:
+                #print(rows)
                 for row in rows:
+                    print(row)
                     if hasattr(row,'ticker'):
                         ticker = row['ticker']
                         if ticker and not frappe.db.exists("Symbol",ticker):
