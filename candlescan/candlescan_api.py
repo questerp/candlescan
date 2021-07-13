@@ -36,7 +36,7 @@ def logged_in():
         #return handle(False,"Please login",{'header':frappe.request.headers})
         frappe.throw("NO DATA %s " % (headd))
     if user_token:
-        web_session = frappe.db.sql(""" select token, user_key from `tabWeb Session` where token=%s""" % user_token,as_dict=True)
+        web_session = frappe.db.sql(""" select token, user_key from `tabWeb Session` where token=%s limit 1""" % user_token,as_dict=True)
         if web_session and web_session[0].user_key == user_key:
             set_session()
             return
@@ -49,7 +49,8 @@ def logged_in():
                         "doctype":"Web Session",
                         "user": user_name,
                         "token":user_token,
-                        "user_key":user_key
+                        "user_key":user_key,
+                        "cookie": json.dumps(cookie)
                         })
         d.insert()
         frappe.db.commit()
