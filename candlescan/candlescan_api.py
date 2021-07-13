@@ -12,7 +12,8 @@ def get_session():
     return handle(True,"Session",frappe.session)
 
 def set_session():
-    frappe.session.user = 'Administrator'
+    if frappe.session['user'] == 'noreply@candlescan.com':
+        frappe.session.user = 'Administrator'
     #dsession = frappe.db.sql("""select * from tabSessions where user='Administrator'""",as_dict=True)
     #if dsession:
     #    session=dsession[0]
@@ -26,18 +27,38 @@ def logged_in():
         cookie.load(cookie_headers)
     user_name = unquote(cookie["user_name"].value)
     user_key = unquote(cookie["user_key"].value)
+    user_token = unquote(cookie["user_token"].value)
 
-    if not (user_name or user_key):
+    if not (user_name or user_key or user_token):
         headd = " %s %s --- " %(user_name,user_key)
         #return handle(False,"Please login",{'header':frappe.request.headers})
         frappe.throw("NO DATA %s " % (headd))
-
-    original = frappe.utils.password.get_decrypted_password('Customer',user_name,fieldname='user_key')
-    if user_key != original:
-        frappe.throw('Forbiden, Please login to continue.')
-    if frappe.session['user'] == 'noreply@candlescan.com':
+    if user_token:
+        web_session = frappe.db.sql(""" select token, user_key from `tabWeb Session` where token=%s""" % user_token,as_dict=True)
+        if web_session and web_session[0].user_key == user_key:
+            set_session()
+            return
+    else:
+        original = frappe.utils.password.get_decrypted_password('Customer',user_name,fieldname='user_key')
+        if user_key != original:
+            frappe.throw('Forbiden, Please login to continue.')
+        user_token = frappe.generate_hash("", 10)
+        d = frappe.get_doc({
+			"doctype":"Web Session",
+			"user": user_name,
+            "token":user_token,
+            "user_key":user_key
+		})
+		d.insert()
+        frappe.db.commit()
+        frappe.local.cookie_manager.set_cookie("user_token", user_token)
         set_session()
-
+        
+@frappe.whitelist()     
+def logout(user):
+    logged_in()
+    frappe.db.sql(""" delete * from `tabWeb Session` where user=%s""" % user,as_dict=True)        
+    frappe.local.cookie_manager.delete_cookie(["user_token", "user_name", "user_key"])
         
 @frappe.whitelist()        
 def get_calendar(target):
