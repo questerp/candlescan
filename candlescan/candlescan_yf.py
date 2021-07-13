@@ -1,7 +1,7 @@
 import sys
 import calendar
 import re
-from json import loads
+from json import loads,dumps
 import time
 from bs4 import BeautifulSoup
 import datetime
@@ -47,7 +47,7 @@ def get_calendars():
         rows = data["context"]["dispatcher"]["stores"]["ScreenerResultsStore"]["results"]["rows"]
         if rows:
             print(rows)
-            json_rows = json.dumps(rows)
+            json_rows = dumps(rows)
             frappe.db.set_value("Candlescan Fundamentals Manager",None,"calendar",json_rows)
             frappe.db.commit()
 
