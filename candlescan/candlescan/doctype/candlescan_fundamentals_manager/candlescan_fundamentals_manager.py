@@ -14,7 +14,7 @@ class CandlescanFundamentalsManager(Document):
 	pass
 
 def get_calendars():
-	get_calendars()
+	fetch_calendars()
 	
 def get_tickers():
 	#NYSE=True, NASDAQ=True, AMEX=True
