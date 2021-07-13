@@ -49,7 +49,7 @@ def logged_in():
             "token":user_token,
             "user_key":user_key
 		})
-		d.insert()
+        d.insert()
         frappe.db.commit()
         frappe.local.cookie_manager.set_cookie("user_token", user_token)
         set_session()
