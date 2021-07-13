@@ -55,7 +55,7 @@ def fetch_calendars():
                         ticker = row['ticker']
                         if ticker and not frappe.db.exists("Symbol",ticker):
                             companyshortname = row['companyshortname'] if 'companyshortname' in row else ''
-                            exchange_short_name= row['exchange_short_name'] if 'exchange_short_name' in row else ''
+                            exchange_short_name= row['exchange_short_name'] if 'exchange_short_name' in row else 'N/A'
                             print(ticker)
                             new_symbol = frappe.get_doc({
                                 'doctype':'Symbol',
