@@ -48,7 +48,20 @@ def fetch_calendars():
         if data:
             rows = data["context"]["dispatcher"]["stores"]["ScreenerResultsStore"]["results"]["rows"]
             if rows:
-                print(rows)
+                for row in rows:
+                    if hasattr(row,'ticker'):
+                        ticker = row['ticker']
+                        if ticker and not frappe.db.exists("Symbol",ticker):
+                            companyshortname = row['companyshortname'] if hasattr(row,'companyshortname') else ''
+                            exchange_short_name= row['exchange_short_name'] if hasattr(row,'exchange_short_name') else ''
+                            print(ticker)
+                            new_symbol = frappe.get_doc({
+                                'doctype':'Symbol',
+                                'symbol':ticker,
+                                'company':companyshortname,
+                                'exchange':exchange_short_name
+                            })
+                            new_symbol.insert()
                 json_rows = dumps(rows)
                 frappe.db.set_value("Candlescan Fundamentals Manager",None,target,json_rows)
                 time.sleep(3)
