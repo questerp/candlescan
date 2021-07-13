@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 import frappe, json
 from frappe.model.document import Document
-from candlescan.candlescan_yf import YahooFinancials as YF
+from candlescan.candlescan_yf import get_calendars,YahooFinancials as YF
 from frappe.utils import cstr
 from candlescan.get_tickers import get_tickers as gt
 import requests
@@ -13,9 +13,10 @@ import requests
 class CandlescanFundamentalsManager(Document):
 	pass
 
+def get_calendars():
+	get_calendars()
+	
 def get_tickers():
-	
-	
 	#NYSE=True, NASDAQ=True, AMEX=True
 	tickers = gt(NYSE=True, NASDAQ=False, AMEX=False)
 	for ticker in tickers:
