@@ -487,7 +487,7 @@ def login_customer(usr,pwd):
         #return {'result':False,'msg':'Wrong password and/or email'}
     password = frappe.utils.password.get_decrypted_password('Customer',user.name,fieldname='password')
     if password == pwd:
-        set_token(user.name,user.user_key,'{}')
+        set_token(user.name,user.user_key)
         return handle(True,"Logged in",user)
     return handle(False,"Incorrect email or password")
 
