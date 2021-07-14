@@ -5,81 +5,13 @@
 from __future__ import unicode_literals
 import frappe, json
 from frappe.model.document import Document
-from candlescan.candlescan_yf import fetch_calendars,YahooFinancials as YF
+from candlescan.candlescan_yf import YahooFinancials as YF
 from frappe.utils import cstr
 from candlescan.get_tickers import get_tickers as gt
 import requests
 
 class Fundamentals(Document):
 	pass
-
-def get_calendars():
-	fetch_calendars()
-	
-def get_tickers():
-	#NYSE=True, NASDAQ=True, AMEX=True
-	tickers = gt(NYSE=True, NASDAQ=False, AMEX=False)
-	for ticker in tickers:
-		ticker['symbol'] = ticker['symbol'].replace('^','p')
-		ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
-		exist = frappe.db.exists("Symbol",ticker['symbol'])
-		if not exist:
-			print(ticker)
-			print(ticker['symbol'])
-			symbol = frappe.get_doc({
-				'doctype':'Symbol',
-				'symbol':ticker['symbol'],
-				'company':ticker['name'],
-				'exchange':'NYSE'
-			})
-			symbol.insert()
-			
-	tickers = gt(NYSE=False, NASDAQ=True, AMEX=False)
-	for ticker in tickers:
-		ticker['symbol'] = ticker['symbol'].replace('^','p')	
-		ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
-		exist = frappe.db.exists("Symbol",ticker['symbol'])
-		if not exist:
-			print(ticker['symbol'])
-			symbol = frappe.get_doc({
-				'doctype':'Symbol',
-				'symbol':ticker['symbol'],
-				'company':ticker['name'],
-				'exchange':'NASDAQ'
-			})
-			symbol.insert()
-			
-	tickers = gt(NYSE=False, NASDAQ=False, AMEX=True)
-	for ticker in tickers:
-		ticker['symbol'] = ticker['symbol'].replace('^','p')	
-		ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
-		exist = frappe.db.exists("Symbol",ticker['symbol'])
-		if not exist:
-			print(ticker['symbol'])
-			symbol = frappe.get_doc({
-				'doctype':'Symbol',
-				'symbol':ticker['symbol'],
-				'company':ticker['name'],
-				'exchange':'AMEX'
-			})
-			symbol.insert()
-			
-	#https://api.iextrading.com/1.0/ref-data/symbols
-	URL = "https://api.iextrading.com/1.0/ref-data/symbols"
-	r = requests.get('https://api.iextrading.com/1.0/ref-data/symbols')
-	data = r.json()
-	for s in data:
-		if not s['symbol']:
-			continue
-		if not frappe.db.exists("Symbol",s['symbol']):
-			symbol = frappe.get_doc({
-				'doctype':'Symbol',
-				'symbol':s['symbol'],
-				'company':s['name'] or 'N/A',
-				'exchange':'N/A'
-			})
-			symbol.insert()
-	frappe.db.commit()
 
 def process():
 	settings =frappe.get_doc("Fundamentals")
