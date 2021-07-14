@@ -21,7 +21,9 @@ def process():
 			sql_filter = convert_filters_script(filters)
 			symbol = alert.symbol
 			if sql_filter and symbol:
-				exists = frappe.db.sql(""" select name from tabSymbol where symbol = '{symbol}' and {filter}  """.format(symbol=symbol,filter=sql_filter),as_dict=True)
+				scr = """ select name from tabSymbol where symbol = '{symbol}' and {filter}  """.format(symbol=symbol,filter=sql_filter)
+				print("scr %s" % scr)
+				exists = frappe.db.sql(scr,as_dict=True)
 				print("exists %s" % exists)
 				if exists:
 					socket_id = frappe.db.get_value("Customer",alert.user,"socket_id")
