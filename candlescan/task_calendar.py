@@ -13,6 +13,8 @@ except:
     from urllib.request import FancyURLopener
 import frappe
 
+class UrlOpener(FancyURLopener):
+    version = 'w3m/0.5.3+git20180125'
 
 def process():
     targets = ["earnings","splits","ipo","economic"]
