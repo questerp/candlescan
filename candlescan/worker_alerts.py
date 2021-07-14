@@ -32,7 +32,7 @@ def process():
 		time.sleep(3)
 
 def convert_filters_script(filters):
-	if not filters_script:
+	if not filters:
 		return ''
 	sql = ""
 	cond = []
@@ -49,6 +49,7 @@ def convert_filters_script(filters):
 			cond.append(sc)
 	if cond:
 		sql = " and ".join(cond)
+	print("sql %s" % sql)
 	return sql
 		
 def convert_operator(operator):
