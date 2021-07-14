@@ -38,7 +38,7 @@ def convert_filters_script(filters):
 	cond = []
 	for filter in filters:
 		operator = convert_operator(filter['operator'])
-		field = filter['field']
+		field = filter['column']['field']
 		value = filter['value']
 		value_max = filter['value_max']
 		if operator and value and operator != 'BETWEEN':
