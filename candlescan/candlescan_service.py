@@ -58,32 +58,33 @@ def start_workers(queue):
 
 @frappe.whitelist()
 def start_services():
-    from candlescan.candlescan.doctype.candlescan_extras_manager.candlescan_extras_manager import process_extras
-    from candlescan.candlescan.doctype.candlescan_alert_manager.candlescan_alert_manager import process_alerts
+    from candlescan.worker_technicals import process as worker_technicals
+    from candlescan.worker_alerts import process as worker_alerts
+    
     redis_connection = get_redis_conn()
     kwargs = {
         'connection': redis_connection,
         'async': True,
     }
-    q = Queue("process_extras", **kwargs)
+    q = Queue("worker_alerts", **kwargs)
     queue_args = {
         "site": frappe.local.site,
         "user": None,
-        "method": process_extras,
+        "method": worker_alerts,
         "event": None,
-        "job_name": cstr(process_extras),
+        "job_name": cstr(worker_alerts),
         "is_async": True,
         "kwargs": {}
     }
     q.enqueue_call(execute_job, timeout=-1,	kwargs=queue_args)
     
-    q = Queue("process_alerts", **kwargs)
+    q = Queue("worker_technicals", **kwargs)
     queue_args = {
         "site": frappe.local.site,
         "user": None,
-        "method": process_alerts,
+        "method": worker_technicals,
         "event": None,
-        "job_name": cstr(process_alerts),
+        "job_name": cstr(worker_technicals),
         "is_async": True,
         "kwargs": {}
     }
