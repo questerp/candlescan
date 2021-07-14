@@ -68,6 +68,20 @@ def logged_in():
         set_session()
 
 @frappe.whitelist()     
+def send_support(user,message):
+    logged_in()
+    if not (user or message):
+        return handle(False,"Missing data")
+    issue = frappe.get_doc({
+        'doctype':'Issue',
+        'subject':'Platform message from %s' % user,
+        'customer':user,
+        'description':message
+    })
+    issue.insert()
+    return handle(True,"Success")
+    
+@frappe.whitelist()     
 def set_default_layout(user,layout):
     logged_in()
     if not (user or layout):
