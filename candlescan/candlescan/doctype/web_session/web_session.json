@@ -1,15 +1,14 @@
 {
- "creation": "2021-07-06 20:41:32.813907",
+ "creation": "2021-07-13 07:26:42.828566",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "title",
   "user",
-  "column_break_3",
-  "config",
-  "target",
-  "scanner"
+  "token",
+  "user_key",
+  "section_break_4",
+  "cookie"
  ],
  "fields": [
   {
@@ -21,40 +20,29 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_3",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "target",
+   "fieldname": "token",
    "fieldtype": "Data",
-   "label": "target",
-   "reqd": 1
+   "label": "Token"
   },
   {
-   "fieldname": "scanner",
+   "fieldname": "user_key",
    "fieldtype": "Data",
-   "label": "Scanner",
-   "reqd": 1
+   "label": "User Key"
   },
   {
-   "fieldname": "config",
-   "fieldtype": "Long Text",
-   "in_list_view": 1,
-   "label": "Config",
-   "reqd": 1
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
   },
   {
-   "fieldname": "title",
+   "fieldname": "cookie",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Title",
-   "reqd": 1
+   "label": "Cookie"
   }
  ],
- "modified": "2021-07-11 08:54:16.740095",
+ "modified": "2021-07-13 08:36:21.583896",
  "modified_by": "Administrator",
  "module": "CandleScan",
- "name": "Custom Scanner",
+ "name": "Web Session",
  "owner": "Administrator",
  "permissions": [
   {
@@ -68,8 +56,21 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC"
 }

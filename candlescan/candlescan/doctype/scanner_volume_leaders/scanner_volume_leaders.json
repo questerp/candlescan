@@ -5,7 +5,11 @@
  "engine": "InnoDB",
  "field_order": [
   "active",
-  "state"
+  "state",
+  "section_break_3",
+  "interval",
+  "column_break_5",
+  "max_rows"
  ],
  "fields": [
   {
@@ -18,10 +22,28 @@
    "fieldname": "active",
    "fieldtype": "Check",
    "label": "Active"
+  },
+  {
+   "fieldname": "interval",
+   "fieldtype": "Int",
+   "label": "Interval"
+  },
+  {
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "max_rows",
+   "fieldtype": "Int",
+   "label": "Max rows"
   }
  ],
  "issingle": 1,
- "modified": "2021-07-11 08:08:17.282187",
+ "modified": "2021-07-14 16:05:18.054207",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Scanner Volume Leaders",

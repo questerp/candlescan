@@ -10,7 +10,7 @@ from frappe.utils import cstr
 from candlescan.get_tickers import get_tickers as gt
 import requests
 
-class CandlescanFundamentalsManager(Document):
+class Fundamentals(Document):
 	pass
 
 def get_calendars():
@@ -82,7 +82,7 @@ def get_tickers():
 	frappe.db.commit()
 
 def process():
-	settings =frappe.get_doc("Candlescan Fundamentals Manager")
+	settings =frappe.get_doc("Fundamentals")
 	activate = settings.activate
 	if not activate:
 		return

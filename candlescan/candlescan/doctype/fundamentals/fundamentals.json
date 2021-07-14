@@ -6,7 +6,12 @@
  "field_order": [
   "activate",
   "batch",
-  "offset"
+  "offset",
+  "section_break_4",
+  "earnings",
+  "splits",
+  "ipo",
+  "economic"
  ],
  "fields": [
   {
@@ -24,13 +29,37 @@
    "fieldname": "offset",
    "fieldtype": "Int",
    "label": "Offset"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "earnings",
+   "fieldtype": "Long Text",
+   "label": "Earnings"
+  },
+  {
+   "fieldname": "splits",
+   "fieldtype": "Long Text",
+   "label": "Splits"
+  },
+  {
+   "fieldname": "ipo",
+   "fieldtype": "Long Text",
+   "label": "IPO"
+  },
+  {
+   "fieldname": "economic",
+   "fieldtype": "Long Text",
+   "label": "Economic"
   }
  ],
  "issingle": 1,
- "modified": "2021-07-09 07:42:45.049150",
+ "modified": "2021-07-12 20:31:02.559754",
  "modified_by": "Administrator",
  "module": "CandleScan",
- "name": "Candlescan Fundamentals Manager",
+ "name": "Fundamentals",
  "owner": "Administrator",
  "permissions": [
   {
