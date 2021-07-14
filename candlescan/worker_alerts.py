@@ -12,7 +12,8 @@ def process():
 	while(True):
 		alerts = frappe.db.sql(""" select name,user,symbol,filters_script,notify_by_email,enabled,triggered from `tabPrice Alert` where enabled=1 and triggered=0 limit 100""",as_dict=True)
 		if not alerts:
-			return
+			print("No alerts")
+			continue
 		for alert in alerts:
 			if not alert.filters_script:
 				continue
@@ -32,7 +33,9 @@ def process():
 						doc = frappe.get_doc("Price Alert",alert.name)
 						doc.triggered = True
 						doc.save()
-						redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
+						session = frappe.db.sql(""" select token from `tabWeb Session` where user = %s""" % alert.user,as_dict=True)
+						if session:
+							redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
 		time.sleep(3)
 
 def convert_filters_script(filters):
