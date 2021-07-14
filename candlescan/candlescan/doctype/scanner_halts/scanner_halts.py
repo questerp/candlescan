@@ -27,7 +27,7 @@ def get_config():
 def signature():
 	return [
 	{"field":"symbol","header":"Symbol","align":"left","value_type":"string"},
-	{"field":"status","header":"Status","align":"left","value_type":"string"},
+	{"field":"status","header":"Status","align":"left","value_type":"select","doctype":"Halt status"},
 	{"field":"hdate","header":"Date","align":"left","value_type":"string"},
 	{"field":"htime","header":"Time","align":"left","value_type":"string"},
 	{"field":"hcode","header":"Code","align":"left","value_type":"string"},
