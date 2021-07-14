@@ -63,6 +63,6 @@ def process():
                             })
                             new_symbol.insert()
                 json_rows = dumps(rows)
-                frappe.db.set_value("Candlescan Fundamentals Manager",None,target,json_rows)
+                frappe.db.set_value("Fundamentals",None,target,json_rows)
                 time.sleep(3)
     frappe.db.commit()
