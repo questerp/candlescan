@@ -29,7 +29,7 @@ def signature():
 	{"field":"symbol","header":"Symbol","align":"left","value_type":"string"},
 	{"field":"status","header":"Status","align":"left","value_type":"select","doctype":"Halt status"},
 	{"field":"hdate","header":"Date","align":"left","value_type":"string"},
-	{"field":"htime","header":"Time","align":"left","value_type":"string"},
+	{"field":"htime","header":"Halt Time","align":"left","value_type":"string"},
 	{"field":"hcode","header":"Code","align":"left","value_type":"string"},
 	{"field":"resumption_date","header":"Resumption Date","align":"left","value_type":"string"},
 	{"field":"resumption_time","header":"Resumption Time","align":"left","value_type":"string"},
