@@ -249,13 +249,14 @@ def get_historical(user,doctype,date,feed_type):
         return handle(False,"Data missing")
     lmt = 1 if feed_type == "list" else 20
         
-    values = frappe.db.sql(""" select data from `tabVersion` where ref_doctype='%s' and creation<='%s' order by creation DESC limit %s""" % (doctype,date,lmt),as_dict=True)
+    values = frappe.db.sql(""" select creation,data from `tabVersion` where ref_doctype='%s' and creation<='%s' order by creation DESC limit %s""" % (doctype,date,lmt),as_dict=True)
     if values:
         values = values[0]
         odata = json.loads(values.data)
         state = json.loads(odata['changed'][0][1])
         if state:
-            return handle(True,"Success",state)
+            resp = {"version":values.creation,"data":state}
+            return handle(True,"Success",resp)
     return handle(True,"Success")
     
 @frappe.whitelist()        
