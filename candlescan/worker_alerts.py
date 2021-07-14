@@ -10,6 +10,7 @@ import time
 def process():
 	redis = get_redis_server()
 	while(True):
+		time.sleep(5)
 		alerts = frappe.db.sql(""" select name,user,symbol,filters_script,notify_by_email,enabled,triggered from `tabPrice Alert` where enabled=1 and triggered=0 limit 100""",as_dict=True)
 		if not alerts:
 			print("No alerts")
@@ -36,7 +37,7 @@ def process():
 						session = frappe.db.sql(""" select token from `tabWeb Session` where user='%s'""" % alert.user,as_dict=True)
 						if session:
 							redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
-		time.sleep(3)
+		
 
 def convert_filters_script(filters):
 	if not filters:
