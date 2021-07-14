@@ -36,7 +36,7 @@ def start(scanner_id):
 	max_rows = settings.max_rows
 	#doc = frappe.get_doc("Premarket Scanner")	
 	while(True):
-		symbols = frappe.db.sql("""select name,volume from tabSymbol where volume>200000 order by volume desc limit %s""" % max_rows,as_dict=True)
+		symbols = frappe.db.sql("""select symbol,volume from tabSymbol where volume>200000 order by volume desc limit %s""" % max_rows,as_dict=True)
 		active = frappe.db.get_value("Scanner Volume Leaders",None,"active")
 		#frappe.local.cache = {}
 		#stop = frappe.cache().hget(scanner_id,"stop",shared=True)
