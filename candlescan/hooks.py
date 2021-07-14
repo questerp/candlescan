@@ -97,7 +97,7 @@ scheduler_events = {
  	"daily": [
  	],
  	"hourly": [
-		"candlescan.candlescan.doctype.fundamentals.fundamentals.process"
+		"candlescan.task_fundamentals.process"
  	],
 	"daily_long":[
 		"candlescan.task_symbols.process",
