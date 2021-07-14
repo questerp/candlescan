@@ -14,8 +14,9 @@ def process():
 		if not alerts:
 			return
 		for alert in alerts:
-			if not filters_script:
+			if not alert.filters_script:
 				continue
+			filters_script = alert.filters_script
 			filters = json.loads(filters_script)
 			sql_filter = convert_filters_script(filters)
 			symbol = alert.symbol
