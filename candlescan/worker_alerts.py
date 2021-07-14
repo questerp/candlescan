@@ -46,10 +46,10 @@ def convert_filters_script(filters):
 		value = filter['value']
 		value_max = filter['value_max']
 		if operator and value and operator != 'BETWEEN':
-			sc = "'%s' %s %s" % (field,operator,value)
+			sc = "%s %s %s" % (field,operator,value)
 			cond.append(sc)
 		elif operator and value and operator == 'BETWEEN' and value_max:
-			sc = "'%s' %s %s AND %s" % (field,operator,value,value_max)
+			sc = "%s %s %s AND %s" % (field,operator,value,value_max)
 			cond.append(sc)
 	if cond:
 		sql = " and ".join(cond)
