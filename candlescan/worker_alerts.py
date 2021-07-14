@@ -22,8 +22,10 @@ def process():
 			symbol = alert.symbol
 			if sql_filter and symbol:
 				exists = frappe.db.sql(""" select name from tabSymbol where symbol = '{symbol}' and {filter}  """.format(symbol=symbol,filter=sql_filter),as_dict=True)
+				print("exists %s" % exists)
 				if exists:
 					socket_id = frappe.db.get_value("Customer",alert.user,"socket_id")
+					print("socket_id %s" % socket_id)
 					if socket_id:
 						doc = frappe.get_doc("Price Alert",alert.name)
 						doc.triggered = True
