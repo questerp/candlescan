@@ -26,24 +26,20 @@ def get_config():
 def signature():
 	return [
 	{"field":"symbol","header":"Symbol","align":"left","value_type":"string"},
-	
+	{"field":"volume","header":"Volume","align":"left","value_type":"number"}
 	]
 
 def start(scanner_id):        
 	redis = get_redis_server()
-	interval = 5
-	symbols = frappe.db.sql("""select name from tabSymbol limit 30""",as_dict=True)
+	settings = frappe.get_doc("Scanner Volume Leaders")
+	interval = settings.interval
+	max_rows = settings.max_rows
 	#doc = frappe.get_doc("Premarket Scanner")	
 	while(True):
+		symbols = frappe.db.sql("""select name,volume from tabSymbol where volume>200000 order by volume desc limit %s""" % max_rows,as_dict=True)
 		active = frappe.db.get_value("Scanner Volume Leaders",None,"active")
 		#frappe.local.cache = {}
 		#stop = frappe.cache().hget(scanner_id,"stop",shared=True)
 		if not active:
 			break
-		
-		resultdata = []
-		for i in symbols:
-			resultdata.append(  {"symbol":i.name})
-		broadcast("Scanner Volume Leaders",scanner_id,interval,resultdata)
-		#redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
-		#redis.publish("candlesocket",frappe.as_json({"scanner_id":"alerts","data":{"symbol":"AAPL","price":152}}))
+		broadcast("Scanner Volume Leaders",scanner_id,interval,symbols)
