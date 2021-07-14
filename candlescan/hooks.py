@@ -100,8 +100,8 @@ scheduler_events = {
 		"candlescan.candlescan.doctype.fundamentals.fundamentals.process"
  	],
 	"daily_long":[
-		"candlescan.candlescan.doctype.fundamentals.fundamentals.get_tickers",
-		"candlescan.candlescan.doctype.fundamentals.fundamentals.get_calendars"
+		"candlescan.task_symbols.process",
+		"candlescan.task_calendar.process"
 	],
  	"weekly": [
  	],
