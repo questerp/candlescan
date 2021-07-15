@@ -79,9 +79,9 @@ def start_services():
     queue_args = {
         "site": frappe.local.site,
         "user": None,
-        "method": worker_alerts,
+        "method": "candlescan.worker_alerts.process",
         "event": None,
-        "job_name": cstr(worker_alerts),
+        "job_name": "worker_alerts",
         "is_async": True,
         "kwargs": {}
     }
@@ -91,9 +91,9 @@ def start_services():
     queue_args = {
         "site": frappe.local.site,
         "user": None,
-        "method": worker_technicals,
+        "method": "candlescan.worker_technicals.process",
         "event": None,
-        "job_name": cstr(worker_technicals),
+        "job_name": "worker_technicals",
         "is_async": True,
         "kwargs": {}
     }
