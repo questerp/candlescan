@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import frappe, json
 from candlescan.get_tickers import get_tickers as gt
 import requests
+from candlescan.candlescan_service import insert_symbol
 
 def process():
 	#NYSE=True, NASDAQ=True, AMEX=True
@@ -21,7 +22,7 @@ def process():
 				'company':ticker['name'],
 				'exchange':'NYSE'
 			})
-			symbol.insert()
+			insert_symbol(symbol)
 			
 	tickers = gt(NYSE=False, NASDAQ=True, AMEX=False)
 	for ticker in tickers:
@@ -36,7 +37,7 @@ def process():
 				'company':ticker['name'],
 				'exchange':'NASDAQ'
 			})
-			symbol.insert()
+			insert_symbol(symbol)
 			
 	tickers = gt(NYSE=False, NASDAQ=False, AMEX=True)
 	for ticker in tickers:
@@ -51,7 +52,7 @@ def process():
 				'company':ticker['name'],
 				'exchange':'AMEX'
 			})
-			symbol.insert()
+			insert_symbol(symbol)
 			
 	#https://api.iextrading.com/1.0/ref-data/symbols
 	URL = "https://api.iextrading.com/1.0/ref-data/symbols"
@@ -67,5 +68,4 @@ def process():
 				'company':s['name'] or 'N/A',
 				'exchange':'N/A'
 			})
-			symbol.insert()
-	frappe.db.commit()
+			insert_symbol(symbol)
