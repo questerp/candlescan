@@ -362,7 +362,15 @@ def update_socket(user,socket_id):
         return handle(Flase,"User is required")
     frappe.db.set_value("Customer",user,"socket_id",socket_id)
     return handle(True,"Success")
-        
+
+@frappe.whitelist()        
+def get_alerts(user):
+    logged_in()
+    if not user:
+        return handle(Flase,"User is required")
+    alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
+    return handle(True,"Success",alerts)
+    
 @frappe.whitelist()        
 def get_platform_data(user):    
     logged_in()
