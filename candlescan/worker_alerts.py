@@ -37,7 +37,7 @@ def process():
 						session = frappe.db.sql(""" select token from `tabWeb Session` where user='%s'""" % alert.user,as_dict=True)
 						if session:
 							redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
-		
+		frappe.db.commit()
 
 def convert_filters_script(filters):
 	if not filters:
