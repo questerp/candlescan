@@ -16,7 +16,7 @@ def insert_symbol(symbol):
     symbol.flags.ignore_validate = True
     symbol.flags.ignore_permissions  = True
     symbol.flags.ignore_mandatory = True
-    new_symbol.insert()
+    symbol.insert()
     frappe.db.commit()
 
 def get_last_broadcast(doctype):
