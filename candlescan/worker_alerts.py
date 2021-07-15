@@ -12,7 +12,7 @@ from frappe.cache_manager import clear_doctype_cache
 def process():
 	redis = get_redis_server()
 	while(True):
-		clear_doctype_cache("Price Alert")
+		#clear_doctype_cache("Price Alert")
 		time.sleep(5)
 		alerts = frappe.db.sql(""" select name,user,symbol,filters_script,notify_by_email,enabled,triggered from `tabPrice Alert` where enabled=1 and triggered=0 limit 100""",as_dict=True)
 		if not alerts:
