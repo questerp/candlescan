@@ -10,6 +10,15 @@ from rq.registry import StartedJobRegistry
 from rq import Connection, Queue, Worker
 from candlescan import handle
 
+
+def insert_symbol(symbol):
+    symbol.flags.ignore_links = True
+    symbol.flags.ignore_validate = True
+    symbol.flags.ignore_permissions  = True
+    symbol.flags.ignore_mandatory = True
+    new_symbol.insert()
+    frappe.db.commit()
+
 def get_last_broadcast(doctype):
     if not doctype:
         return handle(False,'No doctype')
