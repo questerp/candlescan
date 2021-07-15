@@ -34,13 +34,14 @@ def process():
 					socket_id = frappe.db.get_value("Customer",alert.user,"socket_id")
 					print("socket_id %s" % socket_id)
 					if socket_id:
-						doc = frappe.get_doc("Price Alert",alert.name)
-						doc.triggered = True
-						doc.save()
+						doc = frappe.db.set_value("Price Alert",alert.name,"triggered",1)
+						#doc.triggered = True
+						#doc.save()
+						frappe.db.commit()
 						session = frappe.db.sql(""" select token from `tabWeb Session` where user='%s'""" % alert.user,as_dict=True)
 						if session:
 							redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
-		frappe.db.commit()
+		
 
 def convert_filters_script(filters):
 	if not filters:
