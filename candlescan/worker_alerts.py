@@ -14,6 +14,7 @@ def process():
 	while(True):
 		#clear_doctype_cache("Price Alert")
 		time.sleep(5)
+		frappe.local.db.commit()
 		alerts = frappe.db.sql(""" select name,user,symbol,filters_script,notify_by_email,enabled,triggered from `tabPrice Alert` where enabled=1 and triggered=0 limit 100""",as_dict=True)
 		if not alerts:
 			print("No alerts")
