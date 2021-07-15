@@ -13,6 +13,8 @@ except:
     from urllib.request import FancyURLopener
 import frappe
 
+from candlescan.candlescan_service import insert_symbol
+
 class UrlOpener(FancyURLopener):
     version = 'w3m/0.5.3+git20180125'
 
@@ -63,7 +65,8 @@ def process():
                                 'company':companyshortname,
                                 'exchange':exchange_short_name
                             })
-                            new_symbol.insert()
+                            insert_symbol(new_symbol)
+                            
                 json_rows = dumps(rows)
                 frappe.db.set_value("Fundamentals",None,target,json_rows)
                 time.sleep(3)
