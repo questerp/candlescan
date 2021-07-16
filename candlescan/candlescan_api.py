@@ -93,7 +93,7 @@ def delete_stock_filter(user,name):
 @frappe.whitelist()     
 def save_stock_filter(user,title,sort_field,sort_mode,script,name=None):
     logged_in()
-    if not (user or filter):
+    if not (user or title or sort_field or sort_mode or script):
         return handle(False,"Missing data")
     if not name:
         filter = frappe.get_doc({
