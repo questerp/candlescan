@@ -80,7 +80,54 @@ def send_support(user,message):
     })
     issue.insert()
     return handle(True,"Success")
+
+
+@frappe.whitelist()     
+def delete_stock_filter(user,name):
+    logged_in()
+    if not (user or name):
+        return handle(False,"Missing data")
+    frappe.delete_doc('Stock Filter', name)
+    return handle(True,"Success")
+
+@frappe.whitelist()     
+def save_stock_filter(user,title,sort_field,sort_mode,script,name=None):
+    logged_in()
+    if not (user or filter):
+        return handle(False,"Missing data")
+    if not name:
+        filter = frappe.get_doc({
+                    'doctype':'Stock Filter',
+                    'user': user,
+                    'title': title,
+                    'sort_field': sort_field,
+                    'sort_mode': sort_mode,
+                    'script': script
+                })
+        filter = filter.insert()
+        return handle(True,"Success",filter)
+    else:
+        f = frappe.get_doc("Stock Filter",name)
+        if f:
+            f.title = title
+            f.sort_field=sort_field
+            f.sort_mode=sort_mode
+            f.script=script
+            f = f.save()
+            return handle(True,"Success",f)
+        else:
+            return handle(False,"Failed! filter doesn't exist")
+            
+            
+
+@frappe.whitelist()     
+def delete_filter(user,filter):
+    logged_in()
+    if not (user or filter):
+        return handle(False,"Missing data")        
     
+    
+
 @frappe.whitelist()     
 def set_default_layout(user,layout):
     logged_in()
