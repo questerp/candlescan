@@ -95,6 +95,7 @@ def save_stock_filter(user,title,sort_field,sort_mode,script,name=None):
     logged_in()
     if not (user or title or sort_field or sort_mode or script):
         return handle(False,"Missing data")
+    script = json.dumps(script)
     if not name:
         filter = frappe.get_doc({
                     'doctype':'Stock Filter',
@@ -429,6 +430,7 @@ def get_platform_data(user):
     customScanners = frappe.db.sql(""" select title,scanner,name,user,config,target from `tabCustom Scanner` where user='%s' """ % (user),as_dict=True)
     layouts = frappe.db.sql(""" select title,name,config  from `tabLayout` where user='%s' """ % (user),as_dict=True)
     watchlists = frappe.db.sql(""" select name,watchlist,symbols from `tabWatchlist` where user='%s' """ % (user),as_dict=True)
+    filters = frappe.db.sql(""" select name,title,script,sort_field,sort_mode from `tabStock Filter` where user='%s' """ % (user),as_dict=True)
     fExtras = []
     if extras:
         extras = extras.splitlines()
@@ -443,7 +445,7 @@ def get_platform_data(user):
         scanner['signature'] = signature
         scanner['config'] = config
 
-    return handle(True,"Success",{"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
+    return handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
             
 #@frappe.whitelist()        
 #def get_alerts(user):
