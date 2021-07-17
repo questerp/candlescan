@@ -10,9 +10,10 @@ import sqlvalidator
 class StockFilter(Document):
 	def validate(self):
 		sql = self.validate_script()
+		frappe.msgpint(sql)
 		sql_query = sqlvalidator.parse(sql)
-		if not sql_query.is_valid():
-		    frappe.throw(sql_query.errors)
+		#if not sql_query.is_valid():
+		#    frappe.throw(sql_query.errors)
 		
 	def validate_script(self):
 		if not self.script:
