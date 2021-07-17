@@ -10,7 +10,7 @@ class StockFilter(Document):
 	def validate(self):
 		sql = self.validate_script()
 		final = """ SELECT name from tabSymbol where %s """ % sql
-		frappe.msgprint(final)
+		#frappe.msgprint(final)
 		try:
 			frappe.db.sql("""explain %s""" % final)
 		except Exception:
