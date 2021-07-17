@@ -3,7 +3,7 @@
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
-import frappe
+import frappe, json
 from frappe.model.document import Document
 
 class StockFilter(Document):
@@ -20,8 +20,8 @@ class StockFilter(Document):
 	def validate_script(self):
 		if not self.script:
 			frappe.throw("Script is required")
-		
-		or_blocks = self.script.split(' OR ')
+		script = json.loads(self.script)
+		or_blocks = script.split(' OR ')
 		sql =""
 		and_sqls = []
 		for or_block in or_blocks:
