@@ -82,19 +82,19 @@ def ressource(user,doctype,method,name=None):
             doc.update(data)
             response = doc.save().as_dict()
             if response:
-                return handle(True,"Success",response)
+                return handle(True,"Saved",response)
             
         else:
             data.update({"doctype": doctype})
             response = frappe.get_doc(data).insert()
             if response:
-                return handle(True,"Success",response)
+                return handle(True,"Updated",response)
             
     if method == "delete" and name:
         frappe.delete_doc(doctype, name, ignore_missing=False)
         response = "ok"
         if response:
-                return handle(True,"Success",response)
+                return handle(True,"Deleted",response)
         
 @frappe.whitelist()     
 def send_support(user,message):
