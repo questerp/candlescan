@@ -5,17 +5,17 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-import sqlvalidator
 
 class StockFilter(Document):
 	def validate(self):
 		sql = self.validate_script()
 		final = """ SELECT name from tabSymbol where %s """ % sql
 		frappe.msgprint(final)
-		
-		sql_query = sqlvalidator.parse(final)
-		if not sql_query.is_valid():
-		    frappe.throw(sql_query.errors)
+		try:
+			frappe.db.sql("""explain %s""" % final)
+		except Exception:
+			frappe.throw("Errors in the script, please check syntax")
+
 		
 	def validate_script(self):
 		if not self.script:
