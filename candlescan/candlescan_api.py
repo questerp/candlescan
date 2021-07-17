@@ -3,7 +3,7 @@ from http import cookies
 from urllib.parse import unquote, urlparse
 from frappe.utils import cstr
 from candlescan.candlescan_service import get_last_broadcast
-from frappe.utils import getdate,today
+from frappe.utils import getdate,today,cstr
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
 from frappe.api import get_request_form_data
 import requests
@@ -83,7 +83,7 @@ def ressource(user,doctype,method,name=None):
             modified =  frappe.db.sql("""select modified from `tab{0}`
 					where name = %s for update""".format(doctype), name, as_dict=True)
             if modified:
-                modified = modified[0]
+		modified = cstr(modified[0].modified)
                 doc.modified = modified
             response = doc.save().as_dict()
             if response:
