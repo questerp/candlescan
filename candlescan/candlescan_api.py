@@ -5,6 +5,7 @@ from frappe.utils import cstr
 from candlescan.candlescan_service import get_last_broadcast
 from frappe.utils import getdate,today
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
+from frappe.api import get_request_form_data
 import requests
 
 @frappe.whitelist()
@@ -66,7 +67,30 @@ def logged_in():
             frappe.throw('Forbiden, Please login to continue.')
         set_token(user_name,user_key)
         set_session()
-
+        
+@frappe.whitelist()     
+def ressource(user,doctype,doc,method,name=None):
+    logged_in()
+    if not (user or doctype or doc or method):
+        return handle(False,"Missing data")
+    
+    data = get_request_form_data()
+    response = None
+    if method == "save":
+        if name:
+            doc = frappe.get_doc(doctype, name)
+            doc.update(data)
+            response = doc.save().as_dict()
+        else:
+            data.update({"doctype": doctype})
+            response = frappe.get_doc(data).insert()
+            
+    if method == "delete" and name:
+        frappe.delete_doc(doctype, name, ignore_missing=False)
+        response = "ok"
+        
+    return handle(True,"Success",response)
+        
 @frappe.whitelist()     
 def send_support(user,message):
     logged_in()
