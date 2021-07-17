@@ -22,7 +22,7 @@ class StockFilter(Document):
 		if not self.script:
 			frappe.throw("Script is required")
 		script = json.loads(self.script)
-		or_blocks = script.split(' OR ')
+		or_blocks = script.split('OR\n')
 		sql =""
 		and_sqls = []
 		for or_block in or_blocks:
