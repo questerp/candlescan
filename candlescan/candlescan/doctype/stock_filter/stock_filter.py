@@ -15,7 +15,7 @@ class StockFilter(Document):
 			frappe.db.sql("""explain %s""" % final)
 		except Exception:
 			frappe.throw("Errors in the script, please check syntax")
-		self.sql_script = final
+		self.sql_script = json.dumps(final)
 
 		
 	def validate_script(self):
