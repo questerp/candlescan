@@ -110,7 +110,7 @@ def run_stock_filter(user,name):
         sql = json.loads(filter.sql_script)
         sort = "ASC" if filter.sort_mode == "Ascending" else "DESC"
         if sql:
-            data = frappe.db.sql(""" select symbol from tabSymbol where %s order by %s %s limit 100""" % (sql,filter.sort_field,sort),as_dict=True)
+            data = frappe.db.sql("""%s order by %s %s limit 100""" % (sql,filter.sort_field,sort),as_dict=True)
             return handle(True,"Success",data)
     frappe.throw("Can't execute filter, contact support")
     
