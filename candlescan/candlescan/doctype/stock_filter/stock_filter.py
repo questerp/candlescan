@@ -21,7 +21,7 @@ class StockFilter(Document):
 	def validate_script(self):
 		if not self.script:
 			frappe.throw("Script is required")
-		self.script = self.script.replace('(','').repalce(')','').repalce('[','').repalce(']','')
+		self.script = self.script.replace('(','').replace(')','').replace('[','').replace(']','')
 		script = json.loads(self.script)
 		conds = script.splitlines()
 		sql =""
