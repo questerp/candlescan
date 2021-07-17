@@ -16,7 +16,7 @@ class StockFilter(Document):
 		except Exception as e:
 			missing_columns = frappe.db.is_missing_column(e)
 			if missing_columns:
-				raise(e)
+				frappe.throw(e.args[1].replace("in 'where clause'","in script"))
 			frappe.throw("Errors in the script, please check syntax")
 		self.sql_script = json.dumps(final)
 
