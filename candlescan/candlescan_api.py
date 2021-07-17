@@ -99,7 +99,21 @@ def ressource(user,doctype,method,name=None):
         response = "ok"
         if response:
                 return handle(True,"Deleted",response)
-        
+            
+@frappe.whitelist()     
+def run_stock_filter(user,name):
+    logged_in()
+    if not (user or name):
+        frappe.throw("Missing data")
+    filter = frappe.get_doc("Stock Filter",name)
+    if filter.script:
+        sql = json.loads(filter.script)
+        sort = "ASC" if filter.sort_mode == "Ascending" else "DESC"
+        if sql:
+            data = frappe.db.sql(""" select symbol from tabSymbol where %s order by %s %s limit 100""" % (sql,sort,filter.sort_field),as_dict=True)
+            return handle(True,"Success",data)
+    frappe.throw("Can't execute filter, contact support")
+    
 @frappe.whitelist()     
 def send_support(user,message):
     logged_in()
