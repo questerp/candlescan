@@ -10,7 +10,7 @@ import sqlvalidator
 class StockFilter(Document):
 	def validate(self):
 		sql = self.validate_script()
-		final = """ SELECT name from tabSymbol where {cond} """.format(cond= sql)
+		final = """ SELECT name from tabSymbol where %s """ % sql
 		frappe.msgprint(final)
 		
 		sql_query = sqlvalidator.parse(final)
@@ -31,7 +31,7 @@ class StockFilter(Document):
 			and_sqls.append(and_sql)
 			
 		if and_sqls:
-			if len(and_sqls) > 1:
+			if len(and_sqls) > 0:
 				sql = " OR ".join(and_sqls)
 			else:
 				sql = and_sqls
