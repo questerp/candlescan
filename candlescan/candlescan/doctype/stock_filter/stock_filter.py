@@ -11,9 +11,10 @@ class StockFilter(Document):
 	def validate(self):
 		sql = self.validate_script()
 		frappe.msgprint(sql)
-		sql_query = sqlvalidator.parse(sql)
-		#if not sql_query.is_valid():
-		#    frappe.throw(sql_query.errors)
+		final = """ SELECT name from tabSymbol where {cond} """.format(cond= sql)
+		sql_query = sqlvalidator.parse(final)
+		if not sql_query.is_valid():
+		    frappe.throw(sql_query.errors)
 		
 	def validate_script(self):
 		if not self.script:
