@@ -27,9 +27,11 @@ class StockFilter(Document):
 		and_sqls = []
 		for or_block in or_blocks:
 			and_blocks = or_block.splitlines()
-			and_sql = " AND ".join(and_blocks)
-			and_sql = "( %s )" % and_sql
-			and_sqls.append(and_sql)
+			for block in and_blocks:
+				nd_or_blocks = block.split(' OR ')
+				and_sql = " OR ".join(nd_or_blocks)
+				and_sql = "( %s )" % and_sql
+				and_sqls.append(and_sql)
 			
 		if and_sqls:
 			if len(and_sqls) > 0:
