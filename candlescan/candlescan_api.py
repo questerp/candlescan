@@ -69,9 +69,9 @@ def logged_in():
         set_session()
         
 @frappe.whitelist()     
-def ressource(user,doctype,doc,method,name=None):
+def ressource(user,doctype,method,name=None):
     logged_in()
-    if not (user or doctype or doc or method):
+    if not (user or doctype or method):
         return handle(False,"Missing data")
     
     data = get_request_form_data()
