@@ -8,6 +8,8 @@ from frappe.model.document import Document
 
 class StockFilter(Document):
 	def validate(self):
+		if not self.columns:
+			frappe.throw("Please select at least one column for the filter")
 		sql = self.validate_script()
 		columns = json.loads(self.columns)
 		fields = ",".join([a['field'] for a in columns])
