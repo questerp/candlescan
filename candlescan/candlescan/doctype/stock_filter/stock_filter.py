@@ -9,7 +9,9 @@ from frappe.model.document import Document
 class StockFilter(Document):
 	def validate(self):
 		sql = self.validate_script()
-		final = """ SELECT name from tabSymbol where %s """ % sql
+		columns = json.loads(self.columns)
+		fields = ",".join([a['field'] for a in columns])
+		final = """ SELECT symbol,%s from tabSymbol where %s """ % (fields,sql)
 		#frappe.msgprint(final)
 		try:
 			frappe.db.sql("""explain %s""" % final)
