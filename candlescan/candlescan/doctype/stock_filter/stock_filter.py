@@ -21,24 +21,26 @@ class StockFilter(Document):
 	def validate_script(self):
 		if not self.script:
 			frappe.throw("Script is required")
+		self.script = self.script.replace('(','').repalce(')','').repalce('[','').repalce(']','')
 		script = json.loads(self.script)
-		or_blocks = script.split('OR\n')
+		conds = script.splitlines()
 		sql =""
+		or_sql = []
 		and_sqls = []
-		for or_block in or_blocks:
-			and_blocks = or_block.splitlines()
-			for block in and_blocks:
-				nd_or_blocks = block.split(' OR ')
-				and_sql = " OR ".join(nd_or_blocks)
-				and_sql = "( %s )" % and_sql
-				and_sqls.append(and_sql)
-			
-		if and_sqls:
-			if len(and_sqls) > 0:
-				sql = " OR ".join(and_sqls)
+		for cond in conds:
+			if not cond:
+				continue
+			if cond == 'OR':
+				or_sql.append(and_sqls)
+				and_sqls = []
 			else:
-				sql = and_sqls
-				
-		return sql
+				and_sql = "( %s )" % cond
+				and_sqls.append(and_sql)
+		or_sql.append(and_sqls)
+		finalsql = []
+		for s in or_sql:
+			finalsql.append(' AND '.join(s))
+		query = ' OR '.join(finalsql)
+		return query
 		
 		
