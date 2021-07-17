@@ -13,7 +13,9 @@ class StockFilter(Document):
 		sql = self.validate_script()
 		columns = json.loads(self.columns)
 		fields = ",".join([a['field'] for a in columns])
-		final = """ SELECT symbol,%s from tabSymbol where %s """ % (fields,sql)
+		if 'symbol' not in fields:
+			fields = "symbol, "+fields
+		final = """ SELECT %s from tabSymbol where %s """ % (fields,sql)
 		#frappe.msgprint(final)
 		try:
 			frappe.db.sql("""explain %s""" % final)
