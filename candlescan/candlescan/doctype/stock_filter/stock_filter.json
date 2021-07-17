@@ -1,0 +1,81 @@
+{
+ "creation": "2021-07-16 10:48:41.685604",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "title",
+  "column_break_3",
+  "sort_field",
+  "sort_mode",
+  "section_break_6",
+  "script"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sort_field",
+   "fieldtype": "Data",
+   "label": "Sort Field"
+  },
+  {
+   "fieldname": "sort_mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Sort mode",
+   "options": "Ascending\nDescending",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "script",
+   "fieldtype": "Long Text",
+   "in_list_view": 1,
+   "label": "Script",
+   "reqd": 1
+  }
+ ],
+ "modified": "2021-07-16 10:48:41.685604",
+ "modified_by": "Administrator",
+ "module": "CandleScan",
+ "name": "Stock Filter",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
