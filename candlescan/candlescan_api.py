@@ -72,7 +72,7 @@ def logged_in():
 def ressource(user,doctype,method,name=None):
     logged_in()
     if not (user or doctype or method):
-        return handle(False,"Missing data")
+        frappe.throw('Missing request data!')
     
     data = get_request_form_data()
     response = None
@@ -81,15 +81,17 @@ def ressource(user,doctype,method,name=None):
             doc = frappe.get_doc(doctype, name)
             doc.update(data)
             response = doc.save().as_dict()
+            return handle(True,"Success",response)
+            
         else:
             data.update({"doctype": doctype})
             response = frappe.get_doc(data).insert()
+            return handle(True,"Success",response)
             
     if method == "delete" and name:
         frappe.delete_doc(doctype, name, ignore_missing=False)
         response = "ok"
-        
-    return handle(True,"Success",response)
+        return handle(True,"Success",response)
         
 @frappe.whitelist()     
 def send_support(user,message):
