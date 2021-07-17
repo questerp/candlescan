@@ -80,10 +80,9 @@ def ressource(user,doctype,method,name=None):
         if name:
             doc = frappe.get_doc(doctype, name)
             doc.update(data)
-            modified =  frappe.db.sql("""select modified from `tab{0}`
-					where name = %s for update""".format(doctype), name, as_dict=True)
+            modified =  frappe.db.sql("""select modified from `tab{0}` where name = %s for update""".format(doctype), name, as_dict=True)
             if modified:
-		modified = cstr(modified[0].modified)
+                modified = cstr(modified[0].modified)
                 doc.modified = modified
             response = doc.save().as_dict()
             if response:
