@@ -39,7 +39,7 @@ class StockFilter(Document):
 		or_sql.append(and_sqls)
 		finalsql = []
 		for s in or_sql:
-			finalsql.append(' AND '.join(s))
+			finalsql.append( "(%s)" % (' AND '.join(s)))
 		query = ' OR '.join(finalsql)
 		return query
 		
