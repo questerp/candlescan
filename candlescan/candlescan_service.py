@@ -10,6 +10,9 @@ from rq.registry import StartedJobRegistry
 from rq import Connection, Queue, Worker
 from candlescan import handle
 
+def clear_user_notifications():
+    frappe.db.sql("""delete from `tabUser Notification` where user not null """)
+    frappe.db.commit()
 
 def insert_symbol(symbol):
     symbol.flags.ignore_links = True
