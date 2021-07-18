@@ -15,7 +15,7 @@ class StockFilter(Document):
 		fields = ",".join([a['field'] for a in columns])
 		if 'symbol' not in fields:
 			fields = "symbol, "+fields
-		final = """ SELECT %s from tabSymbol where price > 0 %s """ % (fields,sql)
+		final = """ SELECT %s from tabSymbol where price > 0 and %s """ % (fields,sql)
 		#frappe.msgprint(final)
 		try:
 			frappe.db.sql("""explain %s""" % final)
