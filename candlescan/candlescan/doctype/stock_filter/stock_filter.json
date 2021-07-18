@@ -6,11 +6,15 @@
  "field_order": [
   "user",
   "title",
+  "refresh",
   "column_break_3",
   "sort_field",
   "sort_mode",
   "section_break_6",
-  "script"
+  "script",
+  "sql_script",
+  "columns",
+  "filters"
  ],
  "fields": [
   {
@@ -35,7 +39,8 @@
   {
    "fieldname": "sort_field",
    "fieldtype": "Data",
-   "label": "Sort Field"
+   "label": "Sort Field",
+   "reqd": 1
   },
   {
    "fieldname": "sort_mode",
@@ -55,9 +60,31 @@
    "in_list_view": 1,
    "label": "Script",
    "reqd": 1
+  },
+  {
+   "fieldname": "sql_script",
+   "fieldtype": "Long Text",
+   "label": "Sql Script"
+  },
+  {
+   "fieldname": "columns",
+   "fieldtype": "Long Text",
+   "label": "Columns",
+   "reqd": 1
+  },
+  {
+   "default": "10",
+   "fieldname": "refresh",
+   "fieldtype": "Int",
+   "label": "Refresh (minutes)"
+  },
+  {
+   "fieldname": "filters",
+   "fieldtype": "Long Text",
+   "label": "Filters"
   }
  ],
- "modified": "2021-07-16 10:48:41.685604",
+ "modified": "2021-07-18 11:34:21.246573",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Stock Filter",
