@@ -99,7 +99,14 @@ def ressource(user,doctype,method,name=None):
         response = "ok"
         if response:
                 return handle(True,"Deleted",response)
-            
+@frappe.whitelist()     
+def get_notifications(user):
+    logged_in()
+    if not user:
+        frappe.throw("Missing data")         
+    notifs = frappe.get_all("User Notification", fields=['user','message','creation'],filters={"user":user})
+    return handle(True,"Success",notifs)
+    
 @frappe.whitelist()     
 def run_stock_filter(user,name):
     logged_in()
