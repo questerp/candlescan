@@ -95,6 +95,7 @@ scheduler_events = {
 		
  	],
  	"daily": [
+		"candlescan.candlescan_service.clear_user_notifications"
  	],
  	"hourly": [
 		"candlescan.task_fundamentals.process"
