@@ -480,7 +480,7 @@ def get_platform_data(user):
         return handle(Flase,"User is required")
     alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
-    scanners = frappe.db.sql(""" select config,title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+    scanners = frappe.db.sql(""" select default_config,title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
     customScanners = frappe.db.sql(""" select title,scanner,name,user,config,target from `tabCustom Scanner` where user='%s' """ % (user),as_dict=True)
     layouts = frappe.db.sql(""" select title,name,config  from `tabLayout` where user='%s' """ % (user),as_dict=True)
     watchlists = frappe.db.sql(""" select name,watchlist,symbols from `tabWatchlist` where user='%s' """ % (user),as_dict=True)
