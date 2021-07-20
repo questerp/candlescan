@@ -6,6 +6,8 @@ from candlescan.candlescan_service import get_last_broadcast
 from frappe.utils import getdate,today,cstr
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
 from frappe.api import get_request_form_data
+from candlescan.worker_prices import get_prices
+
 import requests
 
 @frappe.whitelist()
@@ -99,6 +101,17 @@ def ressource(user,doctype,method,name=None):
         response = "ok"
         if response:
                 return handle(True,"Deleted",response)
+            
+@frappe.whitelist()     
+def get_prices(user,symbol,period_type, period, frequency_type, frequency):
+    logged_in()
+    if not (user or symbol or period_type or period or frequency_type or frequency):
+        frappe.throw("Missing data")         
+        
+    data = get_prices(symbol,period_type, period, frequency_type, frequency)
+    return handle(True,"Success",data)
+    
+    
 @frappe.whitelist()     
 def get_notifications(user):
     logged_in()
