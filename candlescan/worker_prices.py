@@ -9,4 +9,5 @@ def get_prices(symbol,period_type, period, frequency_type, frequency):
 	period = cint(period)
 	frequency = cint(frequency)
 	data = share.get_historical(period_type,period,frequency_type,frequency,"dict")
+	data = [a for a in data if a['low'] and a['low']>0]
 	return data
