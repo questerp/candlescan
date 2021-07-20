@@ -26,7 +26,7 @@ class Share(object):
         self.symbol = symbol
 
 
-    def get_historical(self, period_type, period, frequency_type, frequency):
+    def get_historical(self, period_type, period, frequency_type, frequency,mode="cascade"):
         data = self._download_symbol_data(period_type, period,
                                           frequency_type, frequency)
 
@@ -48,16 +48,21 @@ class Share(object):
 
         if 'timestamp' not in data:
             return None
-
-        return_data = {
-            'timestamp': [x * 1000 for x in data['timestamp']],
-            'open': data['indicators']['quote'][0]['open'],
-            'high': data['indicators']['quote'][0]['high'],
-            'low': data['indicators']['quote'][0]['low'],
-            'close': data['indicators']['quote'][0]['close'],
-            'volume': data['indicators']['quote'][0]['volume']
-        }
-
+        
+        if mode=="cascade":
+            return_data = {
+                'timestamp': [x * 1000 for x in data['timestamp']],
+                'open': data['indicators']['quote'][0]['open'],
+                'high': data['indicators']['quote'][0]['high'],
+                'low': data['indicators']['quote'][0]['low'],
+                'close': data['indicators']['quote'][0]['close'],
+                'volume': data['indicators']['quote'][0]['volume']
+            }
+        elif mode=="dict":
+            quotes = data['indicators']['quote'][0]
+            return_data = [{'time':data['timestamp'][a]*1000,'open':quotes['open'][a],'close':quotes['close'][a],'high':quotes['high'][a],'low':quotes['low'][a]} for a in range(len(data['timestamp']))]
+        else:
+            raise ValueError('Invalid mode: ' % mode)
         return return_data
 
 
