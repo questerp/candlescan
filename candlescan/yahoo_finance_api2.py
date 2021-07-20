@@ -60,7 +60,7 @@ class Share(object):
             }
         elif mode=="dict":
             quotes = data['indicators']['quote'][0]
-            return_data = [{'time':data['timestamp'][a]*1000,'open':quotes['open'][a],'close':quotes['close'][a],'high':quotes['high'][a],'low':quotes['low'][a]} for a in range(len(data['timestamp']))]
+            return_data = [{'timestamp':data['timestamp'][a]*1000,'open':quotes['open'][a],'close':quotes['close'][a],'high':quotes['high'][a],'low':quotes['low'][a]} for a in range(len(data['timestamp']))]
         else:
             raise ValueError('Invalid mode: ' % mode)
         return return_data
