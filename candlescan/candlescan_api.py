@@ -104,7 +104,7 @@ def ressource(user,doctype,method,name=None):
             
 @frappe.whitelist()     
 def get_prices(user,symbol,period_type, period, frequency_type, frequency):
-    logged_in()
+    #logged_in()
     if not (user or symbol or period_type or period or frequency_type or frequency):
         frappe.throw("Missing data")         
         
