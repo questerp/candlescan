@@ -35,6 +35,9 @@ def get_last_broadcast(doctype):
 
 def broadcast(doctype,scanner_id,interval,data):
     redis = get_redis_server()
+    if data:
+        for i in data:
+            i['id'] = frappe.generate_hash("", 5)
     parsed_data = frappe.as_json({"scanner_id":scanner_id,"data":data})
     if doctype and data:
         doc = frappe.get_doc(doctype)
