@@ -103,7 +103,7 @@ def ressource(user,doctype,method,name=None):
                 return handle(True,"Deleted",response)
             
 @frappe.whitelist()     
-def get_prices(user,symbol,period_type, period, frequency_type, frequency):
+def get_symbol_prices(user,symbol,period_type, period, frequency_type, frequency):
     #logged_in()
     if not (user or symbol or period_type or period or frequency_type or frequency):
         frappe.throw("Missing data")         
