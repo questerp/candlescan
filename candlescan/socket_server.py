@@ -46,5 +46,5 @@ if __name__ == '__main__':
 	asyncio.get_event_loop().run_until_complete(asyncio.gather(
 		start_server,
 		respond(),
-		return_exceptions=True))
+		return_exceptions=False))
 	asyncio.get_event_loop().run_forever()
