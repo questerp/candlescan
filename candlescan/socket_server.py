@@ -3,38 +3,43 @@ import uvicorn
 import asyncio
 import frappe
 from candlescan.candlescan_api import validate_token
+from candlescan.broadcaster import handle
+from frappe.realtime import get_redis_server
 
-redis_server = None
-redis_addr = "redis://localhost:12000"
-#mgr = socketio.RedisManager(redis_addr)
 
 sio = socketio.AsyncServer(async_mode='asgi')
 app = socketio.ASGIApp(sio)
 
-def get_redis_server():
-	"""returns redis_socketio connection."""
-	global redis_server
-	print("get redis")
-	if not redis_server:
-		from redis import Redis
-		redis_server = Redis.from_url(redis_addr)
-	return redis_server
 
 @sio.event
-async def my_message(sid, data):
-	print('message ', data)
-	return "OK", 123
+async def to_server(sid, data):
+	if not data or not validate_data(data):
+		await sio.emit('from_server', 'Invalide data format', room=sid)
+		return
+	response = handle(sid,data)
+	await sio.emit('from_server', response, room=sid)
+
+@sio.event	
+async def to_client(sid, data):
+	if not data or not validate_data(data):
+		frappe.throw('Invalide data format')
+	await sio.emit('from_server', data, room=sid)
+	
 
 @sio.event
 async def connect(sid, environ, auth):
 	validated = True# validate_auth(auth)
 	if validated:
 		user = auth['user']
-		get_redis_server().hset("sockets",user,sid)	
+		get_redis_server().hset("sockets",user,sid)
+		get_redis_server().hset("sockets",sid,user)
 		await sio.emit('candlescan', 'Connected', room=sid)
 	else:
 		return False
-		
+
+def validate_data(data):
+	return 'action' in data and 'data' in data
+	
 def validate_auth(auth):
 	if not auth or ('user' not in auth) or ('user_key' not in auth) or ('token' not in auth) or not validate_token(auth['user_key'],auth['token']):
 		return False
@@ -43,16 +48,10 @@ def validate_auth(auth):
 	
 @sio.event
 def disconnect(sid):
-	print('disconnect ', sid)
-
+	user = get_redis_server().hget("sockets",sid)
+	get_redis_server().hdel("sockets",user)
+	get_redis_server().hdel("sockets",sid)
 		
 def run():
-	#start_server = websockets.serve(handler,"0.0.0.0",  9002)
 	print("Starting socket at 9002")
 	uvicorn.run(app, host='0.0.0.0', port=9002)
-
-	#c = get_redis_server()
-	#print(c)
-	#asyncio.get_event_loop().run_until_complete(start_server )
-	#asyncio.get_event_loop().run_forever()
-
