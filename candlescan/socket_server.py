@@ -1,6 +1,7 @@
 import socketio
 import uvicorn
 import asyncio
+import frappe
 from candlescan.candlescan_api import validate_token
 
 redis_server = None
