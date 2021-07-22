@@ -5,8 +5,9 @@ import asyncio
 
 redis_server = None
 redis_addr = "redis://localhost:12000"
-mgr = socketio.RedisManager(redis_addr)
-sio = socketio.Server(async_mode='asgi',client_manager=mgr)
+#mgr = socketio.RedisManager(redis_addr)
+
+sio = socketio.AsyncServer(async_mode='asgi')
 app = socketio.ASGIApp(sio)
 
 def get_redis_server():
