@@ -20,9 +20,9 @@ def get_redis_server():
 	return redis_server
 
 @sio.event
-def my_message(sid, data):
+async def my_message(sid, data):
 	print('message ', data)
-	return "Hello"
+	return "OK", 123
 
 @sio.event
 def connect(sid, environ, auth):
