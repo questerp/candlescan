@@ -13,14 +13,14 @@ register_queue = queue.Queue()
 response_queue = queue.Queue()
 
 async def respond():
-    while 1:
-        try:
-            if response_queue.empty():
-                await asyncio.sleep(0.05)
-                continue
-            response = response_queue.get()
-            await response["subscriber"].send(json.dumps(response["response"]))
-        except:
+	while 1:
+		try:
+			if response_queue.empty():
+				await asyncio.sleep(0.05)
+				continue
+			response = response_queue.get()
+			await response["subscriber"].send(json.dumps(response["response"]))
+		except:
 			print("error in respond")
 	
 async def handler(websocket, path):
