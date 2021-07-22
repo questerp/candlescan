@@ -29,7 +29,7 @@ def disconnect(sid):
 if __name__ == '__main__':
 	#start_server = websockets.serve(handler,"0.0.0.0",  9002)
 	print("Starting socket at 9002")
-	
+	app.run()
 
 	#c = get_redis_server()
 	#print(c)
