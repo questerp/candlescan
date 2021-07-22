@@ -41,6 +41,13 @@ def set_token(user,user_key):
     frappe.local.cookie_manager.set_cookie("user_token", user_token)
     return user_token
 
+def validate_token(user_key,token):
+    if token and user_key:
+        web_session = frappe.db.sql(""" select token, user_key from `tabWeb Session` where token='%s'""" % token,as_dict=True)
+        return (web_session and web_session[0].user_key == user_key)
+    else:
+        return false
+            
 def logged_in():
     cookie = cookies.BaseCookie()
     cookie_headers = frappe.request.headers.get('Cookie') 
@@ -57,10 +64,13 @@ def logged_in():
         #return handle(False,"Please login",{'header':frappe.request.headers})
         frappe.throw("NO DATA %s " % (headd))
     if user_token:
-        web_session = frappe.db.sql(""" select token, user_key from `tabWeb Session` where token='%s'""" % user_token,as_dict=True)
-        if web_session and web_session[0].user_key == user_key:
+        if validate_token(user_key,user_token):
             set_session()
             return
+        #web_session = frappe.db.sql(""" select token, user_key from `tabWeb Session` where token='%s'""" % user_token,as_dict=True)
+        #if web_session and web_session[0].user_key == user_key:
+        #    set_session()
+        #    return
         else:
             frappe.throw('Forbiden, Please login to continue.')
     else:
