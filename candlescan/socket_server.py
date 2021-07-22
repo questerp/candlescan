@@ -15,7 +15,6 @@ response_queue = queue.Queue()
 async def respond():
 	while 1:
 		try:
-			print("respond")
 			if response_queue.empty():
 				await asyncio.sleep(0.05)
 				continue
