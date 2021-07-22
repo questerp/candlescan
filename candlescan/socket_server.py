@@ -30,9 +30,9 @@ async def respond(user,data):
 	
 async def handler(websocket, path):
 	try:
-		conn = get_redis_server()
-		print("Starting handler")
 		
+		print("Starting handler")
+		conn = get_redis_server()
 		if not conn.hexists("sockets",websocket):
 			conn.hset("sockets",websocket,"socket")
 			
