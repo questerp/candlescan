@@ -3,9 +3,7 @@ import socketio
 
 redis_server = None
 redis_addr = "redis://localhost:12000"
-mgr = socketio.RedisManager(redis_addr)
-sio = socketio.Server(client_manager=mgr)
-	
+
 def get_redis_server():
 	"""returns redis_socketio connection."""
 	global redis_server
@@ -26,9 +24,13 @@ def disconnect(sid):
 
 		
 if __name__ == '__main__':
-	
+	global sio
 	#start_server = websockets.serve(handler,"0.0.0.0",  9002)
 	print("Starting socket at 9002")	
+	mgr = socketio.RedisManager(redis_addr)
+	sio = socketio.Server(async_mode='threading',client_manager=mgr)
+	app = socketio.WSGIApp(sio)
+
 	#c = get_redis_server()
 	#print(c)
 	#asyncio.get_event_loop().run_until_complete(start_server )
