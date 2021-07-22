@@ -20,8 +20,7 @@ def get_redis_server():
 async def respond(user,data):
 	try:
 		if data:
-			conn = get_redis_server()
-			socket = conn.hget(user,"socket")
+			socket = redis_server.hget(user,"socket")
 			if socket:
 				print("socket ",socket)
 				await socket.send(json.dumps(data))
@@ -32,9 +31,8 @@ async def handler(websocket, path):
 	try:
 		
 		print("Starting handler")
-		conn = get_redis_server()
-		if not conn.hexists("sockets",websocket):
-			conn.hset("sockets",websocket,"socket")
+		if not redis_server.hexists("sockets",websocket):
+			redis_server.hset("sockets",websocket,"socket")
 			
 		print("Got connection to redis")
 		async for msg in websocket:
@@ -53,6 +51,6 @@ if __name__ == '__main__':
 	print("Starting socket at 9002")	
 	c = get_redis_server()
 	print(c)
-	asyncio.get_event_loop().run_until_complete(start_server, return_exceptions=True)
+	asyncio.get_event_loop().run_until_complete(start_server, return_exceptions=False)
 	asyncio.get_event_loop().run_forever()
 
