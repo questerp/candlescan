@@ -19,6 +19,7 @@ def get_redis_server():
 async def respond(user,data):
 	try:
 		if data:
+			conn = get_redis_server()
 			socket = conn.hget(user,"socket")
 			if socket:
 				print("socket ",socket)
@@ -28,6 +29,7 @@ async def respond(user,data):
 	
 async def handler(websocket, path):
 	try:
+		conn = get_redis_server()
 		if not conn.hexists("sockets",websocket):
 			conn.hset("sockets",websocket,"socket")
 		print("Starting handler")
@@ -44,9 +46,7 @@ async def handler(websocket, path):
 		
 if __name__ == '__main__':
 	start_server = websockets.serve(handler,"0.0.0.0",  9002)
-	print("Starting socket at 9002")
-	global conn
-	conn = get_redis_server()	
+	print("Starting socket at 9002")	
 	asyncio.get_event_loop().run_until_complete(start_server, return_exceptions=False)
 	asyncio.get_event_loop().run_forever()
 
