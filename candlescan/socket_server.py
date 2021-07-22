@@ -37,7 +37,7 @@ async def handler(websocket, path):
 		async for msg in websocket:
 			print(msg)
 			await websocket.send("Hello!")
-			redis_server.publish("socket",msg)
+			#redis_server.publish("socket",msg)
 			#response_queue.put({"subscriber":websocket,"data":"data from response_queue"})
 				
 	except Exception as e:
