@@ -27,11 +27,10 @@ async def handler(websocket, path):
 	try:
 		print("Starting handler")
 		async for msg in websocket:
-			data = json.loads(msg)
-			print(data)
+			print(msg)
 			if websocket not in subscribers.keys():
 				print("new socket %s" % websocket)
-				subscribers[sub] = []
+				subscribers[websocket] = []
 				
 			websocket.send("Hello!")
 			response_queue.put("data from response_queue")
