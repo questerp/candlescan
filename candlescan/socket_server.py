@@ -34,7 +34,7 @@ async def handler(websocket, path):
 				subscribers[websocket] = []
 				
 			await websocket.send("Hello!")
-			response_queue.put("data from response_queue")
+			response_queue.put({"subscriber":websocket,"data":"data from response_queue"})
 				
 	except Exception as e:
 		print(e)
