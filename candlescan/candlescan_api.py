@@ -496,49 +496,6 @@ def get_alerts(user):
     alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
     return handle(True,"Success",alerts)
     
-@frappe.whitelist()        
-def get_platform_data(user):    
-    logged_in()
-    if not user:
-        return handle(Flase,"User is required")
-    alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
-    extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
-    scanners = frappe.db.sql(""" select default_config,title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
-    customScanners = frappe.db.sql(""" select title,scanner,name,user,config,target from `tabCustom Scanner` where user='%s' """ % (user),as_dict=True)
-    layouts = frappe.db.sql(""" select title,name,config  from `tabLayout` where user='%s' """ % (user),as_dict=True)
-    watchlists = frappe.db.sql(""" select name,watchlist,symbols from `tabWatchlist` where user='%s' """ % (user),as_dict=True)
-    filters = frappe.db.sql(""" select sound,notify_all,name,filters,refresh,columns,title,script,sort_field,sort_mode from `tabStock Filter` where user='%s' """ % (user),as_dict=True)
-    fExtras = []
-    if extras:
-        extras = extras.splitlines()
-        for ex in extras:
-            name, label, value_type,doctype = ex.split(':')
-            fExtras.append({"field":name,"header":label,"value_type":value_type,"doctype":doctype})
-    for scanner in scanners:
-        signautre_method = "%s.signature" % scanner.method
-        config_method = "%s.get_config" % scanner.method
-        signature = frappe.call(signautre_method, **frappe.form_dict)
-        config = frappe.call(config_method, **frappe.form_dict)
-        scanner['signature'] = signature
-        scanner['config'] = config
-
-    return handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
-            
-#@frappe.whitelist()        
-#def get_alerts(user):
-#    logged_in()
-#    if not user:
-#        return handle(Flase,"User is required")
-#    
-#    alert_fields = frappe.db.get_single_value('Candlescan Settings', 'alert_fields')
-#    fAlerts = []
-#    if alert_fields:
-#        alert_fields = alert_fields.splitlines()
-#        for ex in alert_fields:
-#            name, label, value_type = ex.split(':')
-#            fAlerts.append({"name":name,"label":label,"value_type":value_type})
-#    alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
-#    return handle(True,"Success",{"alerts":alerts,"alert_fields":fAlerts})
 
 
 @frappe.whitelist()        
