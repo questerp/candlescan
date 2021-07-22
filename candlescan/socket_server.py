@@ -16,7 +16,7 @@ async def to_server(sid, data):
 	if not data or not validate_data(data):
 		await sio.emit('from_server', 'Invalide data format', room=sid)
 		return
-	response = handle(sid,data)
+	response = await handle(sid,data)
 	await sio.emit('from_server', response, room=sid)
 
 @sio.event	
