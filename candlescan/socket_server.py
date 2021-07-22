@@ -29,6 +29,7 @@ async def my_message(sid, data):
 async def connect(sid, environ, auth):
 	validated = True# validate_auth(auth)
 	if validated:
+		user = auth['user']
 		get_redis_server().hset("sockets",user,sid)	
 		await sio.emit('candlescan', 'Connected', room=sid)
 	else:
