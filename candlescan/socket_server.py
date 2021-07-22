@@ -36,8 +36,8 @@ async def handler(websocket, path):
 			websocket.send("Hello!")
 			response_queue.put("data from response_queue")
 				
-	except Exception:
-		print("handler Exception")
+	except Exception as e:
+		print(e)
 	
 	print("Done")
 		
