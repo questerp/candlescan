@@ -22,5 +22,5 @@ async def handle(sid,data):
 		get_redis_server().hset("bars",{"sid":sid,"symbol":symbol,"timeframe":timeframe})
 		return handle(True,"Working on it")
 
-def ressource(data):
+def broadcast(sid,data):
 	pass
