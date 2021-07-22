@@ -1,6 +1,6 @@
 import socketio
 
-
+global sio
 redis_server = None
 redis_addr = "redis://localhost:12000"
 
@@ -24,7 +24,6 @@ def disconnect(sid):
 
 		
 if __name__ == '__main__':
-	global sio
 	#start_server = websockets.serve(handler,"0.0.0.0",  9002)
 	print("Starting socket at 9002")	
 	mgr = socketio.RedisManager(redis_addr)
