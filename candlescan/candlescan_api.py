@@ -5,7 +5,6 @@ from frappe.utils import cstr
 from candlescan.candlescan_service import get_last_broadcast
 from frappe.utils import getdate,today,cstr
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
-from frappe.api import get_request_form_data
 from candlescan.worker_prices import get_prices
 
 import requests
@@ -85,7 +84,8 @@ def ressource(user,doctype,method,name=None):
     logged_in()
     if not (user or doctype or method):
         frappe.throw('Missing request data!')
-    
+        
+    from frappe.api import get_request_form_data
     data = get_request_form_data()
     response = None
     if method == "save":
