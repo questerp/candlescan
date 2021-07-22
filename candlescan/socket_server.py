@@ -3,7 +3,9 @@ import socketio
 
 redis_server = None
 redis_addr = "redis://localhost:12000"
-
+mgr = socketio.RedisManager(redis_addr)
+sio = socketio.Server(client_manager=mgr)
+	
 def get_redis_server():
 	"""returns redis_socketio connection."""
 	global redis_server
@@ -29,10 +31,6 @@ if __name__ == '__main__':
 	print("Starting socket at 9002")	
 	#c = get_redis_server()
 	#print(c)
-	global sio
-	mgr = socketio.RedisManager(redis_addr)
-	sio = socketio.Server(client_manager=mgr)
-	
 	#asyncio.get_event_loop().run_until_complete(start_server )
 	#asyncio.get_event_loop().run_forever()
 
