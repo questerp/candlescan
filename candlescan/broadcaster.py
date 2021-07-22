@@ -1,7 +1,7 @@
 import frappe
 from frappe.realtime import get_redis_server
 from candlescan.candlescan_api import handle
-
+from candlescan.platform import get_platform_data
 
 def handle(sid,data):
 	action = data['action']
@@ -10,7 +10,7 @@ def handle(sid,data):
 		return handle(False,"Connection lost")
 	# return as handle always
 	if action == "get_platform_data":
-		return candlescan.platform.get_platform_data(user)
+		return get_platform_data(user)
 
 
 def ressource(data):
