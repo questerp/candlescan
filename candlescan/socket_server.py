@@ -26,8 +26,8 @@ async def my_message(sid, data):
 
 @sio.event
 def connect(sid, environ, auth):
-	print('connect ', sid)
-	return "Hello"
+	print('connect ', auth)
+	sio.emit('my_message', {'auth': auth}, room=sid)
 
 @sio.event
 def disconnect(sid):
