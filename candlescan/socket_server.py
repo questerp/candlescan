@@ -7,7 +7,7 @@ import queue
 redis_server = None
 redis_addr = "redis://localhost:12311"
 
-async def get_redis_server():
+def get_redis_server():
 	"""returns redis_socketio connection."""
 	global redis_server
 	print("get redis")
