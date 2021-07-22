@@ -4,6 +4,7 @@ import logging
 import websockets
 import queue
 
+redis_server = None
 redis_addr = "redis://localhost:12311"
 
 def get_redis_server():
