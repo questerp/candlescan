@@ -3,9 +3,17 @@ import json
 import logging
 import websockets
 import queue
-from frappe.realtime import get_redis_server
 
-conn = get_redis_server()
+redis_addr = "redis://localhost:12311"
+
+def get_redis_server():
+	"""returns redis_socketio connection."""
+	global redis_server
+	if not redis_server:
+		from redis import Redis
+		redis_server = Redis.from_url(redis_addr)
+	return redis_server
+
 
 async def respond(user,data):
 	try:
@@ -36,5 +44,8 @@ async def handler(websocket, path):
 if __name__ == '__main__':
 	start_server = websockets.serve(handler,"0.0.0.0",  9002)
 	print("Starting socket at 9002")
+	global conn = None
+	conn = get_redis_server()	
 	asyncio.get_event_loop().run_until_complete(start_server, return_exceptions=False)
 	asyncio.get_event_loop().run_forever()
+
