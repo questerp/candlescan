@@ -10,6 +10,7 @@ redis_addr = "redis://localhost:12311"
 async def get_redis_server():
 	"""returns redis_socketio connection."""
 	global redis_server
+	print("get redis")
 	if not redis_server:
 		from redis import Redis
 		redis_server = Redis.from_url(redis_addr)
@@ -30,9 +31,12 @@ async def respond(user,data):
 async def handler(websocket, path):
 	try:
 		conn = get_redis_server()
+		print("Starting handler")
+		
 		if not conn.hexists("sockets",websocket):
 			conn.hset("sockets",websocket,"socket")
-		print("Starting handler")
+			
+		print("Got connection to redis")
 		async for msg in websocket:
 			print(msg)
 			await websocket.send("Hello!")
