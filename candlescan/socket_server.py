@@ -20,7 +20,7 @@ async def respond():
 				continue
 			response = response_queue.get()
 			print("respond",response)
-			await response["subscriber"].send(response)
+			await response["subscriber"].send(response['data'])
 		except:
 			print("error in respond")
 	
