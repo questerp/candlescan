@@ -1,7 +1,7 @@
 import socketio
 import uvicorn
 import asyncio
-import frappe
+import frappe, json
 from candlescan.candlescan_api import validate_token
 from candlescan.broadcaster import handle
 from frappe.realtime import get_redis_server
@@ -16,6 +16,7 @@ async def to_server(sid, data):
 	if not data or not validate_data(data):
 		await sio.emit('from_server', 'Invalide data format', room=sid)
 		return
+	data = json.loads(data)
 	response = handle(sid,data)
 	await sio.emit('from_server', response, room=sid)
 
