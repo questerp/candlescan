@@ -31,8 +31,8 @@ async def respond(user,data):
 async def handler(websocket, path):
 	try:
 		print("Starting handler")
-		#if not redis_server.hexists("sockets",websocket):
-		#	redis_server.hset("sockets",websocket,"socket")
+		if not redis_server.hexists("sockets",websocket):
+			redis_server.hset("sockets",websocket,"socket")
 			
 		print("Got connection to redis")
 		async for msg in websocket:
