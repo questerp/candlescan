@@ -41,8 +41,8 @@ async def handler(websocket, path):
 	print("Done")
 		
 if __name__ == '__main__':
-	start_server = websockets.serve(handler, "localhost", 9001)
-	print("Starting socket at 8765")
+	start_server = websockets.serve(handler,  9002)
+	print("Starting socket at 9002")
 	asyncio.get_event_loop().run_until_complete(asyncio.gather(
 		start_server,
 		respond(),
