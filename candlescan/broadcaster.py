@@ -10,7 +10,7 @@ def handle(sid,data):
 		return handle(False,"Connection lost")
 	# return as handle always
 	if action == "get_platform_data":
-		return candlescan.paltform.get_platform_data(user)
+		return candlescan.platform.get_platform_data(user)
 
 
 def ressource(data):
