@@ -8,7 +8,7 @@ def handle(sid,data):
 	user =  get_redis_server().hget("sockets",sid)
 	if not user:
 		return handle(False,"Connection lost")
-	user = json.loads(user)
+	#user = json.loads(user)
 	# return as handle always
 	if action == "get_platform_data":
 		return get_platform_data(user)
