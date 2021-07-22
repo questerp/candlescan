@@ -31,8 +31,8 @@ async def connect(sid, environ, auth):
 	validated = True# validate_auth(auth)
 	if validated:
 		user = auth['user']
-		get_redis_server().hset("sockets",user,sid)
-		get_redis_server().hset("sockets",sid,user)
+		get_redis_server().set("sockets",user,sid)
+		get_redis_server().set("sockets",sid,user)
 		await sio.emit('candlescan', 'Connected', room=sid)
 	else:
 		return False
@@ -48,9 +48,9 @@ def validate_auth(auth):
 	
 @sio.event
 def disconnect(sid):
-	user = get_redis_server().hget("sockets",sid)
-	get_redis_server().hdel("sockets",user)
-	get_redis_server().hdel("sockets",sid)
+	user = get_redis_server().get("sockets",sid)
+	get_redis_server().del("sockets",user)
+	get_redis_server().del("sockets",sid)
 		
 def run():
 	print("Starting socket at 9002")
