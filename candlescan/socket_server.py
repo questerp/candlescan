@@ -1,7 +1,7 @@
 import socketio
 import uvicorn
 import asyncio
-
+from candlescan.candlescan_api import validate_token
 
 redis_server = None
 redis_addr = "redis://localhost:12000"
@@ -26,8 +26,12 @@ async def my_message(sid, data):
 
 @sio.event
 async def connect(sid, environ, auth):
-	print('connect ', auth)
-	await sio.emit('my_message', {'auth': auth}, room=sid)
+	if not auth or ('user' not in auth) or ('user_key' not in auth) or ('token' not in auth):
+		raise ConnectionRefusedError('Missing header infos, authentication failed')
+	if not validate_token(auth['user_key'],auth['token']):
+		raise ConnectionRefusedError('Invalide token, authentication failed')
+	get_redis_server().hset("sockets",user,sid)	
+	await sio.emit('candlescan', 'Connected', room=sid)
 
 @sio.event
 def disconnect(sid):
