@@ -53,6 +53,6 @@ if __name__ == '__main__':
 	print("Starting socket at 9002")	
 	c = get_redis_server()
 	print(c)
-	asyncio.get_event_loop().run_until_complete(start_server, return_exceptions=False)
+	asyncio.get_event_loop().run_until_complete(start_server, return_exceptions=True)
 	asyncio.get_event_loop().run_forever()
 
