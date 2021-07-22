@@ -14,7 +14,13 @@ async def handle(sid,data):
 	# return as handle always
 	if action == "get_platform_data":
 		return get_platform_data(user)
-
+	if action == "get_extras":
+		return handle(True,"Working on it")
+	if action == "subscribe_bars":
+		symbol = data['symbol']
+		timeframe = data['timeframe']
+		get_redis_server().hset("bars",{"sid":sid,"symbol":symbol,"timeframe":timeframe})
+		return handle(True,"Working on it")
 
 def ressource(data):
 	pass
