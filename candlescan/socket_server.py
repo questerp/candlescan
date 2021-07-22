@@ -27,7 +27,8 @@ async def handler(websocket, path):
 	try:
 		print("Starting handler")
 		async for msg in websocket:
-			print(msg)
+			data = json.loads(msg)
+			print(data)
 			if websocket not in subscribers.keys():
 				print("new socket %s" % websocket)
 				subscribers[sub] = []
@@ -41,7 +42,7 @@ async def handler(websocket, path):
 	print("Done")
 		
 if __name__ == '__main__':
-	start_server = websockets.serve(handler,  9002)
+	start_server = websockets.serve(handler,"0.0.0.0",  9002)
 	print("Starting socket at 9002")
 	asyncio.get_event_loop().run_until_complete(asyncio.gather(
 		start_server,
