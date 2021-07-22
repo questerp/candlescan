@@ -19,7 +19,8 @@ async def respond():
 				await asyncio.sleep(0.05)
 				continue
 			response = response_queue.get()
-			await response["subscriber"].send(json.dumps(response["response"]))
+			print("respond",response)
+			await response["subscriber"].send(response)
 		except:
 			print("error in respond")
 	
@@ -32,7 +33,7 @@ async def handler(websocket, path):
 				print("new socket %s" % websocket)
 				subscribers[websocket] = []
 				
-			websocket.send("Hello!")
+			await websocket.send("Hello!")
 			response_queue.put("data from response_queue")
 				
 	except Exception as e:
