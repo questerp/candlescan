@@ -39,7 +39,7 @@ def disconnect(sid):
 	print('disconnect ', sid)
 
 		
-if __name__ == '__main__':
+def run():
 	#start_server = websockets.serve(handler,"0.0.0.0",  9002)
 	print("Starting socket at 9002")
 	uvicorn.run(app, host='0.0.0.0', port=9002)
