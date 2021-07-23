@@ -5,7 +5,7 @@ from frappe.utils import cstr
 import asyncio
 import socketio
 
-sio = socketio.AsyncClient(reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
+sio = socketio.AsyncClient(logger=True, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 	
 async def run():
