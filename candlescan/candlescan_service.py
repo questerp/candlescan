@@ -19,7 +19,10 @@ def clear_user_notifications():
 def start_microservices():
     from candlescan.platform import run as run_platform
     from candlescan.broadcaster import run as run_broadcaster
+    from candlescan.socket_server import run as run_socket_server
+    
     asyncio.get_event_loop().run_until_complete(asyncio.gather(
+        run_socket_server(),
         run_platform(),
         run_broadcaster(),
         return_exceptions=True
