@@ -74,12 +74,7 @@ def disconnect(sid):
 	get_redis_server().hdel("sockets",user)
 	get_redis_server().hdel("sockets",sid)
 		
-def run():
-	try:
-        # make sure we have an event loop, if not create a new one
-		asyncio.get_event_loop()	
-	except RuntimeError:
-		asyncio.set_event_loop(asyncio.new_event_loop())
+async def run():
 	print("Starting socket at 9002")
 	web.run_app(app, port=9002)
 	
