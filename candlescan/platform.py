@@ -1,7 +1,7 @@
 import frappe,json
 from frappe.realtime import get_redis_server
 from candlescan.candlescan_api import handle
-from candlescan.socket_server import get_user
+from candlescan.socket_utils import get_user,validate_data,build_response
 from frappe.utils import cstr
 import socketio
 import asyncio
@@ -21,44 +21,46 @@ async def run():
 
 @sio.event
 async def ressource(data):
-	source_sid = data['source_sid']
-	user = get_user(source_sid)
-	if not user:
-		await sio.emit("send_to_client",{"event":"ressource","to":source_sid,"data":"Not connected"})
+	validated = validate_data(data,["source_id","doctype","method"])
+	source_sid = data.get('source_sid')
+	if not (validated or source_sid):
+		await sio.emit("send_to_client",build_response("ressource",source_sid,"Invalid data format")
 		return
-	
+			       
+	user = get_user(source_sid)
 	doctype = data.get("doctype")
 	name = data.get("name")
 	method = data.get("method")
+	document = data.get("doc")
 	
-	response = None
 	if method == "save":
 		if name:
 			doc = frappe.get_doc(doctype, name)
-			doc.update(data)
+			doc.update(document)
 			modified =  frappe.db.sql("""select modified from `tab{0}` where name = %s for update""".format(doctype), name, as_dict=True)
 			if modified:
-			modified = cstr(modified[0].modified)
-			doc.modified = modified
+				modified = cstr(modified[0].modified)
+				doc.modified = modified
 			response = doc.save().as_dict()
 			if response:
-			return handle(True,"Saved",response)
+				await sio.emit("send_to_client",build_response("ressource",source_sid,response)
 
 		else:
-			data.update({"doctype": doctype})
+			document.update({"doctype": doctype})
 			response = frappe.get_doc(data).insert()
 			if response:
-			return handle(True,"Updated",response)
+				await sio.emit("send_to_client",build_response("ressource",source_sid,response)
 
 	if method == "delete" and name:
 		frappe.delete_doc(doctype, name, ignore_missing=False)
-		response = "ok"
-		if response:
-			return handle(True,"Deleted",response)
+		await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted")
+
 
 	if method == "list":
+		response = frappe.get_all(doctype,filters={"user":user},fields=["*"])
+		await sio.emit("send_to_client",build_response("ressource",source_sid,response)
 
-		
+			       
 @sio.event
 async def get_platform_data(data):
 	source = data['from']
