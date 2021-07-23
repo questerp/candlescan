@@ -45,7 +45,7 @@ async def connect(sid, environ, auth):
 			get_redis_server().hset("sockets",user,sid)
 			get_redis_server().hset("sockets",sid,user)
 		else:
-			await sio.enter_room(sid, auth['microservice'])
+			sio.enter_room(sid, auth['microservice'])
 		await sio.emit('auth', 'Connected', room=sid)
 	else:
 		return False
