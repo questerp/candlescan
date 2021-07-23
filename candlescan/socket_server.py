@@ -32,7 +32,7 @@ async def transfer(sid, data):
 
 @sio.event	
 async def join(sid, room):
-	await sio.enter_room(sid, room, namespace=None)
+	await sio.enter_room(sid, room)
 
 
 @sio.event
