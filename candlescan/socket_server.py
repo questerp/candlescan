@@ -6,8 +6,7 @@ from candlescan.candlescan_api import validate_token
 from candlescan.broadcaster import dispatch
 from frappe.realtime import get_redis_server
 
-mgr = socketio.AsyncRedisManager(frappe.conf.redis_socketio or "redis://localhost:12311")
-sio = socketio.AsyncServer(async_mode='asgi',client_manager=mgr)
+sio = socketio.AsyncServer(async_mode='asgi')
 app = socketio.ASGIApp(sio)
 
 events_map = {
