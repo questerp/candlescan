@@ -8,7 +8,8 @@ import asyncio
 sio = socketio.AsyncClient(logger=True, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 def run():
-	 asyncio.get_event_loop().run_until_complete(_run())
+	asyncio.get_event_loop().run_until_complete(_run())
+	asyncio.get_event_loop().run_forever()
 		
 async def _run():
 	try:
