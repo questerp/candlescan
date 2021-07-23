@@ -7,7 +7,7 @@ import socketio
 
 sio = socketio.AsyncClient()
 
-async run():
+async def run():
 	await sio.connect('http://localhost:9002',auth:{"microservice":"platform"})
 
 @sio.on("get_platform_data")
