@@ -12,10 +12,11 @@ async def run():
 
 @sio.on("get_platform_data")
 async def get_platform_data(sid,data):
-	source = data['source_sid']
+	source = data['from']
 	user = get_redis_server().hget(source)
-	if not user:
-		return handle(False,"User is required")
+	if source and not user:
+		await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":"Not connected"})
+		return
 	user = cstr(user)
 	alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
 	extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
