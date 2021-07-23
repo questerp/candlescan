@@ -10,6 +10,7 @@ from rq.registry import StartedJobRegistry
 from rq import Connection, Queue, Worker
 from candlescan import handle
 import asyncio
+import threading
 
 
 def clear_user_notifications():
@@ -17,17 +18,14 @@ def clear_user_notifications():
     frappe.db.commit()
     
 def start_microservices():
-    from candlescan.platform import static_run as run_platform
+    from candlescan.platform import run as run_platform
     from candlescan.broadcaster import run as run_broadcaster
     from candlescan.socket_server import run as run_socket_server
     
-    asyncio.get_event_loop().run_until_complete(asyncio.gather(
-        run_socket_server(),
-        run_platform(),
-        run_broadcaster(),
-        return_exceptions=False
-    ))
-    asyncio.get_event_loop().run_forever()
+    threading.Thread(target=run_socket_server).start()
+    threading.Thread(target=run_platform).start()
+    threading.Thread(target=run_broadcaster).start()
+   
     
 
 
