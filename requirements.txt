@@ -5,3 +5,4 @@ feedparser
 yfinance
 python-socketio
 uvicorn
+aioredis
