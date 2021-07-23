@@ -16,26 +16,7 @@ import threading
 def clear_user_notifications():
     frappe.db.sql("""delete from `tabUser Notification` where user IS NOT NULL """)
     frappe.db.commit()
-    
-def start_microservices():
-    from candlescan.platform import run as run_platform
-    from candlescan.broadcaster import run as run_broadcaster
-    from candlescan.socket_server import run as run_socket_server
-    
-    threading.Thread(target=run_socket_server).start()
-    #threading.Thread(target=run_platform).start()
-    #threading.Thread(target=run_broadcaster).start()
-    loop = asyncio.get_event_loop()
-    trun_platform = loop.create_task(run_platform())
-    trun_broadcaster = loop.create_task(run_broadcaster())
-    
-    asyncio.get_event_loop().run_until_complete(asyncio.gather(
-        trun_platform,
-        trun_broadcaster,
-        return_exceptions=False,
-        ))
-    asyncio.get_event_loop().run_forever()
-    
+
 
 
     
