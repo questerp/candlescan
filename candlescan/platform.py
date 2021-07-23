@@ -20,7 +20,8 @@ async def get_platform_data(sid,data):
 	source = data['from']
 	user = get_redis_server().hget(source)
 	if source and not user:
-		await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":"Not connected"})
+		await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":"Not connected"})
+		#await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":"Not connected"})
 		return
 	user = cstr(user)
 	alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
@@ -45,5 +46,6 @@ async def get_platform_data(sid,data):
 		scanner['config'] = config
 
 	res = handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
-	await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":res})
+	#await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":res})
+	await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":res})
 
