@@ -6,12 +6,19 @@ from frappe.utils import cstr
 import asyncio
 import socketio
 
-sio = socketio.AsyncClient()
+sio = socketio.AsyncClient(reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
-async def run():
-	await sio.connect('http://localhost:9002',auth={"microservice":"broadcaster"})
-	await sio.emit("join", "platform")
-	await sio.wait()
+async def _run():
+	try:
+		await sio.connect('http://localhost:9002',auth={"microservice":"broadcaster"})
+		await sio.emit("join", "broadcaster")
+		await sio.wait()
+	except socketio.exceptions.ConnectionError as err:
+		sio.sleep(5)
+		run()
+
+def run():
+	asyncio.get_event_loop().run_until_complete(_run())	
 	
 @sio.event
 async def from_client(data):
@@ -22,4 +29,3 @@ async def from_client(data):
 def broadcast(sid,data):
 	pass
 
-asyncio.get_event_loop().run_until_complete(run())
