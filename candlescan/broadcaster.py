@@ -39,4 +39,4 @@ async def from_client(server_sid,data):
 def broadcast(sid,data):
 	pass
 
-asyncio.get_event_loop().run_until_complete(run(),return_exceptions=True)
+asyncio.get_event_loop().run_until_complete(run())
