@@ -13,7 +13,20 @@ from candlescan import handle
 def clear_user_notifications():
     frappe.db.sql("""delete from `tabUser Notification` where user IS NOT NULL """)
     frappe.db.commit()
+    
+def start_microservices():
+    asyncio.get_event_loop().run_until_complete(_start_microservices())
+    
+async def _start_microservices():
+    from candlescan.platform import run as run_platform
+    from candlescan.broadcaster import run as run_broadcaster
+    runs = await asyncio.gather(
+        run_platform(),
+        run_broadcaster()
+    )
+    asyncio.get_event_loop().run_until_complete(runs)
 
+    
 def insert_symbol(symbol):
     symbol.flags.ignore_links = True
     symbol.flags.ignore_validate = True
