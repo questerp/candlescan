@@ -12,7 +12,8 @@ async def run():
 
 @sio.on("get_platform_data")
 async def get_platform_data(sid,data):
-	user = get_redis_server().hget(data['source_sid'])
+	source = data['source_sid']
+	user = get_redis_server().hget(source)
 	if not user:
 		return handle(False,"User is required")
 	user = cstr(user)
@@ -37,6 +38,7 @@ async def get_platform_data(sid,data):
 		scanner['signature'] = signature
 		scanner['config'] = config
 
-	return handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
+	res = handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
+	await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":res})
 
 asyncio.get_event_loop().run_until_complete(run())
