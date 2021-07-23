@@ -31,7 +31,7 @@ async def transfer(sid, data):
 
 @sio.event
 async def send_to_client(sid, response):
-	frappe.throw("send_to_client")
+	#frappe.throw("send_to_client")
 	to=response['to']
 	event = response['event']
 	data=response['data']
