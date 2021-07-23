@@ -15,7 +15,7 @@ async def run():
 		await sio.emit("join", "broadcaster")
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
-		sio.sleep(5)
+		await sio.sleep(5)
 		run()
 
 	
