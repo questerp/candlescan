@@ -9,7 +9,7 @@ sio = socketio.AsyncClient()
 
 async def _run():
 	await sio.connect('http://localhost:9002',auth={"microservice":"platform"})
-	sio.enter_room(sio.sid, "platform")
+	await sio.emit("join", "platform")
 	await sio.wait()
 	
 def run():
