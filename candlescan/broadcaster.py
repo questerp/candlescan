@@ -8,7 +8,7 @@ import socketio
 
 external_sio = socketio.AsyncRedisManager(frappe.conf.redis_socketio or "redis://localhost:12311")
 
-@external_sio.event
+@sio.event
 async def from_client(server_sid,data):
 	action = data['action']
 	sid = data['source_sid']
