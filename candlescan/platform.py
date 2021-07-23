@@ -39,4 +39,4 @@ async def get_platform_data(sid,data):
 
 	return handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
 
-asyncio.run(run())
+asyncio.get_event_loop().run_until_complete(run)
