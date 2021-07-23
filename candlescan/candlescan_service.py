@@ -9,6 +9,8 @@ from frappe.utils import cstr
 from rq.registry import StartedJobRegistry
 from rq import Connection, Queue, Worker
 from candlescan import handle
+import asyncio
+
 
 def clear_user_notifications():
     frappe.db.sql("""delete from `tabUser Notification` where user IS NOT NULL """)
