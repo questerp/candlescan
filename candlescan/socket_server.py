@@ -73,10 +73,13 @@ def disconnect(sid):
 	user = get_redis_server().hget("sockets",sid)
 	get_redis_server().hdel("sockets",user)
 	get_redis_server().hdel("sockets",sid)
-		
-def run():
+
+async init_app():
 	print("Starting socket at 9002")
 	web.run_app(app, port=9002)
+	
+def run():
+	
 	
 	from candlescan.platform import run as run_platform
 	from candlescan.broadcaster import run as run_broadcaster
@@ -86,6 +89,7 @@ def run():
 	trun_broadcaster = loop.create_task(run_broadcaster())
 
 	asyncio.get_event_loop().run_until_complete(asyncio.gather(
+	init_app(),
 	trun_platform,
 	trun_broadcaster,
 	return_exceptions=False,
