@@ -19,7 +19,7 @@ async def transfer(sid, data):
 	if not data or not validate_data(data):
 		await sio.emit('transfer', 'Invalide data format', room=sid)
 		return
-	data['from'] = sid
+	data['source_sid'] = sid
 	event = data['event']
 	to = None
 	if 'to' in data:
