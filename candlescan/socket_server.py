@@ -34,6 +34,7 @@ async def send_to_client(sid, response):
 	to=response['to']
 	event = response['event']
 	data=response['data']
+	await sio.emit('transfer', data, room=to)
 	await sio.emit(event, data, room=to)
 	
 	
