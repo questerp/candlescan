@@ -22,10 +22,16 @@ def start_microservices():
     from candlescan.broadcaster import run as run_broadcaster
     from candlescan.socket_server import run as run_socket_server
     
-    threading.Thread(target=run_socket_server).start()
-    threading.Thread(target=run_platform).start()
-    threading.Thread(target=run_broadcaster).start()
-   
+    #threading.Thread(target=run_socket_server).start()
+    #threading.Thread(target=run_platform).start()
+    #threading.Thread(target=run_broadcaster).start()
+    asyncio.get_event_loop().run_until_complete(asyncio.gather(
+        run_socket_server(),
+        run_platform(),
+        run_broadcaster(),
+        return_exceptions=True,
+        ))
+    asyncio.get_event_loop().run_forever()
     
 
 
