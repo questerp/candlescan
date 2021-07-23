@@ -74,7 +74,7 @@ def disconnect(sid):
 	get_redis_server().hdel("sockets",user)
 	get_redis_server().hdel("sockets",sid)
 		
-async def run():
+def run():
 	print("Starting socket at 9002")
 	web.run_app(app, port=9002)
 	
