@@ -3,26 +3,29 @@ from frappe.realtime import get_redis_server
 from candlescan.candlescan_api import handle
 from frappe.utils import cstr
 import socketio
+import asyncio
 
-sio = socketio.Client(logger=True, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
-
+sio = socketio.AsyncClient(logger=True, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 def run():
+	 asyncio.get_event_loop().run_until_complete(_run())
+		
+async def _run():
 	try:
-		sio.connect('http://localhost:9002',auth={"microservice":"platform"})
-		sio.sleep(2)
-		sio.emit("join", "platform")
-		sio.wait()
+		await sio.connect('http://localhost:9002',auth={"microservice":"platform"})
+		await sio.sleep(2)
+		await sio.emit("join", "platform")
+		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
-		sio.sleep(5)
+		await sio.sleep(5)
 		run()
 
 @sio.event
-def get_platform_data(data):
+async def get_platform_data(data):
 	source = data['from']
 	user = get_redis_server().hget("sockets",source)
 	if source and not user:
-		sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":"Not connected"})
+		await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":"Not connected"})
 		#await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":"Not connected"})
 		return
 	user = cstr(user)
@@ -49,5 +52,5 @@ def get_platform_data(data):
 
 	res = handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
 	#await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":res})
-	sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":res})
+	await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":res})
 
