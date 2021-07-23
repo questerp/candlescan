@@ -5,12 +5,16 @@ from frappe.utils import cstr
 import asyncio
 import socketio
 
-sio = socketio.AsyncClient()
+sio = socketio.AsyncClient(reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 async def _run():
-	await sio.connect('http://localhost:9002',auth={"microservice":"platform"})
-	await sio.emit("join", "platform")
-	await sio.wait()
+	try:
+		await sio.connect('http://localhost:9002',auth={"microservice":"platform"})
+		await sio.emit("join", "platform")
+		await sio.wait()
+	except socketio.exceptions.ConnectionError as err:
+		sio.sleep(5)
+		run()
 	
 def run():
 	asyncio.get_event_loop().run_until_complete(_run())
