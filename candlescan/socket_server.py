@@ -76,5 +76,22 @@ def disconnect(sid):
 		
 def run():
 	print("Starting socket at 9002")
+	
+	from candlescan.platform import run as run_platform
+	from candlescan.broadcaster import run as run_broadcaster
+
+	loop = asyncio.get_event_loop()
+	trun_platform = loop.create_task(run_platform())
+	trun_broadcaster = loop.create_task(run_broadcaster())
+
+	asyncio.get_event_loop().run_until_complete(asyncio.gather(
+	trun_platform,
+	trun_broadcaster,
+	return_exceptions=False,
+	))
+	
 	web.run_app(app, port=9002)
+	asyncio.get_event_loop().run_forever()
+	
+	
 	
