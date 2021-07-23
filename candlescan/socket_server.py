@@ -1,13 +1,15 @@
 import socketio
-import uvicorn
+from aiohttp import web
 import asyncio
 import frappe, json
 from candlescan.candlescan_api import validate_token
 from candlescan.broadcaster import dispatch
 from frappe.realtime import get_redis_server
 
-sio = socketio.AsyncServer(async_mode='asgi')
-app = socketio.ASGIApp(sio)
+sio = socketio.AsyncServer(async_mode='aiohttp')
+app = web.Application()
+sio.attach(app)
+
 
 events_map = {
 	"get_platform_data":"platform"
@@ -65,4 +67,5 @@ def disconnect(sid):
 		
 def run():
 	print("Starting socket at 9002")
-	uvicorn.run(app, host='0.0.0.0', port=9002)
+	web.run_app(app, port=9002)
+	#uvicorn.run(app, host='0.0.0.0', port=9002)
