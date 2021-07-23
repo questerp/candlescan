@@ -26,9 +26,9 @@ def start_microservices():
     #threading.Thread(target=run_platform).start()
     #threading.Thread(target=run_broadcaster).start()
     asyncio.get_event_loop().run_until_complete(asyncio.gather(
-        run_socket_server(),
-        run_platform(),
-        run_broadcaster(),
+        asyncio.create_task(run_socket_server()),
+        asyncio.create_task(run_platform()),
+        asyncio.create_task(run_broadcaster())
         return_exceptions=True,
         ))
     asyncio.get_event_loop().run_forever()
