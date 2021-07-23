@@ -10,7 +10,8 @@ sio = socketio.AsyncClient()
 
 async def run():
 	await sio.connect('http://localhost:9002',auth={"microservice":"broadcaster"})
-
+	await sio.wait()
+	
 @sio.event
 async def from_client(server_sid,data):
 	action = data['action']
