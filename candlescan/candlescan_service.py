@@ -30,8 +30,8 @@ def start_microservices():
     trun_broadcaster = loop.create_task(run_broadcaster())
     
     asyncio.get_event_loop().run_until_complete(asyncio.gather(
-        trun_platform(),
-        trun_broadcaster(),
+        trun_platform,
+        trun_broadcaster,
         return_exceptions=False,
         ))
     asyncio.get_event_loop().run_forever()
