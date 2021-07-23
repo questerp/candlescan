@@ -9,13 +9,13 @@ sio = socketio.AsyncClient(reconnection=True, reconnection_attempts=10, reconnec
 
 	
 async def run():
-	#try:
+	try:
 		await sio.connect('http://localhost:9002',auth={"microservice":"platform"})
 		await sio.emit("join", "platform")
 		await sio.wait()
-	#except socketio.exceptions.ConnectionError as err:
-	#	await sio.sleep(5)
-	#	run()
+	except socketio.exceptions.ConnectionError as err:
+		await sio.sleep(5)
+		run()
 
 @sio.event
 async def get_platform_data(data):
