@@ -17,16 +17,16 @@ def clear_user_notifications():
     frappe.db.commit()
     
 def start_microservices():
-    asyncio.get_event_loop().run_until_complete(_start_microservices())
-    
-async def _start_microservices():
     from candlescan.platform import run as run_platform
     from candlescan.broadcaster import run as run_broadcaster
-    runs = await asyncio.gather(
+    asyncio.get_event_loop().run_until_complete(asyncio.gather(
         run_platform(),
         run_broadcaster()
-    )
-    asyncio.get_event_loop().run_until_complete(runs)
+        return_exceptions=True,
+    ))
+    asyncio.get_event_loop().run_forever()
+    
+
 
     
 def insert_symbol(symbol):
