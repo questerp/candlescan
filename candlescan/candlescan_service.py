@@ -21,8 +21,8 @@ def start_microservices():
     from candlescan.broadcaster import run as run_broadcaster
     asyncio.get_event_loop().run_until_complete(asyncio.gather(
         run_platform(),
-        run_broadcaster()
-        return_exceptions=True,
+        run_broadcaster(),
+        return_exceptions=True
     ))
     asyncio.get_event_loop().run_forever()
     
