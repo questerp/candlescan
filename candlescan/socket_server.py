@@ -6,34 +6,46 @@ from candlescan.candlescan_api import validate_token
 from candlescan.broadcaster import dispatch
 from frappe.realtime import get_redis_server
 
-
-sio = socketio.AsyncServer(async_mode='asgi')
+mgr = socketio.AsyncRedisManager(frappe.conf.redis_socketio or "redis://localhost:12311")
+sio = socketio.AsyncServer(async_mode='asgi',client_manager=mgr)
 app = socketio.ASGIApp(sio)
 
+events_map = {
+	"get_platform_data":"platform"
+}
 
 @sio.event
-async def to_server(sid, data):
+async def transfer(sid, data):
 	if not data or not validate_data(data):
 		await sio.emit('from_server', 'Invalide data format', room=sid)
 		return
-	response = await dispatch(sid,data)
-	await sio.emit('from_server', response, room=sid)
+	data['from'] = sid
+	event = data['event']
+	to = None
+	if 'to' in data:
+		to = data['to']
+	else:
+		to = events_map.get(event)
+	await sio.emit(event, data, room=to)
+
 
 @sio.event	
-async def to_client(sid, data):
-	if not data or not validate_data(data):
-		frappe.throw('Invalide data format')
-	await sio.emit('from_server', data, room=sid)
-	
+async def join(sid, room):
+	await sio.enter_room(sid, room, namespace=None)¶
+
 
 @sio.event
 async def connect(sid, environ, auth):
-	validated = True# validate_auth(auth)
+	microservice = 'microservice' in auth
+	validated =microservice or True# validate_auth(auth)
 	if validated:
-		user = auth['user']
-		get_redis_server().hset("sockets",user,sid)
-		get_redis_server().hset("sockets",sid,user)
-		await sio.emit('candlescan', 'Connected', room=sid)
+		if not microservice:
+			user = auth['user']
+			get_redis_server().hset("sockets",user,sid)
+			get_redis_server().hset("sockets",sid,user)
+		else:
+			await sio.enter_room(sid, auth['microservice'])
+		await sio.emit('auth', 'Connected', room=sid)
 	else:
 		return False
 
