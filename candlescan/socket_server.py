@@ -31,13 +31,13 @@ async def transfer(sid, data):
 
 @sio.event	
 async def join(sid, room):
-	await sio.enter_room(sid, room, namespace=None)¶
+	await sio.enter_room(sid, room, namespace=None)
 
 
 @sio.event
 async def connect(sid, environ, auth):
 	microservice = 'microservice' in auth
-	validated =microservice or True# validate_auth(auth)
+	validated =microservice or True # validate_auth(auth)
 	if validated:
 		if not microservice:
 			user = auth['user']
