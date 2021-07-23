@@ -3,7 +3,6 @@ from aiohttp import web
 import asyncio
 import frappe, json
 from candlescan.candlescan_api import validate_token
-from candlescan.broadcaster import dispatch
 from frappe.realtime import get_redis_server
 
 sio = socketio.AsyncServer(async_mode='aiohttp')
