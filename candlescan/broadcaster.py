@@ -10,6 +10,11 @@ import asyncio
 sio = socketio.AsyncClient(reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 def run():
+	try:
+        # make sure we have an event loop, if not create a new one
+		asyncio.get_event_loop()	
+	except RuntimeError:
+		asyncio.set_event_loop(asyncio.new_event_loop())
 	asyncio.get_event_loop().run_until_complete(_run())
 	asyncio.get_event_loop().run_forever() #here
 
