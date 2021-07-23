@@ -16,7 +16,7 @@ def run():
 	asyncio.get_event_loop().run_until_complete(_run())
 
 @sio.event
-async def get_platform_data(sid,data):
+async def get_platform_data(data):
 	source = data['from']
 	user = get_redis_server().hget(source)
 	if source and not user:
