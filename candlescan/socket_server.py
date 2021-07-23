@@ -5,7 +5,7 @@ import frappe, json
 from candlescan.candlescan_api import validate_token
 from frappe.realtime import get_redis_server
 
-sio = socketio.AsyncServer(async_mode='aiohttp')
+sio = socketio.AsyncServer(logger=True, engineio_logger=True,async_mode='aiohttp')
 app = web.Application()
 sio.attach(app)
 
