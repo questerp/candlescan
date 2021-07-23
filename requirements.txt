@@ -4,5 +4,4 @@ FundamentalAnalysis
 feedparser
 yfinance
 python-socketio
-uvicorn
-aioredis
+aiohttp
