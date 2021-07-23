@@ -6,6 +6,11 @@ def get_user(sid):
 def validate_data(data, fields):
 	return all([field in data for field in fields])
 
-def build_response(sid,data,msg):
-	pass
+def build_response(event,to,data):
+	#{"event":"ressource","to":source_sid,"data":"Not connected"}
+	return {
+		"event":event,
+		"to":to,
+		"data":data
+	}
 
