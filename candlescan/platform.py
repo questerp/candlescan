@@ -1,9 +1,20 @@
-import frappe
+import frappe,json
+from frappe.realtime import get_redis_server
 from candlescan.candlescan_api import handle
+from candlescan.platform import get_platform_data
+from frappe.utils import cstr
+import asyncio
+import socketio
 
-def get_platform_data(user):    
+
+external_sio = socketio.AsyncRedisManager(frappe.conf.redis_socketio or "redis://localhost:12311")
+
+@external_sio.event
+async def get_platform_data(sid,data):
+	user = get_redis_server().hget(data['source_sid'])
 	if not user:
 		return handle(False,"User is required")
+	user = cstr(user)
 	alerts = frappe.db.sql(""" select name,user,creation, enabled, filters_script, symbol, triggered, notify_by_email from `tabPrice Alert` where user='%s'""" % (user),as_dict=True)
 	extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
 	scanners = frappe.db.sql(""" select default_config,title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
@@ -26,3 +37,4 @@ def get_platform_data(user):
 		scanner['config'] = config
 
 	return handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
+
