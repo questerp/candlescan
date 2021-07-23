@@ -92,5 +92,3 @@ def run_microservices():
 	
 	asyncio.get_event_loop().run_forever()
 		
-def get_user(sid):
-	return get_redis_server().hget("sockets",sid)
