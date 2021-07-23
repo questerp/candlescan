@@ -68,4 +68,7 @@ def disconnect(sid):
 def run():
 	print("Starting socket at 9002")
 	web.run_app(app, port=9002)
+	
+	from candlescan.platform import run as platform_run
+	platform_run()
 	#uvicorn.run(app, host='0.0.0.0', port=9002)
