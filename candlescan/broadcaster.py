@@ -6,7 +6,10 @@ from frappe.utils import cstr
 import asyncio
 import socketio
 
-external_sio = socketio.AsyncRedisManager(frappe.conf.redis_socketio or "redis://localhost:12311")
+sio = socketio.AsyncClient()
+
+async run():
+	await sio.connect('http://localhost:9002',auth:{"microservice":"broadcaster"})
 
 @sio.event
 async def from_client(server_sid,data):
@@ -36,3 +39,4 @@ async def from_client(server_sid,data):
 def broadcast(sid,data):
 	pass
 
+asyncio.run(run())
