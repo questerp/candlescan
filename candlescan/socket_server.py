@@ -17,7 +17,7 @@ events_map = {
 @sio.event
 async def transfer(sid, data):
 	if not data or not validate_data(data):
-		await sio.emit('from_server', 'Invalide data format', room=sid)
+		await sio.emit('transfer', 'Invalide data format', room=sid)
 		return
 	data['from'] = sid
 	event = data['event']
@@ -50,7 +50,7 @@ async def connect(sid, environ, auth):
 		return False
 
 def validate_data(data):
-	return 'action' in data and 'data' in data
+	return 'event' in data and 'data' in data
 	
 def validate_auth(auth):
 	if not auth or ('user' not in auth) or ('user_key' not in auth) or ('token' not in auth) or not validate_token(auth['user_key'],auth['token']):
