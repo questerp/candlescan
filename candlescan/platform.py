@@ -7,11 +7,14 @@ import socketio
 
 sio = socketio.AsyncClient()
 
-async def run():
+async def _run():
 	await sio.connect('http://localhost:9002',auth={"microservice":"platform"})
 	sio.enter_room(sio.sid, "platform")
 	await sio.wait()
 	
+def run():
+	asyncio.get_event_loop().run_until_complete(_run())
+
 @sio.event
 async def get_platform_data(sid,data):
 	source = data['from']
@@ -44,4 +47,3 @@ async def get_platform_data(sid,data):
 	res = handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
 	await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":res})
 
-asyncio.get_event_loop().run_until_complete(run())
