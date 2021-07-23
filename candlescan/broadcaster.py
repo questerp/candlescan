@@ -8,8 +8,10 @@ import socketio
 
 sio = socketio.AsyncClient(reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
-	
-async def run():
+def run():
+	 asyncio.get_event_loop().run_until_complete(_run())
+		
+async def _run():
 	try:
 		await sio.connect('http://localhost:9002',auth={"microservice":"broadcaster"})
 		await sio.emit("join", "broadcaster")
