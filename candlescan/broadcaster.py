@@ -17,7 +17,7 @@ async def run():
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
 		await sio.sleep(5)
-		run()
+		await run()
 
 
 @sio.event
