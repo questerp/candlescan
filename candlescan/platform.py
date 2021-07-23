@@ -5,10 +5,12 @@ from frappe.utils import cstr
 import asyncio
 import socketio
 
+sio = socketio.AsyncClient()
 
-external_sio = socketio.AsyncRedisManager(frappe.conf.redis_socketio or "redis://localhost:12311")
+async run():
+	await sio.connect('http://localhost:9002',auth:{"microservice":"platform"})
 
-@external_sio.on("get_platform_data")
+@sio.on("get_platform_data")
 async def get_platform_data(sid,data):
 	user = get_redis_server().hget(data['source_sid'])
 	if not user:
@@ -37,3 +39,4 @@ async def get_platform_data(sid,data):
 
 	return handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
 
+asyncio.run(run())
