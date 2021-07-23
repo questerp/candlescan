@@ -8,7 +8,7 @@ import socketio
 
 external_sio = socketio.AsyncRedisManager(frappe.conf.redis_socketio or "redis://localhost:12311")
 
-@sio.event
+@external_sio.on("get_platform_data")
 async def get_platform_data(sid,data):
 	user = get_redis_server().hget(data['source_sid'])
 	if not user:
