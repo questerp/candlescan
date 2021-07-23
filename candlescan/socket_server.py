@@ -29,7 +29,14 @@ async def transfer(sid, data):
 	await sio.emit("transfer", [to,data,event], room=sid)
 	await sio.emit(event, data, room=to)
 
-
+@sio.event
+async def send_to_client(sid, response):
+	to=response['to']
+	event = response['event']
+	data=response['data']
+	await sio.emit(event, data, room=to)
+	
+	
 @sio.event	
 async def join(sid, room):
 	await sio.enter_room(sid, room)
