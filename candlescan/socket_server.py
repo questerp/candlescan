@@ -74,6 +74,9 @@ def disconnect(sid):
 	get_redis_server().hdel("sockets",user)
 	get_redis_server().hdel("sockets",sid)
 
+def run_app():
+	print("Starting socket at 9002")
+	web.run_app(app, port=9002)	
 	
 def run_microservices():
 	from candlescan.platform import run as run_platform
