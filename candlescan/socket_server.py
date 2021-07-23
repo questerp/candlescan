@@ -26,7 +26,7 @@ async def transfer(sid, data):
 		to = data['to']
 	else:
 		to = events_map.get(event)
-	await sio.emit("transfer", to, room=sid)
+	await sio.emit("transfer", [to,data,event], room=sid)
 	await sio.emit(event, data, room=to)
 
 
