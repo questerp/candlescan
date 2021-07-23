@@ -25,7 +25,7 @@ def start_microservices():
         run_socket_server(),
         run_platform(),
         run_broadcaster(),
-        return_exceptions=True
+        return_exceptions=False
     ))
     asyncio.get_event_loop().run_forever()
     
