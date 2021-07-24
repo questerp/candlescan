@@ -1,3 +1,4 @@
+from frappe.utils import cstr
 
 
 def get_user(sid):
