@@ -14,3 +14,15 @@ def build_response(event,to,data):
 		"data":data
 	}
 
+def decode_cookies(raw_cookie):
+	cookies = {}
+	txtcookies = raw_cookie.split(';') 
+	for t in txtcookies:
+		#print("t",t)
+		key,val = t.split('=')
+		#print("key",key)
+		#print("val",val)
+		
+		if key and val:
+			cookies[cstr(key).replace(' ','')] = cstr(val)
+	return cookies
