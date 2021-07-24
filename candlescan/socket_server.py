@@ -5,7 +5,7 @@ import frappe, json
 from candlescan.candlescan_api import validate_token
 from frappe.realtime import get_redis_server
 from frappe.utils import cstr
-
+from candlescan.socket_utils import decode_cookies,validate_data
 
 sio = socketio.AsyncServer(logger=True, engineio_logger=True,async_mode='aiohttp')
 app = web.Application()
@@ -18,7 +18,7 @@ events_map = {
 
 @sio.event
 async def transfer(sid, data):
-	if not data or not validate_data(data):
+	if not data or not validate_data(data,["event","data"]):
 		await sio.emit('transfer', 'Invalide data format', room=sid)
 		return
 	data['source_sid'] = sid
@@ -48,37 +48,28 @@ async def join(sid, room):
 async def connect(sid, environ):
 	microservice = 'microservice' in environ
 	#print(environ)
-	cookie = environ.get("HTTP_COOKIE")
-	print("cookie",cookie)
-	validated =cookie and ( microservice or validate_auth(cookie))
+	raw_cookies = environ.get("HTTP_COOKIE")
+	cookies = decode_cookies(raw_cookies)
+	validated =cookies and ( microservice or validate_auth(cookies))
 	print("validated",validated)
 	if validated:
 		if not microservice:
-			user = environ['user_name']
-			get_redis_server().hset("sockets",user,sid)
-			get_redis_server().hset("sockets",sid,user)
+			user = cookies.get('user_name')
+			if user:
+				get_redis_server().hset("sockets",user,sid)
+				get_redis_server().hset("sockets",sid,user)
 		else:
 			sio.enter_room(sid, environ['microservice'])
 		await sio.emit('auth', 'Connected', room=sid)
 	else:
 		return False
 
-def validate_data(data):
-	return 'event' in data and 'data' in data
+
 	
-def validate_auth(raw_cookie):
-	if not raw_cookie:
+def validate_auth(cookies):
+	if not cookies:
 		return False
-	cookies = {}
-	txtcookies = raw_cookie.split(';') 
-	for t in txtcookies:
-		#print("t",t)
-		key,val = t.split('=')
-		#print("key",key)
-		#print("val",val)
-		
-		if key and val:
-			cookies[cstr(key).replace(' ','')] = cstr(val)
+
 	user_name = cookies.get("user_name")
 	user_key = cookies.get("user_key")
 	user_token = cookies.get("user_token")
@@ -91,8 +82,9 @@ def validate_auth(raw_cookie):
 @sio.event
 def disconnect(sid):
 	user = get_redis_server().hget("sockets",sid)
-	get_redis_server().hdel("sockets",user)
-	get_redis_server().hdel("sockets",sid)
+	if user:
+		get_redis_server().hdel("sockets",user)
+		get_redis_server().hdel("sockets",sid)
 
 def run_app():
 	print("Starting socket at 9002")
