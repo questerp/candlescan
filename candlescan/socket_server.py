@@ -7,7 +7,7 @@ from frappe.realtime import get_redis_server
 from frappe.utils import cstr
 from candlescan.socket_utils import decode_cookies,validate_data
 
-sio = socketio.AsyncServer(logger=True, engineio_logger=True,async_mode='aiohttp')
+sio = socketio.AsyncServer(logger=True, engineio_logger=True,async_mode='aiohttp',cors_allowed_origins="*")
 app = web.Application()
 sio.attach(app)
 
