@@ -4,4 +4,4 @@ FundamentalAnalysis
 feedparser
 yfinance
 aiohttp
-python-socketio
+python-socketio==5.3.0
