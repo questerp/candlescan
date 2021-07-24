@@ -4,6 +4,8 @@ import asyncio
 import frappe, json
 from candlescan.candlescan_api import validate_token
 from frappe.realtime import get_redis_server
+from frappe.utils import cstr
+
 
 sio = socketio.AsyncServer(logger=True, engineio_logger=True,async_mode='aiohttp')
 app = web.Application()
@@ -71,13 +73,14 @@ def validate_auth(raw_cookie):
 	cookies = {}
 	txtcookies = raw_cookie.split(';') 
 	for t in txtcookies:
-		print("t",t)
+		#print("t",t)
 		key,val = t.split('=')
-		print("key",key)
-		print("val",val)
+		#print("key",key)
+		#print("val",val)
 		
 		if key and val:
-			cookies[key] = val
+			cookies[cstr(key)] = cstr(val)
+			print("cookies",cookies)
 	user_name = cookies.get("user_name")
 	user_key = cookies.get("user_key")
 	user_token = cookies.get("user_token")
