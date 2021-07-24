@@ -46,10 +46,10 @@ async def join(sid, room):
 async def connect(sid, environ):
 	microservice = 'microservice' in environ
 	print(environ)
-	validated =microservice or True # validate_auth(auth)
+	validated = microservice or validate_auth(environ)
 	if validated:
 		if not microservice:
-			user = environ['user']
+			user = environ['user_name']
 			get_redis_server().hset("sockets",user,sid)
 			get_redis_server().hset("sockets",sid,user)
 		else:
@@ -61,8 +61,8 @@ async def connect(sid, environ):
 def validate_data(data):
 	return 'event' in data and 'data' in data
 	
-def validate_auth(auth):
-	if not auth or ('user' not in auth) or ('user_key' not in auth) or ('token' not in auth) or not validate_token(auth['user_key'],auth['token']):
+def validate_auth(environ):
+	if not environ or ('user_name' not in environ) or ('user_key' not in environ) or ('user_token' not in environ) or not validate_token(environ['user_key'],environ['user_token']):
 		return False
 	return True
 		
