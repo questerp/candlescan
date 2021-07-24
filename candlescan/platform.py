@@ -63,7 +63,7 @@ async def ressource(data):
 			       
 @sio.event
 async def get_platform_data(data):
-	source = data['from']
+	source = data['source_sid']
 	user = get_redis_server().hget("sockets",source)
 	if source and not user:
 		await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":"Not connected"})
