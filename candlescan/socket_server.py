@@ -67,7 +67,6 @@ def validate_data(data):
 	return 'event' in data and 'data' in data
 	
 def validate_auth(raw_cookie):
-	print("raw_cookie",raw_cookie)
 	if not raw_cookie:
 		return False
 	cookies = {}
@@ -79,12 +78,10 @@ def validate_auth(raw_cookie):
 		#print("val",val)
 		
 		if key and val:
-			cookies[cstr(key)] = cstr(val)
-			print("cookies",cookies)
+			cookies[cstr(key).replace(' ','')] = cstr(val)
 	user_name = cookies.get("user_name")
 	user_key = cookies.get("user_key")
 	user_token = cookies.get("user_token")
-	print(user_name,user_key,user_token)
 	
 	if not (user_name and user_key and user_token) or not validate_token(user_key,user_token):
 		return False
