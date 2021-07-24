@@ -49,11 +49,11 @@ async def connect(sid, environ):
 	validated =microservice or True # validate_auth(auth)
 	if validated:
 		if not microservice:
-			user = auth['user']
+			user = environ['user']
 			get_redis_server().hset("sockets",user,sid)
 			get_redis_server().hset("sockets",sid,user)
 		else:
-			sio.enter_room(sid, auth['microservice'])
+			sio.enter_room(sid, environ['microservice'])
 		await sio.emit('auth', 'Connected', room=sid)
 	else:
 		return False
