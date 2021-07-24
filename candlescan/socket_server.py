@@ -45,6 +45,7 @@ async def join(sid, room):
 @sio.event
 async def connect(sid, environ, auth):
 	microservice = 'microservice' in auth
+	print(environ)
 	validated =microservice or True # validate_auth(auth)
 	if validated:
 		if not microservice:
