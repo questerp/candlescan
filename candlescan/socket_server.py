@@ -46,7 +46,9 @@ async def join(sid, room):
 async def connect(sid, environ):
 	microservice = 'microservice' in environ
 	print(environ)
-	validated = microservice or validate_auth(environ)
+	cookie = environ.get("HTTP_COOKIE")
+	validated =cookie and ( microservice or validate_auth(cookie))
+	print("validated",validated)
 	if validated:
 		if not microservice:
 			user = environ['user_name']
@@ -61,8 +63,19 @@ async def connect(sid, environ):
 def validate_data(data):
 	return 'event' in data and 'data' in data
 	
-def validate_auth(environ):
-	if not environ or ('user_name' not in environ) or ('user_key' not in environ) or ('user_token' not in environ) or not validate_token(environ['user_key'],environ['user_token']):
+def validate_auth(raw_cookie):
+	if not raw_cookie:
+		return False
+	cookies = {}
+	txtcookies = raw_cookie.split(';') 
+	for t in txtcookies:
+		key,val = t.split('=')
+		if key and val:
+			cookies[key] = val
+	user_name = cookies.get("user_name")
+	user_key = cookies.get("user_key")
+	user_token = cookies.get("user_token")
+	if not (user_name and user_key and user_token) or not validate_token(user_key,user_token):
 		return False
 	return True
 		
