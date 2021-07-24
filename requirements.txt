@@ -3,5 +3,5 @@ lxml==3.4.2
 FundamentalAnalysis
 feedparser
 yfinance
-python-socketio
 aiohttp
+python-socketio==4.6.0
