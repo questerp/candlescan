@@ -65,12 +65,17 @@ def validate_data(data):
 	return 'event' in data and 'data' in data
 	
 def validate_auth(raw_cookie):
+	print("raw_cookie",raw_cookie)
 	if not raw_cookie:
 		return False
 	cookies = {}
 	txtcookies = raw_cookie.split(';') 
 	for t in txtcookies:
+		print("t",t)
 		key,val = t.split('=')
+		print("key",key)
+		print("val",val)
+		
 		if key and val:
 			cookies[key] = val
 	user_name = cookies.get("user_name")
