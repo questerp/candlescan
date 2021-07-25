@@ -4,7 +4,7 @@ from frappe.realtime import get_redis_server
 from urllib.parse import unquote
 from frappe.utils.response import json_handler
 
-class SocketEncoder(JSONEncoder):
+class SocketEncoder(json.JSONEncoder):
 	def default(self, object_):
 		return json_handler(object_)
 	
