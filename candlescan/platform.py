@@ -33,6 +33,7 @@ async def disconnect():
 
 @sio.event
 async def ressource(data):
+	print("this is ressource",data)
 	validated = validate_data(data,["source_id","doctype","method"])
 	source_sid = data.get('source_sid')
 	if not (validated or source_sid):
