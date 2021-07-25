@@ -33,8 +33,9 @@ async def disconnect():
 
 @sio.event
 async def ressource(message):
-	print("this is ressource",data)
 	data = message.get('data')
+	print("this is ressource",data)
+	
 	validated = validate_data(data,["doctype","method"])
 	print("validated",validated)
 	source_sid = data.get('source_sid')
