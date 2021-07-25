@@ -6,7 +6,7 @@ from frappe.utils.response import json_handler
 
 class CustomSocketJsonHandler():
 	def dumps(self,data):
-		data = json.dumps(data, default=json_handler, separators=(',',':'))
+		data = json.dumps(data, default=json_handler)
 		return data
 		
 	def loads(self,data):
