@@ -12,8 +12,6 @@ sio = socketio.AsyncClient(logger=True, engineio_logger=True,reconnection=True, 
 async def run():
 	try:
 		await sio.connect('http://localhost:9002')
-		await sio.sleep(2)
-		await sio.emit("join", "platform")
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
@@ -27,6 +25,7 @@ async def connect_error(message):
 
 @sio.event
 async def connect():
+	await sio.emit("join", "platform")
 	print("I'm connected!")
 
 @sio.event
