@@ -41,7 +41,7 @@ async def join(sid, room):
 @sio.event
 async def connect(sid, environ):
 	print("environ",environ)
-	environ = sio.get_session(sid)
+	environ = await sio.get_session(sid)
 	print("environ",environ)
 	
 	microservice = 'REMOTE_ADDR' in environ and environ.get("REMOTE_ADDR") == "127.0.0.1"
