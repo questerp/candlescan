@@ -11,7 +11,7 @@ sio = socketio.AsyncClient(logger=True, engineio_logger=True,reconnection=True, 
 		
 async def run():
 	try:
-		await sio.connect('http://localhost:9002')
+		await sio.connect('http://localhost:9002',headers={microservice:"platform"})
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
