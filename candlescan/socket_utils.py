@@ -1,6 +1,7 @@
 import frappe
 from frappe.utils import cstr
 from frappe.realtime import get_redis_server
+from urllib.parse import unquote
 
 
 def get_user(sid):
@@ -32,5 +33,5 @@ def decode_cookies(raw_cookie):
 		#print("val",val)
 		
 		if key and val:
-			cookies[cstr(key).replace(' ','')] = cstr(val)
+			cookies[cstr(key).replace(' ','')] = unquote(cstr(val))
 	return cookies
