@@ -5,9 +5,10 @@ from candlescan.platform import get_platform_data
 from frappe.utils import cstr
 import socketio
 import asyncio
+from candlescan.socket_utils import get_user,validate_data,build_response,json_encoder
 
 
-sio = socketio.AsyncClient(reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
+sio = socketio.AsyncClient(reconnection=True,json=json_encoder, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 
 async def run():
