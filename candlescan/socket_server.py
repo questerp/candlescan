@@ -47,7 +47,7 @@ async def join(sid, room):
 @sio.event
 async def connect(sid, environ):
 	microservice = 'microservice' in environ
-	#print(environ)
+	print(environ)
 	validated = True
 	if not microservice:
 		raw_cookies = environ.get("HTTP_COOKIE")
