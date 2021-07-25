@@ -13,7 +13,8 @@ sio.attach(app)
 
 
 events_map = {
-	"get_platform_data":"platform"
+	"get_platform_data":"platform",
+	"ressource":"platform"
 }
 
 @sio.event
