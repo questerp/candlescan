@@ -5,9 +5,10 @@ import frappe, json
 from candlescan.candlescan_api import validate_token
 from frappe.realtime import get_redis_server
 from frappe.utils import cstr
-from candlescan.socket_utils import decode_cookies,validate_data
+from candlescan.socket_utils import decode_cookies,validate_data,json_encoder
 
-sio = socketio.AsyncServer(logger=True, engineio_logger=True,async_mode='aiohttp',cors_allowed_origins="*")
+
+sio = socketio.AsyncServer(logger=True,json=json_encoder, engineio_logger=True,async_mode='aiohttp',cors_allowed_origins="*")
 app = web.Application()
 sio.attach(app)
 
