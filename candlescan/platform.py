@@ -16,9 +16,13 @@ async def run():
 		await sio.emit("join", "platform")
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
-		print("error",err)
+		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
+
+@sio.event
+def connect_error(message):
+    print('Connection was rejected due to ' + message)
 
 @sio.event
 async def ressource(data):
