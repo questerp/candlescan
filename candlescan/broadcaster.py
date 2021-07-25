@@ -13,7 +13,7 @@ sio = socketio.AsyncClient(reconnection=True, reconnection_attempts=10, reconnec
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"broadcaster"})
-		await sio.emit("join", "broadcaster")
+		#await sio.emit("join", "broadcaster")
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
 		await sio.sleep(5)
