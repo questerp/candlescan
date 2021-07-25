@@ -37,6 +37,8 @@ async def ressource(message):
 	print("this is ressource",data)
 	
 	validated = validate_data(data,["doctype","method"])
+	if not validated:
+		return
 	print("validated",validated)
 	source_sid = message.get('source_sid')
 	if not source_sid:
@@ -50,6 +52,8 @@ async def ressource(message):
 	name = data.get("name")
 	method = data.get("method")
 	document = data.get("doc")
+	if not name and document:
+		name = document.get("name")
 	
 	if method == "save":
 		if name:
@@ -386,13 +390,16 @@ def delete_filter(user,filter):
     
 
 @frappe.whitelist()     
-def set_default_layout(user,layout):
-    logged_in()
-    if not (user or layout):
-        return handle(False,"Missing data")   
-    frappe.db.set_value("Customer",user,"default_layout",layout)
-    return handle(True,"Success")
-    
+async def set_default_layout(message):
+	data = message.get('data')
+	if not data:
+		return
+	source_sid = message.get('source_sid')
+	user = get_user(source_sid)
+	if user and data:
+		frappe.db.set_value("Customer",user,"default_layout",data)
+		frappe.db.commit()
+		await sio.emit("transfer",build_response("message",source,"Default layout changed"))    
 
             
 @frappe.whitelist()     
