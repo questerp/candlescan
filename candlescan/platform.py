@@ -78,6 +78,7 @@ async def ressource(message):
 
 
 	if method == "list":
+		print("LIST",doctype,user)
 		response = frappe.get_all(doctype,filters={"user":user},fields=["*"])
 		await sio.emit("transfer",build_response("ressource",source_sid,{"doctype":doctype,"data":response}))
 		#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
