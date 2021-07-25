@@ -4,6 +4,15 @@ from frappe.realtime import get_redis_server
 from urllib.parse import unquote
 from frappe.utils.response import json_handler
 
+class CustomSocketJsonHandler():
+	def dumps(self,data):
+		data = json.dumps(data, default=json_handler, separators=(',',':'))
+		return data
+		
+	def loads(self,data):
+		if data:
+			data = json.loads(data)
+		return data
 
 json_encoder = CustomSocketJsonHandler()
 
@@ -41,13 +50,5 @@ def decode_cookies(raw_cookie):
 			cookies[cstr(key).replace(' ','')] = unquote(cstr(val))
 	return cookies
 
-class CustomSocketJsonHandler():
-	def dumps(self,data):
-		data = json.dumps(data, default=json_handler, separators=(',',':'))
-		return data
-		
-	def loads(self,data):
-		if data:
-			data = json.loads(data)
-		return data
+
 		
