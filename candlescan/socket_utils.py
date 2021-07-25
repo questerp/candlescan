@@ -1,9 +1,11 @@
 import frappe, json
 from frappe.utils import cstr
-from frappe.utils.response import json_handler
 from frappe.realtime import get_redis_server
 from urllib.parse import unquote
+from frappe.utils.response import json_handler
 
+
+json_encoder = CustomSocketJsonHandler()
 
 def get_user(sid):
 	user = get_redis_server().hget("sockets",sid)
@@ -16,8 +18,8 @@ def validate_data(data, fields):
 
 def build_response(event,to,data):
 	#{"event":"ressource","to":source_sid,"data":"Not connected"}
-	if data:
-		data = json.dumps(data, default=json_handler, separators=(',',':'))
+	#if data:
+	#	data = json.dumps(data, default=json_handler, separators=(',',':'))
 	return {
 		"event":event,
 		"to":to,
@@ -38,3 +40,14 @@ def decode_cookies(raw_cookie):
 		if key and val:
 			cookies[cstr(key).replace(' ','')] = unquote(cstr(val))
 	return cookies
+
+class CustomSocketJsonHandler():
+	def dumps(self,data):
+		data = json.dumps(data, default=json_handler, separators=(',',':'))
+		return data
+		
+	def loads(self,data):
+		if data:
+			data = json.loads(data)
+		return data
+		
