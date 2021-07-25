@@ -17,6 +17,8 @@ def build_response(event,to,data):
 
 def decode_cookies(raw_cookie):
 	cookies = {}
+	if not raw_cookie:
+		return cookies
 	txtcookies = raw_cookie.split(';') 
 	for t in txtcookies:
 		#print("t",t)
