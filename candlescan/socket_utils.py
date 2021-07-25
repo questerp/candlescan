@@ -4,15 +4,19 @@ from frappe.realtime import get_redis_server
 from urllib.parse import unquote
 from frappe.utils.response import json_handler
 
-class CustomSocketJsonHandler():
-	def dumps(self,data):
-		data = json.dumps(data, default=json_handler)
-		return data
-		
-	def loads(self,data):
-		if data:
-			data = json.loads(data)
-		return data
+	
+class CustomSocketJsonHandler(object):
+	@staticmethod
+	def dumps(*args, **kwargs):
+		if 'cls' not in kwargs:
+			kwargs['cls'] = json_handler
+		return json.dumps(*args, **kwargs)
+
+	@staticmethod
+	def loads(*args, **kwargs):
+		return json.loads(*args, **kwargs)
+	
+
 
 json_encoder = CustomSocketJsonHandler()
 
