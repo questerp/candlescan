@@ -55,6 +55,7 @@ async def connect(sid, environ):
 		if not microservice:
 			user = cookies.get('user_name')
 			if user:
+				user =  cstr(user)
 				get_redis_server().hset("sockets",user,sid)
 				get_redis_server().hset("sockets",sid,user)
 		else:
