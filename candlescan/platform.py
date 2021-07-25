@@ -61,25 +61,25 @@ async def ressource(message):
 				doc.modified = modified
 			response = doc.save().as_dict()
 			if response:
-				await sio.emit("transfer",build_response("ressource",source_sid,{"doctype":doctype,"data":response}))
+				await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 		else:
 			document.update({"doctype": doctype})
 			response = frappe.get_doc(data).insert()
 			if response:
-				await sio.emit("transfer",build_response("ressource",source_sid,{"doctype":doctype,"data":response}))
+				await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 	if method == "delete" and name:
 		frappe.delete_doc(doctype, name, ignore_missing=False)
-		await sio.emit("transfer",build_response("ressource",source_sid,{"doctype":doctype,"data":"Deleted"}))
+		await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":"Deleted"}))
 		#await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted"))
 
 
 	if method == "list":
 		response = frappe.db.sql(""" select * from `tab%s` where user='%s'""" % (doctype,user),as_dict=True)
-		await sio.emit("transfer",build_response("ressource",source_sid,{"doctype":doctype,"data":response}))
+		await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 		#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 			       
