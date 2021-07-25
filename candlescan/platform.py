@@ -32,9 +32,11 @@ async def disconnect():
 	print("I'm disconnected!")
 
 @sio.event
-async def ressource(data):
+async def ressource(message):
 	print("this is ressource",data)
-	validated = validate_data(data,["source_id","doctype","method"])
+	data = message.get('data')
+	validated = validate_data(data,["doctype","method"])
+	print("validated",validated)
 	source_sid = data.get('source_sid')
 	if not (validated or source_sid):
 		await sio.emit("transfer",build_response("ressource",source_sid,"Invalid data format"))
