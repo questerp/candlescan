@@ -37,7 +37,7 @@ async def ressource(data):
 	validated = validate_data(data,["source_id","doctype","method"])
 	source_sid = data.get('source_sid')
 	if not (validated or source_sid):
-		await sio.emit("send_to_client",build_response("ressource",source_sid,"Invalid data format"))
+		await sio.emit("transfer",build_response("ressource",source_sid,"Invalid data format"))
 		return
 			       
 	user = get_user(source_sid)
@@ -56,22 +56,26 @@ async def ressource(data):
 				doc.modified = modified
 			response = doc.save().as_dict()
 			if response:
-				await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+				await sio.emit("transfer",build_response("ressource",source_sid,response))
+				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 		else:
 			document.update({"doctype": doctype})
 			response = frappe.get_doc(data).insert()
 			if response:
-				await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+				await sio.emit("transfer",build_response("ressource",source_sid,response))
+				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 	if method == "delete" and name:
 		frappe.delete_doc(doctype, name, ignore_missing=False)
-		await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted"))
+		await sio.emit("transfer",build_response("ressource",source_sid,"Deleted"))
+		#await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted"))
 
 
 	if method == "list":
 		response = frappe.get_all(doctype,filters={"user":user},fields=["*"])
-		await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+		await sio.emit("transfer",build_response("ressource",source_sid,response))
+		#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 			       
 @sio.event
@@ -79,7 +83,8 @@ async def get_platform_data(data):
 	source = data['source_sid']
 	user = get_redis_server().hget("sockets",source)
 	if source and not user:
-		await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":"Not connected"})
+		await sio.emit("transfer",build_response("get_platform_data",source,"Not connected"))
+		#await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":"Not connected"})
 		#await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":"Not connected"})
 		return
 	user = cstr(user)
@@ -106,7 +111,9 @@ async def get_platform_data(data):
 
 	res = handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
 	#await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":res})
-	await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":res})
+	#await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":res})
+	await sio.emit("transfer",build_response("get_platform_data",source,res))
+	
 
 @frappe.whitelist()
 def get_symbol_info(symbol):
