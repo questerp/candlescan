@@ -30,14 +30,7 @@ async def transfer(sid, data):
 		to = events_map.get(event)
 	await sio.emit(event, data, room=to)
 
-@sio.event
-async def send_to_client(sid, response):
-	#frappe.throw("send_to_client")
-	to=response['to']
-	event = response['event']
-	data=response['data']
-	await sio.emit(event, data, room=to)
-	
+
 	
 @sio.event	
 async def join(sid, room):
@@ -90,7 +83,7 @@ def disconnect(sid):
 
 def run_app():
 	print("Starting socket at 9002")
-	web.run_app(app, port=9002)	
+	web.run_app(app, port=9002)
 	
 def run_microservices():
 	from candlescan.platform import run as run_platform
