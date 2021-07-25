@@ -25,6 +25,14 @@ def connect_error(message):
     print('Connection was rejected due to ' + message)
 
 @sio.event
+def connect():
+    print("I'm connected!")
+
+@sio.event
+def disconnect():
+    print("I'm disconnected!")
+
+@sio.event
 async def ressource(data):
 	validated = validate_data(data,["source_id","doctype","method"])
 	source_sid = data.get('source_sid')
