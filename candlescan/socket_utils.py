@@ -1,4 +1,6 @@
+import frappe
 from frappe.utils import cstr
+from frappe.realtime import get_redis_server
 
 
 def get_user(sid):
