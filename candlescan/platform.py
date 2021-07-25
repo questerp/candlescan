@@ -22,15 +22,16 @@ async def run():
 
 @sio.event
 async def connect_error(message):
-    print('Connection was rejected due to ' + message)
+	print("connect_error")
+	print(message)
 
 @sio.event
 async def connect():
-    print("I'm connected!")
+	print("I'm connected!")
 
 @sio.event
 async def disconnect():
-    print("I'm disconnected!")
+	print("I'm disconnected!")
 
 @sio.event
 async def ressource(data):
