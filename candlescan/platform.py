@@ -38,7 +38,9 @@ async def ressource(message):
 	
 	validated = validate_data(data,["doctype","method"])
 	print("validated",validated)
-	source_sid = data.get('source_sid')
+	source_sid = message.get('source_sid')
+	if not source_sid:
+		return
 	if not (validated or source_sid):
 		await sio.emit("transfer",build_response("ressource",source_sid,"Invalid data format"))
 		return
