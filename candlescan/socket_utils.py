@@ -26,9 +26,6 @@ def validate_data(data, fields):
 	return all([field in data for field in fields])
 
 def build_response(event,to,data):
-	#{"event":"ressource","to":source_sid,"data":"Not connected"}
-	#if data:
-	#	data = json.dumps(data, default=json_handler, separators=(',',':'))
 	return {
 		"event":event,
 		"to":to,
