@@ -48,9 +48,11 @@ async def join(sid, room):
 async def connect(sid, environ):
 	microservice = 'microservice' in environ
 	#print(environ)
-	raw_cookies = environ.get("HTTP_COOKIE")
-	cookies = decode_cookies(raw_cookies)
-	validated =cookies and ( microservice or validate_auth(cookies))
+	validated = True
+	if not microservice:
+		raw_cookies = environ.get("HTTP_COOKIE")
+		cookies = decode_cookies(raw_cookies)
+		validated =cookies and ( microservice or validate_auth(cookies))
 	print("validated",validated)
 	if validated:
 		if not microservice:
