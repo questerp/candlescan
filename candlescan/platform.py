@@ -24,7 +24,7 @@ async def ressource(data):
 	validated = validate_data(data,["source_id","doctype","method"])
 	source_sid = data.get('source_sid')
 	if not (validated or source_sid):
-		await sio.emit("send_to_client",build_response("ressource",source_sid,"Invalid data format")
+		await sio.emit("send_to_client",build_response("ressource",source_sid,"Invalid data format"))
 		return
 			       
 	user = get_user(source_sid)
@@ -43,22 +43,22 @@ async def ressource(data):
 				doc.modified = modified
 			response = doc.save().as_dict()
 			if response:
-				await sio.emit("send_to_client",build_response("ressource",source_sid,response)
+				await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 		else:
 			document.update({"doctype": doctype})
 			response = frappe.get_doc(data).insert()
 			if response:
-				await sio.emit("send_to_client",build_response("ressource",source_sid,response)
+				await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 	if method == "delete" and name:
 		frappe.delete_doc(doctype, name, ignore_missing=False)
-		await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted")
+		await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted"))
 
 
 	if method == "list":
 		response = frappe.get_all(doctype,filters={"user":user},fields=["*"])
-		await sio.emit("send_to_client",build_response("ressource",source_sid,response)
+		await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 			       
 @sio.event
