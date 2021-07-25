@@ -124,21 +124,21 @@ async def get_platform_data(data):
 	await sio.emit("transfer",build_response("get_platform_data",source,res))
 	
 
-@frappe.whitelist()
-def get_symbol_info(symbol):
-    logged_in()
-    if not symbol:
-        return handle(False,"Data missing")
-    
-    # return data fields
-    fields =  ' ,'.join(["name","stock_summary_detail","key_statistics_data","key_price_data","key_summary_data","website","summary","industry_type","company","country","floating_shares","sector","exchange"])
-    data = frappe.db.sql(""" select {0} from tabSymbol where symbol='{1}' limit 1 """.format(fields,symbol),as_dict=True)
-    if(data and len(data)>0):
-        return handle(True,"Success",data[0])
-    return handle(False,"Symbol not found")
+async def get_symbol_info(message):
+	symbol = message.get("data")
+	source = message.get('source_sid')
+	
+	if not (symbol and source):
+		return
+
+	# return data fields
+	fields =  ' ,'.join(["name","stock_summary_detail","key_statistics_data","key_price_data","key_summary_data","website","summary","industry_type","company","country","floating_shares","sector","exchange"])
+	data = frappe.db.sql(""" select {0} from tabSymbol where symbol='{1}' limit 1 """.format(fields,symbol),as_dict=True)
+	if(data and len(data)>0):
+		await sio.emit("transfer",build_response("get_symbol_info",source,data))
 
 
-@frappe.whitelist()
+
 def get_extra_data(symbols,fields):
     logged_in()
     if not (symbols or fields):
@@ -151,15 +151,19 @@ def get_extra_data(symbols,fields):
     return handle(True,"Success",result)
 
 
-@frappe.whitelist()        
-def last_broadcast(user,scanner):
-    logged_in()
-    if not (user or scanner):
-        return handle(False,"User is required")
-    #doctype =  frappe.db.get_value("Candlescan scanner", {"scanner_id":scanner_id},"scanner")
-    return get_last_broadcast(scanner)
-       
-@frappe.whitelist()        
+
+async def get_last_broadcast(message):
+	scanner = message.get("data")
+	source = message.get('source_sid')
+	
+	if not (symbol and scanner):
+		return
+	 
+	raw_state = frappe.db.get_value(scanner,None,"state")
+	if raw_state:
+		data = json.loads(raw_state)
+		await sio.emit("transfer",build_response("get_last_broadcast",source,data))
+
 def check_symbol(user,symbol):
     #logged_in()
     if not (user or symbol):
@@ -194,13 +198,15 @@ def get_historical(user,doctype,date,feed_type):
     return handle(True,"Success")
     
 @frappe.whitelist()        
-def get_select_values(doctype):
-    logged_in()
-    if not doctype:
-        return handle(Flase,"Data required")
-    values = frappe.db.sql(""" select name from `tab%s` limit 100""" % doctype,as_dict=True)
-    values = [a['name'] for a in values]
-    return handle(True,"Success",values)
+async def get_select_values(message):
+	doctype = message.get("data")
+	source = message.get("source_sid")
+	if not doctype:
+		return
+	values = frappe.db.sql(""" select name from `tab%s` limit 100""" % doctype,as_dict=True)
+	values = [a['name'] for a in values]
+	await sio.emit("transfer",build_response("get_select_values",source,values))
+    
 
 
 @frappe.whitelist()        
