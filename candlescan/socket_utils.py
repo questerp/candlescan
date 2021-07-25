@@ -1,5 +1,6 @@
-import frappe
+import frappe, json
 from frappe.utils import cstr
+from frappe.utils.response import json_handler
 from frappe.realtime import get_redis_server
 from urllib.parse import unquote
 
@@ -15,6 +16,8 @@ def validate_data(data, fields):
 
 def build_response(event,to,data):
 	#{"event":"ressource","to":source_sid,"data":"Not connected"}
+	if data:
+		data = json.dumps(data, default=json_handler, separators=(',',':'))
 	return {
 		"event":event,
 		"to":to,
