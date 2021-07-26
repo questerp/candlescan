@@ -85,10 +85,30 @@ async def ressource(message):
 
 	if method == "list":
 		response = []
-		if doctype in public_ressources:
-			response = frappe.db.sql(""" select * from `tab%s`""" % (doctype),as_dict=True)
+		if doctype == "Scanner":
+			response = []
+			scanners = frappe.db.sql(""" select default_config,title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
+			for scanner in scanners:
+				signautre_method = "%s.signature" % scanner.method
+				config_method = "%s.get_config" % scanner.method
+				signature = frappe.call(signautre_method, **frappe.form_dict)
+				config = frappe.call(config_method, **frappe.form_dict)
+				scanner['signature'] = signature
+				scanner['config'] = config
+				response.append(scanner)
+				
+		elif doctype == "Extras":
+			extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
+			response = []
+			if extras:
+				extras = extras.splitlines()
+			for ex in extras:
+				name, label, value_type,doctype = ex.split(':')
+				response.append({"field":name,"header":label,"value_type":value_type,"doctype":doctype})
+				
 		else:
 			response = frappe.db.sql(""" select * from `tab%s` where user='%s'""" % (doctype,user),as_dict=True)
+		
 		await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 		#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
