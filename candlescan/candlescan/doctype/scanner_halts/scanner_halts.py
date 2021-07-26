@@ -13,10 +13,18 @@ import feedparser
 from dateutil import parser
 from datetime import timedelta
 from candlescan.candlescan_service import broadcast
+from candlescan.socket_utils import get_user,validate_data,build_response,json_encoder
+import socketio
+import asyncio
 
 class ScannerHalts(Document):
 	pass
 
+
+
+sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
+sio.connect('http://localhost:9002',headers={"microservice":"scanner_halts"})
+		
 
 def get_config():
 	return {
@@ -64,7 +72,9 @@ def start(scanner_id):
 				
 			resultdata.append(halt)
 		if resultdata:
-			broadcast("Scanner Halts",scanner_id,interval,resultdata)
+			sio.emit("transfer",build_response("halts","halts",resultdata))
+		time.sleep(30)
+			#broadcast("Scanner Halts",scanner_id,interval,resultdata)
 			#redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
 		#time.sleep(30)
 		#redis.publish("candlesocket",frappe.as_json({"scanner_id":"alerts","data":{"symbol":"AAPL","price":152}}))
