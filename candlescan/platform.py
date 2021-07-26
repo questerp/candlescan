@@ -6,6 +6,8 @@ from frappe.utils import cstr
 import socketio
 import asyncio
 
+public_ressources = ["Scanner"]
+
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 		
@@ -82,7 +84,11 @@ async def ressource(message):
 
 
 	if method == "list":
-		response = frappe.db.sql(""" select * from `tab%s` where user='%s'""" % (doctype,user),as_dict=True)
+		response = []
+		if doctype in public_ressources:
+			response = frappe.db.sql(""" select * from `tab%s`""" % (doctype),as_dict=True)
+		else:
+			response = frappe.db.sql(""" select * from `tab%s` where user='%s'""" % (doctype,user),as_dict=True)
 		await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 		#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
