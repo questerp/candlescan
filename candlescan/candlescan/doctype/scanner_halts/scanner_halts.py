@@ -24,7 +24,7 @@ class ScannerHalts(Document):
 
 sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 sio.connect('http://localhost:9002',headers={"microservice":"scanner_halts"})
-		
+
 
 def get_config():
 	return {
