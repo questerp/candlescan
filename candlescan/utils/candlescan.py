@@ -12,14 +12,23 @@ from candlescan import handle
 import asyncio
 import threading
 import candlescan.utils.yahoo_finance_api2 as yf
-from frappe.utils import cint
+from frappe.utils import cint,now_datetime
+
+
 
 def clear_user_notifications():
     frappe.db.sql("""delete from `tabUser Notification` where user IS NOT NULL """)
     frappe.db.commit()
 
 
-
+def save_scanner_state(data):
+    if data:
+        state = json.dumps(data)
+        result = frappe.get_doc({
+            "doctype":"Scanner Result,
+            "date": now_datetime(),
+            "state":state
+            }).insert()
     
 def insert_symbol(symbol):
     symbol.flags.ignore_links = True
