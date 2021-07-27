@@ -1,6 +1,6 @@
 import frappe,json
 from frappe.realtime import get_redis_server
-from candlescan.candlescan_api import handle
+from candlescan.api import handle
 from candlescan.socket_utils import get_user,validate_data,build_response,json_encoder
 from frappe.utils import cstr
 import socketio
