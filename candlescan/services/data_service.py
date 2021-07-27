@@ -90,16 +90,7 @@ async def ressource(message):
 	if method == "list":
 		response = []
 		if doctype == "Scanner":
-			response = []
-			scanners = frappe.db.sql(""" select default_config,title,description,active,scanner_id,scanner,method from `tabCandlescan scanner` """,as_dict=True)
-			for scanner in scanners:
-				signautre_method = "%s.signature" % scanner.method
-				config_method = "%s.get_config" % scanner.method
-				signature = frappe.call(signautre_method, **frappe.form_dict)
-				config = frappe.call(config_method, **frappe.form_dict)
-				scanner['signature'] = signature
-				scanner['config'] = config
-				response.append(scanner)
+			response = frappe.db.sql(""" select * from `tabCandlescan scanner` """,as_dict=True)
 				
 		elif doctype == "Extras":
 			extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
