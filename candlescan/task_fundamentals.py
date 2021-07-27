@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from candlescan.candlescan_yf import YahooFinancials as YF
+from candlescan.utils.yf import YahooFinancials as YF
 import frappe, json
 from frappe.utils import cstr
 import requests
