@@ -4,16 +4,12 @@
 
 from __future__ import unicode_literals
 import frappe
-from frappe.model.document import Document
 import time
-from frappe.utils.background_jobs import enqueue_doc
-from frappe.model.document import Document
 from frappe.realtime import get_redis_server
 import feedparser
 from dateutil import parser
 from datetime import timedelta
-from candlescan.candlescan_service import broadcast
-from candlescan.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
 import socketio
 import asyncio
 
@@ -70,7 +66,7 @@ def start(scanner_id):
 			resultdata.append(halt)
 		if resultdata:
 			sio.emit("transfer",build_response("halts","halts",resultdata))
-		time.sleep(30)
+		time.sleep(interval)
 			#broadcast("Scanner Halts",scanner_id,interval,resultdata)
 			#redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
 		#time.sleep(30)
