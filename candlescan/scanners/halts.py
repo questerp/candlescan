@@ -55,7 +55,7 @@ def start():
 				
 			resultdata.append(halt)
 		if resultdata:
-			save_scanner_state(resultdata)
+			save_scanner_state("halts",resultdata)
 			sio.emit("transfer",build_response("halts","halts",resultdata))
 		time.sleep(interval)
 			#broadcast("Scanner Halts",scanner_id,interval,resultdata)
