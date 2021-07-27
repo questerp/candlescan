@@ -2,7 +2,7 @@ import socketio
 from aiohttp import web
 import asyncio
 import frappe, json
-from candlescan.candlescan_api import validate_token
+from candlescan.api import validate_token
 from frappe.realtime import get_redis_server
 from frappe.utils import cstr
 from candlescan.socket_utils import decode_cookies,validate_data,json_encoder
