@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 import frappe, json
-from candlescan.get_tickers import get_tickers as gt
+from candlescan.utils.get_tickers import get_tickers as gt
 import requests
 from candlescan.candlescan_service import insert_symbol
 
