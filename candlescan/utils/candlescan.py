@@ -21,11 +21,12 @@ def clear_user_notifications():
     frappe.db.commit()
 
 
-def save_scanner_state(data):
-    if data:
+def save_scanner_state(scanner_id,data):
+    if data and scanner_id:
         state = json.dumps(data)
         result = frappe.get_doc({
             "doctype":"Scanner Result",
+            "scanner":scanner_id,
             "date": now_datetime(),
             "state":state
             }).insert()
