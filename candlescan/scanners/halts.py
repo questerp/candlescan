@@ -10,6 +10,7 @@ import feedparser
 from dateutil import parser
 from datetime import timedelta
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.candlescan import save_scanner_state
 import socketio
 import asyncio
 
@@ -65,6 +66,7 @@ def start(scanner_id):
 				
 			resultdata.append(halt)
 		if resultdata:
+			save_scanner_state(resultdata)
 			sio.emit("transfer",build_response("halts","halts",resultdata))
 		time.sleep(interval)
 			#broadcast("Scanner Halts",scanner_id,interval,resultdata)
