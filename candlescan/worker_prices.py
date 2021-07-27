@@ -1,4 +1,4 @@
-import candlescan.yahoo_finance_api2 as yf
+import candlescan.utils.yahoo_finance_api2 as yf
 from frappe.utils import cint
 
 def get_prices(symbol,period_type, period, frequency_type, frequency):
