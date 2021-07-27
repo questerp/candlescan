@@ -18,22 +18,6 @@ import asyncio
 sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 
-def get_config():
-	return {
-		"feed_type":"list",
-		"can_reorder":False
-	}
-
-def signature():
-	return [
-	{"field":"symbol","header":"Symbol","align":"left","value_type":"string"},
-	{"field":"status","header":"Status","align":"left","value_type":"select","doctype":"Halt status"},
-	{"field":"hdate","header":"Date","align":"left","value_type":"string"},
-	{"field":"htime","header":"Halt Time","align":"left","value_type":"string"},
-	{"field":"hcode","header":"Code","align":"left","value_type":"string"},
-	{"field":"resumption_date","header":"Resumption Date","align":"left","value_type":"string"},
-	{"field":"resumption_time","header":"Resumption Time","align":"left","value_type":"string"},
-	]
 
 def start():    
 	sio.connect('http://localhost:9002',headers={"microservice":"scanner_halts"})
