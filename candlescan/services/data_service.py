@@ -37,10 +37,27 @@ async def connect():
 async def disconnect():
 	print("I'm disconnected!")
 
+
+@sio.event
+async def get_last_result(message):
+	data = message.get('data')
+	source_sid = message.get('source_sid')
+	if not source_sid:
+		return
+	validated = validate_data(data,["scanner_id"])
+	if not validated:
+		return
+	
+	results = frappe.db.sql("""select state from `tabScanner Result` where scanner='%s' order by date desc limit 1""",as_dict=True)
+	if results:
+		await sio.emit("transfer",build_response("get_last_result",source_sid,results))
+		
+	
+	
 @sio.event
 async def ressource(message):
 	data = message.get('data')
-	print("this is ressource",data)
+	#print("this is ressource",data)
 	
 	validated = validate_data(data,["doctype","method"])
 	if not validated:
