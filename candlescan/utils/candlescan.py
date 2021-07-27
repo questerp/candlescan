@@ -25,7 +25,7 @@ def save_scanner_state(data):
     if data:
         state = json.dumps(data)
         result = frappe.get_doc({
-            "doctype":"Scanner Result,
+            "doctype":"Scanner Result",
             "date": now_datetime(),
             "state":state
             }).insert()
