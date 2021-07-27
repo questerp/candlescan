@@ -17,10 +17,16 @@ import asyncio
 
 sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
-
+def connect():
+	try:
+		sio.connect('http://localhost:9002',headers={"microservice":"scanner_halts"})
+	except socketio.exceptions.ConnectionError as err:
+		print("error",sio.sid,err)
+		sio.sleep(5)
+		connect()
 
 def start():    
-	sio.connect('http://localhost:9002',headers={"microservice":"scanner_halts"})
+	connect()
 	URL = "http://www.nasdaqtrader.com/rss.aspx?feed=tradehalts"
 	redis = get_redis_server()
 	interval = 30
