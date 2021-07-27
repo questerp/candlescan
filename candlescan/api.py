@@ -2,10 +2,10 @@ import frappe, json
 from http import cookies
 from urllib.parse import unquote, urlparse
 from frappe.utils import cstr
-from candlescan.candlescan_service import get_last_broadcast
+#from candlescan.candlescan_service import get_last_broadcast
 from frappe.utils import getdate,today,cstr
 from frappe.utils.data import nowdate, getdate, cint, add_days, date_diff, get_last_day, add_to_date, flt
-from candlescan.worker_prices import get_prices
+from candlescan.utils.candlescan import get_yahoo_prices as get_prices
 
 import requests
 
