@@ -44,6 +44,7 @@ async def join(sid, room):
 @sio.event
 async def connect(sid, environ):
 	#print("environ",environ)
+	frappe.connect()
 	microservice=None
 	is_microservice = 'HTTP_MICROSERVICE' in environ
 	if is_microservice:
