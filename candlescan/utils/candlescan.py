@@ -30,6 +30,7 @@ def save_scanner_state(scanner_id,data):
             "date": now_datetime(),
             "state":state
             }).insert()
+	frappe.db.commit()
     
 def insert_symbol(symbol):
     symbol.flags.ignore_links = True
