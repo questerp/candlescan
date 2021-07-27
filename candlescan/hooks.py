@@ -95,14 +95,11 @@ scheduler_events = {
 		
  	],
  	"daily": [
-		"candlescan.candlescan_service.clear_user_notifications"
+		"candlescan.utils.candlescan.clear_user_notifications"
  	],
  	"hourly": [
-		"candlescan.task_fundamentals.process"
  	],
 	"daily_long":[
-		"candlescan.task_symbols.process",
-		"candlescan.task_calendar.process"
 	],
  	"weekly": [
  	],
