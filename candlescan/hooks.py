@@ -83,7 +83,7 @@ app_license = "MIT"
 
 doc_events = {
  	"Customer": {
- 		"after_insert": "candlescan.candlescan_service.after_signup",
+ 		"after_insert": "candlescan.utils.candlescan.generate_customer_codes",
 	}
  }
 
