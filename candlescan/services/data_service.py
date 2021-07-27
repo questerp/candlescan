@@ -40,15 +40,15 @@ async def disconnect():
 
 @sio.event
 async def get_last_result(message):
-	data = message.get('data')
+	scanner_id = message.get('data')
 	source_sid = message.get('source_sid')
 	if not source_sid:
 		return
-	validated = validate_data(data,["scanner_id"])
-	if not validated:
+	
+	if not scanner_id:
 		return
 	
-	results = frappe.db.sql("""select state from `tabScanner Result` where scanner='%s' order by date desc limit 1""",as_dict=True)
+	results = frappe.db.sql("""select state from `tabScanner Result` where scanner='%s' order by date desc limit 1""" % scanner_id,as_dict=True)
 	if results:
 		data = json.loads(results[0].state)
 		await sio.emit("transfer",build_response("get_last_result",source_sid,data))
