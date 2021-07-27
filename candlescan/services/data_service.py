@@ -1,10 +1,11 @@
 import frappe,json
 from frappe.realtime import get_redis_server
 from candlescan.api import handle
-from candlescan.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
 from frappe.utils import cstr
 import socketio
 import asyncio
+from candlescan.utils.candlescan import get_yahoo_prices as get_prices
 
 public_ressources = ["Scanner"]
 
