@@ -31,6 +31,7 @@ async def connect_error(message):
 
 @sio.event
 async def connect():
+	frappe.connect()
 	print("I'm connected!")
 
 @sio.event
