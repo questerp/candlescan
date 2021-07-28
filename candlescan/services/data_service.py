@@ -25,6 +25,12 @@ async def run():
 		await run()
 
 @sio.event
+async def ping(message):
+	print("ping")
+	if not frappe.db:
+		frappe.connect()	
+		
+@sio.event
 async def connect_error(message):
 	print("connect_error")
 	print(message)
