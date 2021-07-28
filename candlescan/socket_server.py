@@ -18,6 +18,7 @@ events_map = {
 	"ressource":"data_service",
 	"get_last_result":"data_service",
 	"get_extra_data":"data_service",
+	"get_select_values":"data_service",
 }
 
 @sio.event
@@ -34,6 +35,7 @@ async def transfer(sid, data):
 		to = events_map.get(event)
 	if not to:
 		sio.emit("errors", "Destination not found", room=sid)
+		return
 	print("sending",event,"to",to)
 	await sio.emit(event, data, room=to)
 
