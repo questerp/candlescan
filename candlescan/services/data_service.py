@@ -181,8 +181,9 @@ async def get_symbol_info(message):
 @sio.event
 async def get_extra_data(message):
 	source = message['source_sid']
-	symbols = message.get("symbols")
-	fields = message.get("fields")
+	data = message.get("data")
+	symbols = data.get("symbols")
+	fields = data.get("fields")
 	print("symbols",symbols)
 	print("fields",fields)
 	
