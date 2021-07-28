@@ -178,18 +178,19 @@ async def get_symbol_info(message):
 		await sio.emit("transfer",build_response("get_symbol_info",source,data))
 
 
+@sio.event
+async def get_extra_data(message):
+	source = message['source_sid']
+	symbols = message.get("symbols")
+	fields = message.get("fields")
+	if not (symbols or fields):
+		return
 
-def get_extra_data(symbols,fields):
-    logged_in()
-    if not (symbols or fields):
-        return handle(False,"Data missing")
-
-    sql_fields =  ' ,'.join(fields)
-    sql_symbols =  ', '.join(['%s']*len(symbols))
-    sql = """select name,{0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
-    result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
-    return handle(True,"Success",result)
-
+	sql_fields =  ' ,'.join(fields)
+	sql_symbols =  ', '.join(['%s']*len(symbols))
+	sql = """select name,{0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
+	result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
+	await sio.emit("transfer",build_response("get_extra_data",source,result))
 
 
 async def get_last_broadcast(message):
