@@ -253,7 +253,7 @@ def get_historical(user,doctype,date,feed_type):
             return handle(True,"Success",resp)
     return handle(True,"Success")
     
-@frappe.whitelist()        
+@sio.event
 async def get_select_values(message):
 	doctype = message.get("data")
 	source = message.get("source_sid")
