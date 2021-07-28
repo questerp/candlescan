@@ -123,7 +123,7 @@ async def ressource(message):
 				extras = extras.splitlines()
 			for ex in extras:
 				name, label, value_type,extra_doctype = ex.split(':')
-				response.append({"field":name,"header":label,"value_type":value_type,"doctype":extra_doctype})
+				response.append({"field":name,"header":label,"value_type":value_type,"doctype":extra_doctype,"signature":False})
 				
 		else:
 			response = frappe.db.sql(""" select * from `tab%s` where user='%s'""" % (doctype,user),as_dict=True)
