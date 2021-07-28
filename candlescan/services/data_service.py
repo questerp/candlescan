@@ -261,6 +261,7 @@ async def get_select_values(message):
 		return
 	values = frappe.db.sql(""" select name from `tab%s` limit 100""" % doctype,as_dict=True)
 	values = [a['name'] for a in values]
+	print("values",values)
 	await sio.emit("transfer",build_response("get_select_values",source,values))
     
 
