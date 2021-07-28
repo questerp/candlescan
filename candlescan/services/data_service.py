@@ -25,9 +25,7 @@ async def run():
 		await run()
 
 def init():
-	if not frappe.db:
-		print("init db")
-		frappe.connect()	
+	frappe.connect()	
 		
 @sio.event
 async def connect_error(message):
