@@ -198,7 +198,7 @@ async def get_extra_data(message):
 
 	sql_fields =  ' ,'.join(fields)
 	sql_symbols =  ', '.join(['%s']*len(symbols))
-	sql = """select name,{0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
+	sql = """select symbol,{0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
 	result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
 	print("result",result)
 	
