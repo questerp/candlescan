@@ -174,6 +174,7 @@ async def get_symbol_info(message):
 	# return data fields
 	fields =  ' ,'.join(["name","stock_summary_detail","key_statistics_data","key_price_data","key_summary_data","website","summary","industry_type","company","country","floating_shares","sector","exchange"])
 	data = frappe.db.sql(""" select {0} from tabSymbol where symbol='{1}' limit 1 """.format(fields,symbol),as_dict=True)
+	print(data)
 	if(data and len(data)>0):
 		await sio.emit("transfer",build_response("get_symbol_info",source,data))
 
