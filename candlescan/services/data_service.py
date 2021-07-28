@@ -24,10 +24,9 @@ async def run():
 		await sio.sleep(5)
 		await run()
 
-@sio.event
-async def ping(message):
-	print("ping")
+def init():
 	if not frappe.db:
+		print("init db")
 		frappe.connect()	
 		
 @sio.event
@@ -37,7 +36,7 @@ async def connect_error(message):
 
 @sio.event
 async def connect():
-	frappe.connect()
+	init()
 	print("I'm connected!")
 
 @sio.event
@@ -47,6 +46,7 @@ async def disconnect():
 
 @sio.event
 async def get_last_result(message):
+	init()
 	scanner_id = message.get('data')
 	source_sid = message.get('source_sid')
 	if not source_sid:
@@ -64,6 +64,7 @@ async def get_last_result(message):
 	
 @sio.event
 async def ressource(message):
+	init()
 	data = message.get('data')
 	#print("this is ressource",data)
 	
@@ -135,6 +136,7 @@ async def ressource(message):
 			       
 @sio.event
 async def get_platform_data(data):
+	init()
 	source = data['source_sid']
 	user = get_redis_server().hget("sockets",source)
 	if source and not user:
@@ -186,6 +188,7 @@ async def get_symbol_info(message):
 
 @sio.event
 async def get_extra_data(message):
+	init()
 	source = message['source_sid']
 	data = message.get("data")
 	symbols = data.get("symbols")
