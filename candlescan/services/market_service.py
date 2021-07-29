@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-import frappe, json
+import frappe, json, random
 from candlescan.utils.get_tickers import get_tickers as gt
 import requests
 from candlescan.utils.candlescan import insert_symbol
@@ -16,8 +16,9 @@ from bs4 import BeautifulSoup
 import datetime
 import pytz
 import random
-
-
+import socketio
+import asyncio
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
@@ -28,7 +29,11 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"market_service"})
-		await sio.wait()
+		while(True):
+			await asyncio.sleep(3)
+			price = random.uniform(1,10)
+			await sio.emit("transfer",build_response("price","MSON",price))
+		
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
