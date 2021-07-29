@@ -32,7 +32,7 @@ async def run():
 		while(True):
 			await asyncio.sleep(3)
 			price = random.uniform(1,10)
-			await sio.emit("transfer",build_response("price","MSON",price))
+			await sio.emit("transfer",build_response("price","MSON",{"symbol":"MSON","price":price}))
 		
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
