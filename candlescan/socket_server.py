@@ -45,6 +45,12 @@ async def transfer(sid, data):
 async def join(sid, room):
 	sio.enter_room(sid, room)
 
+@sio.event	
+async def join_all(sid, rooms):
+	if not rooms:
+		return
+	for room in rooms:
+		sio.enter_room(sid, room)	
 
 @sio.event
 async def connect(sid, environ):
