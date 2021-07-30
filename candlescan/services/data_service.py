@@ -118,7 +118,7 @@ async def ressource(message):
 
 			else:
 				document.update({"doctype": doctype})
-				response = frappe.get_doc(data).insert()
+				response = frappe.get_doc(document).insert()
 				if response:
 					await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 					frappe.db.commit()
