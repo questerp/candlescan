@@ -151,6 +151,8 @@ async def ressource(message):
 			await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 			#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 	except Exception as exc:
+		print("ERROR---------------------")
+		print(exc)
 		await sio.emit("transfer",build_response("errors",source_sid,"Operation failed!"))
 			
 			
