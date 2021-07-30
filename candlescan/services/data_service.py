@@ -98,6 +98,7 @@ async def ressource(message):
 	method = data.get("method")
 	document = data.get("doc")
 	if not name and document:
+		print("doc",document)
 		name = document.get("name")
 	
 	if method == "save":
@@ -111,6 +112,7 @@ async def ressource(message):
 			response = doc.save().as_dict()
 			if response:
 				await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
+				frappe.db.commit()
 				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 		else:
@@ -118,6 +120,7 @@ async def ressource(message):
 			response = frappe.get_doc(data).insert()
 			if response:
 				await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
+				frappe.db.commit()
 				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 	if method == "delete" and name:
