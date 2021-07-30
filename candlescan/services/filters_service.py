@@ -42,8 +42,8 @@ async def disconnect():
 
 
     
-@frappe.whitelist()     
-def run_stock_filter(message):
+@sio.event
+async def run_stock_filter(message):
 	init()
 	name = message.get('data')
 	source_sid = message.get('source_sid')
