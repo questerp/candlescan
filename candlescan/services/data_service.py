@@ -2,7 +2,7 @@ import frappe,json
 from frappe.realtime import get_redis_server
 from candlescan.api import handle
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
-from frappe.utils import cstr
+from frappe.utils import cstr,getdate, get_time, today
 import socketio
 import asyncio
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
@@ -43,6 +43,19 @@ async def disconnect():
 
 
 @sio.event
+async def get_history_result(message):
+	init()
+	data = message.get('data')
+	source_sid = message.get('source_sid')
+	if not source_sid:
+		return
+	scanner_id = data.get('scanner_id')
+	date = data.get('date')
+	results = get_history(scanner_id,date)
+	await sio.emit("transfer",build_response("get_history_result",source_sid,results[0]))
+	
+	
+@sio.event
 async def get_last_result(message):
 	init()
 	scanner_id = message.get('data')
@@ -52,12 +65,15 @@ async def get_last_result(message):
 	
 	if not scanner_id:
 		return
-	
-	results = frappe.db.sql("""select state,date from `tabScanner Result` where scanner='%s' order by date desc limit 1""" % scanner_id,as_dict=True)
+	results = get_history(scanner_id,today())
+	#results = frappe.db.sql("""select state,date from `tabScanner Result` where scanner='%s' order by date desc limit 1""" % scanner_id,as_dict=True)
 	if results and len(results):
 		await sio.emit("transfer",build_response("get_last_result",source_sid,results[0]))
 		
-	
+
+def get_history(scanner,date):
+	if scanner and date:
+		return frappe.db.sql("""select state,date from `tabScanner Result` where scanner='%s' and date<='%s' order by date desc limit 1""" % (scanner,date),as_dict=True)
 	
 @sio.event
 async def ressource(message):
