@@ -24,6 +24,7 @@ events_map = {
 	"run_stock_filter":"filters_service",
 	"get_symbol_info":"data_service",
 	"lookup":"data_service",
+	"get_symbol_prices":"market_service",
 }
 
 @sio.event
