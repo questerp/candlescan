@@ -19,6 +19,7 @@ events_map = {
 	"get_last_result":"data_service",
 	"get_extra_data":"data_service",
 	"get_select_values":"data_service",
+	"get_history_result":"data_service",
 }
 
 @sio.event
