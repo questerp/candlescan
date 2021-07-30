@@ -54,7 +54,20 @@ async def get_history_result(message):
 	results = get_history(scanner_id,date)
 	await sio.emit("transfer",build_response("get_history_result",source_sid,results[0]))
 	
-	
+
+@sio.event
+async def set_default_layout(message):
+	init()
+	data = message.get('data')
+	if not data:
+		return
+	source_sid = message.get('source_sid')
+	user = get_user(source_sid)
+	if user and data:
+		frappe.db.set_value("Customer",user,"default_layout",data)
+		frappe.db.commit()
+		await sio.emit("transfer",build_response("info",source_sid,"Default layout changed"))    
+		
 @sio.event
 async def get_last_result(message):
 	init()
@@ -476,17 +489,6 @@ def delete_filter(user,filter):
     
     
 
-@frappe.whitelist()     
-async def set_default_layout(message):
-	data = message.get('data')
-	if not data:
-		return
-	source_sid = message.get('source_sid')
-	user = get_user(source_sid)
-	if user and data:
-		frappe.db.set_value("Customer",user,"default_layout",data)
-		frappe.db.commit()
-		await sio.emit("transfer",build_response("info",source_sid,"Default layout changed"))    
 
             
 @frappe.whitelist()     
