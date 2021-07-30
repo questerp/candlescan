@@ -2,7 +2,7 @@ import frappe,json
 from frappe.realtime import get_redis_server
 from candlescan.api import handle
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
-from frappe.utils import cstr,getdate, get_time, today
+from frappe.utils import cstr,getdate, get_time, today,now_datetime
 import socketio
 import asyncio
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
@@ -65,7 +65,7 @@ async def get_last_result(message):
 	
 	if not scanner_id:
 		return
-	results = get_history(scanner_id,today())
+	results = get_history(scanner_id,now_datetime())
 	#results = frappe.db.sql("""select state,date from `tabScanner Result` where scanner='%s' order by date desc limit 1""" % scanner_id,as_dict=True)
 	if results and len(results):
 		await sio.emit("transfer",build_response("get_last_result",source_sid,results[0]))
