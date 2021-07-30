@@ -48,7 +48,7 @@ async def lookup(message):
 	sid = message.get('source_sid')
 	if not symbol or len(symbol) > 8 or len(symbol) < 2:
 		return
-	symbols = frappe.db.sql("""select symbol from tabSymbol where name LIKE  %(symbol)s limit 10 """ ,{"symbol":symbol},as_dict=True)
+	symbols = frappe.db.sql("""select symbol from tabSymbol where name LIKE  %(symbol)s limit 10 """ ,{"symbol":'%%%s%%' % symbol},as_dict=True)
 	await sio.emit("transfer",build_response("lookup",sid,symbols))
 	
 	
