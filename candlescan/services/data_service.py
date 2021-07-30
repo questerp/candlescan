@@ -166,7 +166,7 @@ async def ressource(message):
 	except Exception as exc:
 		print("ERROR---------------------")
 		print(exc)
-		await sio.emit("transfer",build_response("errors",source_sid,"Operation failed!"))
+		await sio.emit("transfer",build_response("errors",source_sid,"Operation failed! %s" % exc))
 			
 			
 
