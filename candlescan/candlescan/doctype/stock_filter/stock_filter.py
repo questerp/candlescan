@@ -11,10 +11,10 @@ class StockFilter(Document):
 		if not self.columns:
 			frappe.throw("Please select at least one column for the filter")
 		sql = self.validate_script()
-		columns = json.loads(self.columns)
-		fields = ",".join([a['field'] for a in columns])
-		if 'symbol' not in fields:
-			fields = "symbol, "+fields
+		#columns = json.loads(self.columns)
+		#fields = ",".join([a['field'] for a in columns])
+		#if 'symbol' not in fields:
+		fields = "symbol"
 		final = """ SELECT %s from tabSymbol where price > 0 and %s """ % (fields,sql)
 		#frappe.msgprint(final)
 		try:
