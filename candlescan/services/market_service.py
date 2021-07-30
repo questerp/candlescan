@@ -19,6 +19,8 @@ import random
 import socketio
 import asyncio
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.candlescan import get_yahoo_prices as get_prices
+
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
@@ -55,7 +57,24 @@ async def connect():
 	init()
 	print("I'm connected!")
 
+   
+@sio.event
+async def get_symbol_prices(message):
+	source = message.get("source_sid")
+	data = message.get("data")
+	if not data:
+		return
+	symbol = data.get("symbol")
+	period_type = data.get("period_type")
+	period = data.get("period")
+	frequency_type = data.get("frequency_type")
+	frequency = data.get("frequency")
+	
+	if not (symbol or period_type or period or frequency_type or frequency):
+		return
 
+	data = get_prices(symbol,period_type, period, frequency_type, frequency)
+	await sio.emit("transfer",build_response("get_symbol_prices",source,data))
 
 
 try:
