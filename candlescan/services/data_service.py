@@ -77,78 +77,83 @@ def get_history(scanner,date):
 	
 @sio.event
 async def ressource(message):
-	init()
-	data = message.get('data')
-	#print("this is ressource",data)
-	
-	validated = validate_data(data,["doctype","method"])
-	if not validated:
-		return
-	print("validated",validated)
-	source_sid = message.get('source_sid')
-	if not source_sid:
-		return
-	if not (validated or source_sid):
-		await sio.emit("transfer",build_response("ressource",source_sid,"Invalid data format"))
-		return
-			       
-	user = get_user(source_sid)
-	doctype = data.get("doctype")
-	name = data.get("name")
-	method = data.get("method")
-	document = data.get("doc")
-	if not name and document:
-		print("doc",document)
-		name = document.get("name")
-	
-	if method == "save":
-		if name:
-			doc = frappe.get_doc(doctype, name)
-			doc.update(document)
-			modified =  frappe.db.sql("""select modified from `tab{0}` where name = %s for update""".format(doctype), name, as_dict=True)
-			if modified:
-				modified = cstr(modified[0].modified)
-				doc.modified = modified
-			response = doc.save().as_dict()
-			if response:
-				await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
-				frappe.db.commit()
-				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+	try:
+		init()
+		data = message.get('data')
+		#print("this is ressource",data)
 
-		else:
-			document.update({"doctype": doctype})
-			response = frappe.get_doc(data).insert()
-			if response:
-				await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
-				frappe.db.commit()
-				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+		validated = validate_data(data,["doctype","method"])
+		if not validated:
+			return
+		print("validated",validated)
+		source_sid = message.get('source_sid')
+		if not source_sid:
+			return
+		if not (validated or source_sid):
+			await sio.emit("transfer",build_response("ressource",source_sid,"Invalid data format"))
+			return
 
-	if method == "delete" and name:
-		frappe.delete_doc(doctype, name, ignore_missing=True)
-		frappe.db.commit()
-		await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":"Deleted"}))
-		#await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted"))
+		user = get_user(source_sid)
+		doctype = data.get("doctype")
+		name = data.get("name")
+		method = data.get("method")
+		document = data.get("doc")
+		if not name and document:
+			print("doc",document)
+			name = document.get("name")
+
+		if method == "save":
+			if name:
+				doc = frappe.get_doc(doctype, name)
+				doc.update(document)
+				modified =  frappe.db.sql("""select modified from `tab{0}` where name = %s for update""".format(doctype), name, as_dict=True)
+				if modified:
+					modified = cstr(modified[0].modified)
+					doc.modified = modified
+				response = doc.save().as_dict()
+				if response:
+					await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
+					frappe.db.commit()
+					#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+
+			else:
+				document.update({"doctype": doctype})
+				response = frappe.get_doc(data).insert()
+				if response:
+					await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
+					frappe.db.commit()
+					#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+
+		if method == "delete" and name:
+			frappe.delete_doc(doctype, name, ignore_missing=True)
+			frappe.db.commit()
+			await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":"Deleted"}))
+			#await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted"))
 
 
-	if method == "list":
-		response = []
-		if doctype == "Scanner":
-			response = frappe.db.sql(""" select * from `tabCandlescan scanner` """,as_dict=True)
-				
-		elif doctype == "Extras":
-			extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
+		if method == "list":
 			response = []
-			if extras:
-				extras = extras.splitlines()
-			for ex in extras:
-				name, label, value_type,extra_doctype = ex.split(':')
-				response.append({"field":name,"header":label,"value_type":value_type,"doctype":extra_doctype,"signature":False})
-				
-		else:
-			response = frappe.db.sql(""" select * from `tab%s` where user='%s'""" % (doctype,user),as_dict=True)
-		
-		await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
-		#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+			if doctype == "Scanner":
+				response = frappe.db.sql(""" select * from `tabCandlescan scanner` """,as_dict=True)
+
+			elif doctype == "Extras":
+				extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
+				response = []
+				if extras:
+					extras = extras.splitlines()
+				for ex in extras:
+					name, label, value_type,extra_doctype = ex.split(':')
+					response.append({"field":name,"header":label,"value_type":value_type,"doctype":extra_doctype,"signature":False})
+
+			else:
+				response = frappe.db.sql(""" select * from `tab%s` where user='%s'""" % (doctype,user),as_dict=True)
+
+			await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
+			#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+	except Exception as exc:
+		await sio.emit("transfer",build_response("errors",source_sid,"Operation failed!"))
+			
+			
 
 			       
 @sio.event
