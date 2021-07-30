@@ -508,17 +508,4 @@ def get_notifications(user):
         frappe.throw("Missing data")         
     notifs = frappe.get_all("User Notification", fields=['user','message','creation'],filters={"user":user})
     return handle(True,"Success",notifs)
-    
-@frappe.whitelist()     
-def run_stock_filter(user,name):
-    logged_in()
-    if not (user or name):
-        frappe.throw("Missing data")
-    filter = frappe.get_doc("Stock Filter",name)
-    if filter.sql_script:
-        sql = json.loads(filter.sql_script)
-        sort = "ASC" if filter.sort_mode == "Ascending" else "DESC"
-        if sql:
-            data = frappe.db.sql("""%s order by %s %s limit 100""" % (sql,filter.sort_field,sort),as_dict=True)
-            return handle(True,"Success",data)
-    frappe.throw("Can't execute filter, contact support")
+
