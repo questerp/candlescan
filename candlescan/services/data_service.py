@@ -124,7 +124,8 @@ async def ressource(message):
 				#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 	if method == "delete" and name:
-		frappe.delete_doc(doctype, name, ignore_missing=False)
+		frappe.delete_doc(doctype, name, ignore_missing=True,delete_permanently=True)
+		frappe.db.commit()
 		await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":"Deleted"}))
 		#await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted"))
 
