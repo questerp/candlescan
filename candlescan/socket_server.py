@@ -22,6 +22,7 @@ events_map = {
 	"get_history_result":"data_service",
 	"set_default_layout":"data_service",
 	"run_stock_filter":"filters_service",
+	"get_symbol_info":"data_service",
 }
 
 @sio.event
