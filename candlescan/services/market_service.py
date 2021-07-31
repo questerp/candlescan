@@ -55,7 +55,7 @@ async def connect():
 @sio.event
 async def get_filings(message):
 	source = message.get("source_sid")
-	symbol = message.get("symbol")
+	symbol = message.get("data")
 	print("symbol",symbol)
 	if not symbol:
 		return
