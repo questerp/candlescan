@@ -35,14 +35,6 @@ async def run():
 			await asyncio.sleep(3)
 			price = random.uniform(1,10)
 			await sio.emit("transfer",build_response("price","AMC",{"symbol":"AMC","price":price}))
-			await asyncio.sleep(3)
-			await sio.emit("transfer",build_response("price","SBI",{"symbol":"SBI","price":price}))
-			await asyncio.sleep(3)
-			await sio.emit("transfer",build_response("price","VRT",{"symbol":"VRT","price":price}))
-			await asyncio.sleep(3)
-			await sio.emit("transfer",build_response("price","SGLB",{"symbol":"SGLB","price":price}))
-			await asyncio.sleep(3)
-			await sio.emit("transfer",build_response("price","SGOC",{"symbol":"SGOC","price":price}))
 		
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
