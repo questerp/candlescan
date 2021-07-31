@@ -49,7 +49,16 @@ async def connect():
 	init()
 	print("I'm connected!")
 
-   
+@sio.event
+async def get_calendar(message):
+	source = message.get("source_sid")
+	target = message.get("data")
+	if not target:
+		return
+	calendar = frappe.db.get_value("Fundamentals",None,target)
+	await sio.emit("transfer",build_response("get_calendar",source,calendar))
+
+	
 @sio.event
 async def get_symbol_prices(message):
 	source = message.get("source_sid")
