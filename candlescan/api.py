@@ -290,6 +290,8 @@ def get_user(name,target='email'):
 def signup_customer(customer_name,email,password):
     if not (customer_name or email or password):
         return handle(True,"Some fields are required",[False])
+    if len(password) < 8:
+         frappe.throw("Passwords must be at least 8 characters long.")
     customer = frappe.get_doc({
         'doctype':"Customer",
         'customer_name':customer_name,
