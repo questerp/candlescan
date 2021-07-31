@@ -44,7 +44,8 @@ async def run():
 		await run()
 
 def init():
-	frappe.connect()	
+	if not frappe.db:
+		frappe.connect()	
 
 @sio.event
 async def connect():
@@ -54,6 +55,7 @@ async def connect():
 
 @sio.event
 async def get_filings(message):
+	init()
 	source = message.get("source_sid")
 	symbol = message.get("data")
 	print("symbol",symbol)
@@ -77,6 +79,7 @@ async def get_filings(message):
 	
 @sio.event
 async def get_calendar(message):
+	init()
 	source = message.get("source_sid")
 	target = message.get("data")
 	if not target:
@@ -87,6 +90,7 @@ async def get_calendar(message):
 	
 @sio.event
 async def get_symbol_prices(message):
+	init()
 	source = message.get("source_sid")
 	data = message.get("data")
 	if not data:
@@ -105,6 +109,7 @@ async def get_symbol_prices(message):
 
 @sio.event
 async def get_symbol_info(message):
+	init()
 	symbol = message.get("data")
 	source = message.get('source_sid')
 	
