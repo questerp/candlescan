@@ -20,6 +20,7 @@ import socketio
 import asyncio
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
+from secedgar.core.cik_lookup import CIKLookup
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -154,6 +155,13 @@ def process_calendar():
                 time.sleep(3)
     frappe.db.commit()
 
+def process_cik():
+	symbols = frappe.db.sql("""select symbol from tabSymbol where (cik is null or cik = '')""",as_dict=True)
+	lookups = CIKLookup([a['symbol'] for a in symbols], user_agent="Candlescan Application")
+	for sym in lookups.lookup_dict:
+		symbol = upper(sym)
+		frappe.db.set_value("Symbol",symbol,"cik",lookups.lookup_dict[sym])
+	frappe.db.commit()
 
 def process_tickers():
 	#NYSE=True, NASDAQ=True, AMEX=True
