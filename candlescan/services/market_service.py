@@ -56,13 +56,17 @@ async def connect():
 async def get_filings(message):
 	source = message.get("source_sid")
 	symbol = message.get("symbol")
+	print("symbol",symbol)
 	if not symbol:
 		return
 	symbol = symbol.upper()
 	cik = frappe.db.get_value("Symbol",symbol,"cik")
+	print("cik",cik)
+	
 	if cik:
 		url = "https://sec.report/CIK/%s.rss" % cik
 		data = feedparser.parse(url)
+		print("data",data)
 		if not data:
 			return
 		data = json.dumps(data)
