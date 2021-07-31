@@ -167,7 +167,7 @@ def process_cik():
 			if cik:
 				frappe.db.set_value("Symbol",symbol,"cik",cik)
 		except Exception as ex:
-			print("Not valid")
+			print(sym,"Not valid")
 			
 	frappe.db.commit()
 
