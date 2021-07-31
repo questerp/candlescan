@@ -71,6 +71,9 @@ async def get_filings(message):
 			return
 		data = json.dumps(data)
 		await sio.emit("transfer",build_response("get_filings",source,data))	
+	else:
+		await sio.emit("transfer",build_response("get_filings",source,False))	
+		
 	
 @sio.event
 async def get_calendar(message):
