@@ -157,11 +157,11 @@ def process_calendar():
 
 def process_cik():
 	symbols = frappe.db.sql("""select symbol from tabSymbol where (cik is null or cik = '')""",as_dict=True)
-	_tickets = [lower(a['symbol']) for a in symbols]
+	_tickets = [a['symbol'].lower() for a in symbols]
 	print(_tickets)
 	lookups = CIKLookup(_tickets, user_agent="Candlescan Application")
 	for sym in lookups.lookup_dict:
-		symbol = upper(sym)
+		symbol = sym.upper()
 		cik = lookups.lookup_dict[sym]
 		print("CIK",symbol,cik)
 		if cik:
