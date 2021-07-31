@@ -26,6 +26,7 @@ events_map = {
 	"lookup":"data_service",
 	"get_symbol_prices":"market_service",
 	"get_calendar":"market_service",
+	"get_filings":"market_service",
 }
 
 @sio.event
