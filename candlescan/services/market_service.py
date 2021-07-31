@@ -191,10 +191,10 @@ def process_cik():
 			print("CIK",symbol,cik)
 			if cik:
 				frappe.db.set_value("Symbol",symbol,"cik",cik)
+				frappe.db.commit()
 		except Exception as ex:
 			print(sym,"Not valid")
 			
-	frappe.db.commit()
 
 def process_tickers():
 	#NYSE=True, NASDAQ=True, AMEX=True
