@@ -20,7 +20,7 @@ import socketio
 import asyncio
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
-from secedgar.core.cik_lookup import CIKLookup
+from secedgar.cik_lookup import CIKLookup
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
