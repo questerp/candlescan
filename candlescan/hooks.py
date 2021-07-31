@@ -92,7 +92,7 @@ doc_events = {
 
 scheduler_events = {
  	"all": [
-		
+		"candlescan.services.market_service.process_fundamentals"
  	],
  	"daily": [
 		"candlescan.utils.candlescan.clear_user_notifications"
@@ -100,6 +100,7 @@ scheduler_events = {
  	"hourly": [
  	],
 	"daily_long":[
+		"candlescan.services.market_service.process_calendar"
 	],
  	"weekly": [
  	],
