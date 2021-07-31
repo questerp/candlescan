@@ -21,6 +21,7 @@ import asyncio
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
 from secedgar.cik_lookup import CIKLookup
+import feedparser
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -50,6 +51,23 @@ async def connect():
 	init()
 	print("I'm connected!")
 
+
+@sio.event
+async def get_filings(message):
+	source = message.get("source_sid")
+	symbol = message.get("symbol")
+	if not symbol:
+		return
+	symbol = symbol.upper()
+	cik = frappe.db.get_value("Symbol",symbol,"cik")
+	if cik:
+		url = "https://sec.report/CIK/%s.rss" % cik
+		data = feedparser.parse(url)
+		if not data:
+			return
+		data = json.dumps(data)
+		await sio.emit("transfer",build_response("get_filings",source,data))	
+	
 @sio.event
 async def get_calendar(message):
 	source = message.get("source_sid")
