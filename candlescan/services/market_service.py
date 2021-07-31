@@ -76,7 +76,20 @@ async def get_symbol_prices(message):
 	data = get_prices(symbol,period_type, period, frequency_type, frequency)
 	await sio.emit("transfer",build_response("get_symbol_prices",source,data))
 
+@sio.event
+async def get_symbol_info(message):
+	symbol = message.get("data")
+	source = message.get('source_sid')
+	
+	if not (symbol and source):
+		return
 
+	# return data fields
+	fields =  ' ,'.join(["name","stock_summary_detail","key_statistics_data","key_price_data","key_summary_data","website","summary","industry_type","company","country","floating_shares","sector","exchange"])
+	data = frappe.db.sql(""" select {0} from tabSymbol where symbol='{1}' limit 1 """.format(fields,symbol),as_dict=True)
+	if data and len(data)>0 :
+		await sio.emit("transfer",build_response("get_symbol_info",source,data))
+		
 try:
     from urllib import FancyURLopener
 except:
