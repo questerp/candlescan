@@ -76,7 +76,7 @@ async def set_default_layout(message):
 	if user and data:
 		frappe.db.set_value("Customer",user,"default_layout",data)
 		frappe.db.commit()
-		await sio.emit("transfer",build_response("info",source_sid,"Default layout changed"))    
+		await sio.emit("transfer",build_response("set_default_layout",source_sid,"Default layout changed"))    
 		
 @sio.event
 async def get_last_result(message):
