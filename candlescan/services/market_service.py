@@ -40,7 +40,8 @@ async def run():
 		await run()
 
 def init():
-	if not frappe.db:
+	print(frappe.local.site)
+	if not frappe.local.db:
 		frappe.connect()	
 
 @sio.event
