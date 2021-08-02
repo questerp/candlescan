@@ -42,7 +42,7 @@ async def get_news(message):
 		for n in newzz:
 			op = frappe.get_doc({"doctype":"News"})
 			op.title = n.get("title")
-			op.date = get_datetime(n.get("published"))
+			op.date = n.get("published")
 			op.source = n.get("link")
 			op.content = n.get("summary")
 			op.symbol = symbol
