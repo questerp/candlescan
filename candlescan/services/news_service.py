@@ -34,22 +34,31 @@ async def get_news(message):
 	symbol = symbol.upper()
 	news = frappe.db.sql(""" select date,title, symbol, source, content from tabNews where symbol='%s'""" %  (symbol),as_dict=True)
 	if not news:
-		news = []
-		# yahoo
-		mytopic = "$%s" % symbol
-		feed = fn.Yahoo(topics=[mytopic])
-		newzz = feed.get_news()
-		for n in newzz:
-			op = frappe.get_doc({"doctype":"News"})
-			op.title = n.get("title")
-			op.date = n.get("published")
-			op.source = n.get("link")
-			op.content = n.get("summary")
-			op.symbol = symbol
-			data = op.insert()
-			news.append(data)
+		news = fetch_news(symbol)
+
 	await sio.emit("transfer",build_response("get_news",sid,news))
-	
+
+def fetch_news(symbol):
+	mytopic = "$%s" % symbol
+	feedSeekingAlpha = fn.SeekingAlpha(topics=[mytopic])
+	feedYahoo = fn.Yahoo(topics=[mytopic])
+	#feedNasdaq = fn.Nasdaq(topics=[mytopic])
+	newsSeekingAlpha = feedSeekingAlpha.get_news()
+	newsYahoo = feedYahoo.get_news()
+	#newsNasdaq = feedNasdaq.get_news()
+	news = [].extend(newsSeekingAlpha).extend(newsYahoo)#.extend(newsNasdaq)
+	for n in news:
+		op = frappe.get_doc({"doctype":"News"})
+		op.title = n.get("title")
+		op.date = n.get("published")
+		op.source = n.get("link")
+		op.content = n.get("summary")
+		op.symbol = symbol
+		data = op.insert()
+		news.append(data)
+	frappe.db.commit()
+	return news
+
 	
 def init():
 	frappe.connect()	
