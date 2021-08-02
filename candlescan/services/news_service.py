@@ -6,6 +6,8 @@ from frappe.utils import cstr,getdate, get_time, today,now_datetime
 import socketio
 import asyncio
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
+import FinNews as fn
+from frappe.utils import get_datetime
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -22,7 +24,33 @@ async def run():
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
-
+		
+@sio.event
+async def get_news(message):
+	sid = message.get("source_sid")
+	symbol = message.get("data")
+	if not symbol:
+		return
+	symbol = symbol.upper()
+	news = frappe.db.sql(""" select date,title, symbol, source, content from tabNews where symbol='%s'""" %  (symbol),as_dict=True)
+	if not news:
+		news = []
+		# yahoo
+		topic = "$%s" % symbol
+		feed = fn.Yahoo(topic=[topic])
+		newzz = feed.get_news()
+		for n in newzz:
+			op = frappe.get_doc({"doctype":"News"})
+			op.title = n.get("title")
+			op.date = get_datetime(n.get("published"))
+			op.source = n.get("link")
+			op.content = n.get("summary")
+			op.symbol = symbol
+			data = op.inser()
+			news.append(data)
+	await sio.emit("transfer",build_response("get_news",sid,news))
+	
+	
 def init():
 	frappe.connect()	
 		
