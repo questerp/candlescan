@@ -36,8 +36,8 @@ async def get_news(message):
 	if not news:
 		news = []
 		# yahoo
-		topic = "$%s" % symbol
-		feed = fn.Yahoo(topic=[topic])
+		mytopic = "$%s" % symbol
+		feed = fn.Yahoo(topics=[mytopic])
 		newzz = feed.get_news()
 		for n in newzz:
 			op = frappe.get_doc({"doctype":"News"})
