@@ -33,7 +33,7 @@ async def get_news(message):
 	if not symbol:
 		return
 	symbol = symbol.upper()
-	news = frappe.db.sql(""" select creation,date,title, symbol, source, content from tabNews where symbol='%s'""" %  (symbol),as_dict=True)
+	news = frappe.db.sql(""" select creation,date,title, symbol, source from tabNews where symbol='%s'""" %  (symbol),as_dict=True)
 	if not news:
 		news = fetch_news(symbol)
 	elif news[0].creation < (now_datetime() - timedelta(minutes=5)):
@@ -64,7 +64,7 @@ def fetch_news(symbol):
 			op.title = n.get("title")
 			op.date = n.get("published")
 			op.source = n.get("link")
-			op.content = n.get("summary")
+			#op.content = n.get("summary")
 			op.symbol = symbol
 			data = op.insert()
 			result.append(data)
