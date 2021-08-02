@@ -51,6 +51,7 @@ def fetch_news(symbol):
 	news.extend(newsYahoo)
 	#.extend(newsNasdaq)
 	for n in news:
+		print("____________\n")
 		print(n)
 		op = frappe.get_doc({"doctype":"News"})
 		op.title = n.get("title")
