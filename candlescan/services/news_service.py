@@ -46,7 +46,12 @@ def fetch_news(symbol):
 	newsSeekingAlpha = feedSeekingAlpha.get_news()
 	newsYahoo = feedYahoo.get_news()
 	#newsNasdaq = feedNasdaq.get_news()
-	news = [].extend(newsSeekingAlpha).extend(newsYahoo)#.extend(newsNasdaq)
+	news = []
+	print(newsYahoo)
+	print(newsSeekingAlpha)
+	news.extend(newsSeekingAlpha)
+	news.extend(newsYahoo)
+	#.extend(newsNasdaq)
 	for n in news:
 		op = frappe.get_doc({"doctype":"News"})
 		op.title = n.get("title")
