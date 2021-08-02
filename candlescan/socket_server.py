@@ -27,6 +27,7 @@ events_map = {
 	"get_symbol_prices":"market_service",
 	"get_calendar":"market_service",
 	"get_filings":"market_service",
+	"get_news":"news_service",
 }
 
 @sio.event
