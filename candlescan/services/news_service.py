@@ -49,6 +49,7 @@ def fetch_news(symbol):
 	news = []
 	news.extend(newsSeekingAlpha)
 	news.extend(newsYahoo)
+	result = []
 	#.extend(newsNasdaq)
 	for n in news:
 		print("____________\n")
@@ -61,9 +62,9 @@ def fetch_news(symbol):
 			op.content = n.get("summary")
 			op.symbol = symbol
 			data = op.insert()
-			news.append(data)
+			result.append(data)
 	frappe.db.commit()
-	return news
+	return result
 
 	
 def init():
