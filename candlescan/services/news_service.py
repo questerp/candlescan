@@ -53,14 +53,15 @@ def fetch_news(symbol):
 	for n in news:
 		print("____________\n")
 		print(n)
-		op = frappe.get_doc({"doctype":"News"})
-		op.title = n.get("title")
-		op.date = n.get("published")
-		op.source = n.get("link")
-		op.content = n.get("summary")
-		op.symbol = symbol
-		data = op.insert()
-		news.append(data)
+		if n and n.get("published"):
+			op = frappe.get_doc({"doctype":"News"})
+			op.title = n.get("title")
+			op.date = n.get("published")
+			op.source = n.get("link")
+			op.content = n.get("summary")
+			op.symbol = symbol
+			data = op.insert()
+			news.append(data)
 	frappe.db.commit()
 	return news
 
