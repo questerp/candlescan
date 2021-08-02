@@ -46,7 +46,7 @@ async def get_news(message):
 			op.source = n.get("link")
 			op.content = n.get("summary")
 			op.symbol = symbol
-			data = op.inser()
+			data = op.insert()
 			news.append(data)
 	await sio.emit("transfer",build_response("get_news",sid,news))
 	
