@@ -36,10 +36,6 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"market_service"})
-		while(1):
-			price = random.uniform(1,10)
-			await sio.emit("transfer",build_response("EJH_price","EJH_price",price))
-			await sio.sleep(3)			
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
