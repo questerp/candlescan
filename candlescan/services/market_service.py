@@ -112,7 +112,7 @@ async def get_symbol_prices(message):
 	if frequency == "1Day":
 		td = TimeFrame.Day
 		
-	data = api.get_bars(symbol, td,start, end)
+	data = api.get_bars(symbol, td,start, end)._raw
 	#data = get_prices(symbol,period_type, period, frequency_type, frequency)
 	await sio.emit("transfer",build_response("get_symbol_prices",source,data))
 
