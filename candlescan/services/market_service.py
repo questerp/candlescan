@@ -22,9 +22,12 @@ from candlescan.utils.socket_utils import get_user,validate_data,build_response,
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
 from secedgar.cik_lookup import CIKLookup
 import feedparser
+from alpaca_trade_api.rest import REST, TimeFrame
+from frappe.utils import cstr, today, add_days, getdate, add_months
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
+api = REST()
 
 def start():
 	asyncio.get_event_loop().run_until_complete(run())
@@ -97,15 +100,24 @@ async def get_symbol_prices(message):
 	if not data:
 		return
 	symbol = data.get("symbol")
-	period_type = data.get("period_type")
-	period = data.get("period")
-	frequency_type = data.get("frequency_type")
 	frequency = data.get("frequency")
+	start = data.get("start")
+	end = data.get("end")
 	
-	if not (symbol or period_type or period or frequency_type or frequency):
+	
+	if not (symbol or frequency or start):
 		return
-
-	data = get_prices(symbol,period_type, period, frequency_type, frequency)
+	
+	td = TimeFrame.Minute
+	if frequency == "1Min":
+		td = TimeFrame.Minute
+	if frequency == "1Hour":
+		td = TimeFrame.Hour 
+	if frequency == "1Day":
+		td = TimeFrame.Day
+		
+	data = api.get_bars(symbol, td,start, end)
+	#data = get_prices(symbol,period_type, period, frequency_type, frequency)
 	await sio.emit("transfer",build_response("get_symbol_prices",source,data))
 
 @sio.event
