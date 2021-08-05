@@ -21,7 +21,7 @@ async def run():
 		stream = Stream()  # <- replace to SIP if you have PRO subscription
 		stream.subscribe_bars(handle_subs,["*"])
 
-		await sio.await()
+		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
