@@ -39,6 +39,8 @@ def handle_subs():
 			s = snap[st]
 			if s:
 				trade = s.latest_trade
+				if not trade:
+					continue
 				daily = s.daily_bar
 				quote = s.latest_quote
 				print(s,trade.get("p"))
