@@ -35,13 +35,15 @@ def handle_subs():
 	if symbols:
 		snap = api.get_snapshots(symbols)
 		for st in snap:
+			print(st)
 			s = snap[st]
-			trade = s.latest_trade
-			daily = s.daily_bar
-			quote = s.latest_quote
-			print(s,trade.p)
-			
-			frappe.db.sql(""" update tabSymbol set price=%s, volume=%s, bid=%s, ask=%s where symbol='%s'""" % (trade.p,daily.v,quote.bp,quote.ap,st))
+			if s:
+				trade = s.latest_trade
+				daily = s.daily_bar
+				quote = s.latest_quote
+				print(s,trade.p)
+
+				frappe.db.sql(""" update tabSymbol set price=%s, volume=%s, bid=%s, ask=%s where symbol='%s'""" % (trade.p,daily.v,quote.bp,quote.ap,st))
 		frappe.db.commit()
 			
 		
