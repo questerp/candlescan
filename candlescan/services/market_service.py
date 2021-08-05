@@ -24,6 +24,7 @@ from secedgar.cik_lookup import CIKLookup
 import feedparser
 from alpaca_trade_api.rest import REST, TimeFrame
 from frappe.utils import cstr, today, add_days, getdate, add_months
+from frappe.realtime import get_redis_server
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -52,13 +53,20 @@ async def connect():
 	init()
 	print("I'm connected!")
 
-
+@sio.event
+async def subscribe_symbol(message):
+	init()
+	source = message.get("source_sid")
+	symbol = message.get("data")
+	if not symbol:
+		return
+	get_redis_server().sadd("symbols",symbol)
+	
 @sio.event
 async def get_filings(message):
 	init()
 	source = message.get("source_sid")
 	symbol = message.get("data")
-	print("symbol",symbol)
 	if not symbol:
 		return
 	symbol = symbol.upper()
