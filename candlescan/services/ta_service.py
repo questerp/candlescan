@@ -41,7 +41,7 @@ def handle_subs():
 			quote = s.latest_quote
 			print(s,trade.p)
 			
-			frappe.fb.sql(""" update tabSymbol set price=%s, volume=%s, bid=%s, ask=%s where symbol='%s'""" % (trade.p,daily.v,quote.bp,quote.ap,st))
+			frappe.db.sql(""" update tabSymbol set price=%s, volume=%s, bid=%s, ask=%s where symbol='%s'""" % (trade.p,daily.v,quote.bp,quote.ap,st))
 		frappe.db.commit()
 			
 		
