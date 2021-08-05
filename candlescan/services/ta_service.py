@@ -20,7 +20,7 @@ async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
 		stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex')
-		stream.subscribe_quotes(handle_subs, 'AAPL')#subscribe_bars(handle_subs,"AAPL")
+		stream.subscribe_bars(handle_subs,"AAPL")
 		await stream._run_forever()
 		run_connection(stream)
 		await sio.wait()
@@ -42,6 +42,7 @@ def run_connection(conn):
 async def handle_subs(price):
 	if price:
 		print(price)
+		price = price[0]
 		price['doctype'] = "Bars"
 		frappe.get_doc(price).insert(ignore_permissions=True, ignore_if_duplicate=True,	ignore_mandatory=True,  set_child_names=False)
 	#[
