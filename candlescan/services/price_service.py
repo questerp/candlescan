@@ -11,7 +11,7 @@ from alpaca_trade_api.common import URL
 
 def start():
 	stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex', raw_data=True)
-	stream.subscribe_bars(handle_subs,"AAPL")
+	stream.subscribe_bars(handle_subs,"*")
 	stream.run()
 	run_connection(stream)
 		
