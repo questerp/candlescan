@@ -50,15 +50,6 @@ async def connect():
 	init()
 	print("I'm connected!")
 
-@sio.event
-async def subscribe_symbol(message):
-	init()
-	source = message.get("source_sid")
-	symbol = message.get("data")
-	if not symbol:
-		return
-	print("sub",symbol)
-	get_redis_server().sadd("symbols",symbol)
 	
 @sio.event
 async def get_filings(message):
