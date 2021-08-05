@@ -10,7 +10,7 @@ from alpaca_trade_api.rest import REST
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
-api = REST()
+api = REST(raw_data=True)
 
 def start():
 	asyncio.get_event_loop().run_until_complete(run())
@@ -38,14 +38,15 @@ def handle_subs():
 			print(st)
 			s = snap[st]
 			if s:
-				trade = s.latest_trade
-				if not trade:
-					continue
-				daily = s.daily_bar
-				quote = s.latest_quote
-				print(s,trade.get("p"))
-				
-				frappe.db.sql(""" update tabSymbol set price=%s, volume=%s, bid=%s, ask=%s where symbol='%s'""" % (trade.get("p"),daily.get("v"),quote.get("bp"),quote.get("ap"),st))
+				latest_trade = s.get("latestTrade")
+				latest_quote = s.get("latestQuote")
+				minute_bar =  s.get("minuteBar")
+				daily_bar =  s.get("dailyBar")
+				prev_daily_bar =  s.get("prevDailyBar")
+
+				if latest_trade:
+					print(s,latest_trade.get("p"))
+					frappe.db.sql(""" update tabSymbol set price=%s, volume=%s, bid=%s, ask=%s where symbol='%s'""" % (latest_trade.get("p"),daily_bar.get("v"),latest_quote.get("bp"),latest_quote.get("ap"),st))
 		frappe.db.commit()
 			
 		
