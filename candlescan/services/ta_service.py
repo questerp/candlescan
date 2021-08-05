@@ -44,8 +44,13 @@ def handle_subs():
 				prev_daily_bar =  s.get("prevDailyBar")
 
 				if latest_trade:
-					print(s,latest_trade.get("p"))
-					frappe.db.sql(""" update tabSymbol set price=%s, volume=%s, bid=%s, ask=%s where symbol='%s'""" % (latest_trade.get("p"),daily_bar.get("v"),latest_quote.get("bp"),latest_quote.get("ap"),st))
+					price = latest_trade.get("p") if latest_trade else 0
+					volume = daily_bar.get("v") if daily_bar else 0
+					bid = latest_quote.get("bp") if latest_quote else 0
+					ask = latest_quote.get("ap") if latest_quote else 0
+					print(s,price,volume,bid,ask)
+					
+					frappe.db.sql(""" update tabSymbol set price=%s, volume=%s, bid=%s, ask=%s where symbol='%s'""" % (price,volume,bid,ask,st))
 		frappe.db.commit()
 			
 		
