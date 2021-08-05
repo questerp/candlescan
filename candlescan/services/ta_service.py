@@ -6,12 +6,10 @@ import socketio
 import asyncio
 from frappe.realtime import get_redis_server
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
-from alpaca_trade_api import Stream
-from alpaca_trade_api.common import URL
+
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
-stream = None
 def start():
 	asyncio.get_event_loop().run_until_complete(run())
 	asyncio.get_event_loop().run_forever()
@@ -19,47 +17,13 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
-		stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex', raw_data=True)
-		stream.subscribe_bars(handle_subs,"AAPL")
-		await stream._run_forever()
-		run_connection(stream)
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
 
-def run_connection(conn):
-	try:
-		conn.run()
-	except Exception as e:
-		print(f'Exception from websocket connection: {e}')
-	finally:
-		print("Trying to re-establish connection")
-		time.sleep(3)
-		run_connection(conn)
 	
-async def handle_subs(price):
-	print("price",price)
-	if price:
-		price = price[0]
-		price['doctype'] = "Bars"
-		frappe.get_doc(price).insert(ignore_permissions=True, ignore_if_duplicate=True,	ignore_mandatory=True,  set_child_names=False)
-	#[
-	#{
-	#"T": "b",
-	#"S": "AMC",
-	#"o": 33.44,
-	#"c": 33.35,
-	#"h": 33.52,
-	#""l": 33.35,
-	#""v": 1407,
-	#""t": "2021-08-05T19:32:00Z",
-	#"n": 18,
-	#""vw": 33.419701
-	#"}
-	#]
-			
 		
 
 @sio.event
