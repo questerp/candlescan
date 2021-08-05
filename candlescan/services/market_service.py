@@ -57,6 +57,7 @@ async def subscribe_symbol(message):
 	symbol = message.get("data")
 	if not symbol:
 		return
+	print("sub",symbol)
 	get_redis_server().sadd("symbols",symbol)
 	
 @sio.event
