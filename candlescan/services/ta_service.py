@@ -27,7 +27,6 @@ async def run():
 		await sio.sleep(5)
 		await run()
 
-api = REST()		
 def handle_subs():
 	_symbols = get_redis_server().smembers("symbols")
 	symbols = [cstr(a) for a in _symbols]
