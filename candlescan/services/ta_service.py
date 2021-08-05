@@ -7,6 +7,7 @@ import asyncio
 from frappe.realtime import get_redis_server
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
 from alpaca_trade_api import Stream
+from alpaca_trade_api.common import URL
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -18,7 +19,7 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
-		stream = Stream()  # <- replace to SIP if you have PRO subscription
+		stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex')
 		stream.subscribe_quotes(handle_subs, 'AAPL')#subscribe_bars(handle_subs,"AAPL")
 		await stream._run_forever()
 		run_connection(stream)
