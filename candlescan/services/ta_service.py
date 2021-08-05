@@ -20,13 +20,24 @@ async def run():
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
 		stream = Stream()  # <- replace to SIP if you have PRO subscription
 		stream.subscribe_bars(handle_subs,"*")
-
+		stream.run()
+    		run_connection(conn)
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
 
+def run_connection(conn):
+	try:
+		conn.run()
+	except Exception as e:
+		print(f'Exception from websocket connection: {e}')
+	finally:
+		print("Trying to re-establish connection")
+		time.sleep(3)
+		run_connection(conn)
+	
 async def handle_subs(data):
 	if data:
 		price = data[0]
