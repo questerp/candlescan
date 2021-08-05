@@ -4,8 +4,6 @@ from candlescan.utils.get_tickers import get_tickers as gt
 import requests
 from candlescan.utils.candlescan import insert_symbol
 from candlescan.utils.yf import YahooFinancials as YF
-import frappe, json
-from frappe.utils import cstr
 import requests
 import sys
 import calendar
@@ -15,7 +13,6 @@ import time
 from bs4 import BeautifulSoup
 import datetime
 import pytz
-import random
 import socketio
 import asyncio
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
