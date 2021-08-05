@@ -19,7 +19,7 @@ async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
 		stream = Stream()  # <- replace to SIP if you have PRO subscription
-		stream.subscribe_bars(handle_subs,["*"])
+		stream.subscribe_bars(handle_subs,"*")
 
 		await sio.wait()
 	except socketio.exceptions.ConnectionError as err:
