@@ -19,7 +19,7 @@ async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
 		stream = Stream()  # <- replace to SIP if you have PRO subscription
-		stream.subscribe_bars(handle_subs,"*")
+		stream.subscribe_bars(handle_subs,"AAPL")
 		await stream._run_forever()
 		run_connection(stream)
 		await sio.wait()
