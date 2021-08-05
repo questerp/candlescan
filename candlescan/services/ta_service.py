@@ -31,7 +31,7 @@ api = REST()
 def handle_subs():
 	_symbols = get_redis_server().smembers("symbols")
 	symbols = [cstr(a) for a in _symbols]
-	print(symbols)
+	print(_symbols)
 	if symbols:
 		snap = api.get_snapshots(symbols)
 		for st in snap:
