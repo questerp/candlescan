@@ -6,7 +6,7 @@ import socketio
 import asyncio
 from frappe.realtime import get_redis_server
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
-from alpaca_trade_api.rest import Stream
+from alpaca_trade_api import Stream
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
