@@ -9,7 +9,7 @@ from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 
 log = logging.getLogger(__name__)
-count = 0
+
 def start():
 	logging.basicConfig(level=logging.INFO)
 	stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex', raw_data=True)
@@ -29,8 +29,7 @@ def run_connection(conn):
 
 	
 async def handle_subs(price):
-	print(count)
-	count +=1
+	print(price)
 	if price:
 		#price = price[0]
 		price['t'] = price['t'].seconds * int(1e9) + price['t'].nanoseconds
