@@ -32,6 +32,7 @@ def start():
 			dailyBar = data.get("dailyBar")
 			if minuteBar:
 				minuteBar['doctype'] = "Bars"
+				minuteBar['s'] = s
 				frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
 				
 			if latestTrade and dailyBar:
