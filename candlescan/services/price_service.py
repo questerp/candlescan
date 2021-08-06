@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 def start():
 	logging.basicConfig(level=logging.INFO)
 	stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex', raw_data=True)
-	stream.subscribe_quotes(handle_subs,"AAPL")
+	stream.subscribe_bars(handle_subs,"*")
 	#stream.run()
 	run_connection(stream)
 		
@@ -30,11 +30,11 @@ def run_connection(conn):
 	
 async def handle_subs(price):
 	print(price)
-	#☺if price:
-	#	#price = price[0]
-	#	price['t'] = price['t'].seconds * int(1e9) + price['t'].nanoseconds
-	#	price['doctype'] = "Bars"
-	#	frappe.get_doc(price).insert(ignore_permissions=True, ignore_if_duplicate=True,	ignore_mandatory=True)
+	if price:
+		#price = price[0]
+		price['t'] = price['t'].seconds * int(1e9) + price['t'].nanoseconds
+		price['doctype'] = "Bars"
+		frappe.get_doc(price).insert(ignore_permissions=True, ignore_if_duplicate=True,	ignore_mandatory=True)
 
 	#[
 	#{
