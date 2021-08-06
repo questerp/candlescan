@@ -33,6 +33,7 @@ async def handle_subs(price):
 	print("price",price)
 	if price:
 		#price = price[0]
+		price['t'] = price['t'].seconds * int(1e9) + price['t'].nanoseconds
 		price['doctype'] = "Bars"
 		frappe.get_doc(price).insert(ignore_permissions=True, ignore_if_duplicate=True,	ignore_mandatory=True)
 	#[
