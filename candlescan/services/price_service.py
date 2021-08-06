@@ -13,12 +13,12 @@ log = logging.getLogger(__name__)
 def start():
 	logging.basicConfig(level=logging.INFO)
 	stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex', raw_data=True)
-	stream.subscribe_bars(handle_subs,"*")
 	#stream.run()
 	run_connection(stream)
 		
 def run_connection(conn):
 	try:
+		conn.subscribe_bars(handle_subs,"*")
 		conn.run()
 	except Exception as e:
 		print(f'Exception from websocket connection: {e}')
