@@ -26,7 +26,7 @@ def start():
 			data = snap[s]
 			if not data:
 				continue
-			print(data)
+			#print(data)
 			minuteBar = data.get("minuteBar")
 			latestTrade = data.get("latestTrade")
 			dailyBar = data.get("dailyBar")
