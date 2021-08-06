@@ -7,9 +7,12 @@ from frappe.realtime import get_redis_server
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
 from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
+import logging
 
+log = logging.getLogger(__name__)
 
 def start():
+	logging.basicConfig(level=logging.INFO)
 	stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex', raw_data=True)
 	stream.subscribe_bars(handle_subs,"*")
 	stream.run()
