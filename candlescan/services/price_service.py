@@ -32,7 +32,7 @@ def run_connection(conn):
 async def handle_subs(price):
 	print("price",price)
 	if price:
-		price = price[0]
+		#price = price[0]
 		price['doctype'] = "Bars"
 		frappe.get_doc(price).insert(ignore_permissions=True, ignore_if_duplicate=True,	ignore_mandatory=True,  set_child_names=False)
 	#[
