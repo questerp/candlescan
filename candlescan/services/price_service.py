@@ -15,7 +15,7 @@ def start():
 	logging.basicConfig(level=logging.INFO)
 	stream = Stream(base_url=URL('https://paper-api.alpaca.markets'), data_feed='iex', raw_data=True)
 	stream.subscribe_bars(handle_subs,"*")
-	stream.run()
+	#stream.run()
 	run_connection(stream)
 		
 def run_connection(conn):
