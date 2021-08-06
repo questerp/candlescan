@@ -20,9 +20,12 @@ def start():
 	while(1):
 		_symbols = redis.smembers("symbols")
 		symbols = [cstr(a) for a in _symbols if a]
+		print(symbols)
 		snap = api.get_snapshots(symbols)
 		for s in snap:
 			data = snap[s]
+			if not data:
+				continue
 			print(data)
 			minuteBar = data.get("minuteBar")
 			latestTrade = data.get("latestTrade")
