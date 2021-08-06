@@ -30,7 +30,7 @@ def run_connection(conn):
 	
 async def handle_subs(price):
 	print(count)
-	count++
+	count +=1
 	if price:
 		#price = price[0]
 		price['t'] = price['t'].seconds * int(1e9) + price['t'].nanoseconds
