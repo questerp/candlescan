@@ -30,9 +30,11 @@ def start():
 			minuteBar = data.get("minuteBar")
 			latestTrade = data.get("latestTrade")
 			dailyBar = data.get("dailyBar")
-			minuteBar['doctype'] = "Bars"
-			frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
-			if latestTrade:
+			if minuteBar:
+				minuteBar['doctype'] = "Bars"
+				frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
+				
+			if latestTrade and dailyBar:
 				frappe.db.sql(""" update tabSymbol set price=%s, volume=%s where name='%s'""" % (latestTrade.get("p"),dailyBar.get("v"),s))
 		frappe.db.commit()
 		time.sleep(60)
