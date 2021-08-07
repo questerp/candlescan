@@ -158,7 +158,7 @@ def process_tickers():
 		if not exist:
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
-				'active': ticker["status"] == 'active'
+				'active': ticker["status"] == 'active',
 				'symbol':ticker['symbol'],
 				'company':ticker['name'],
 				'exchange':ticker['exchange'],
