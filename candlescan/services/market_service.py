@@ -150,12 +150,13 @@ def process_tickers():
 	api = REST(raw_data=True)
 	assets = api.list_assets()
 	for ticker in assets:
-		print(ticker["status"])
 		if ticker["status"] != 'active':
 			continue
-		ticker['symbol'] = ticker['symbol'].replace('^','p')
+		#ticker['symbol'] = ticker['symbol'].replace('^','p')
 		#ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
 		exist = frappe.db.exists("Symbol",ticker['symbol'])
+		print(ticker['symbol'],exist)
+		
 		if not exist:
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
