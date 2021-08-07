@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import frappe, logging, time
 from frappe.utils import cstr
+from datetime import datetime as dt
 import socketio
 import asyncio
 from frappe.realtime import get_redis_server
@@ -18,7 +19,16 @@ def start():
 	api = REST(raw_data=True)
 	redis = get_redis_server()
 	counter = 0
+	# init symbols 
+	s = frappe.db.sql(""" select symbol from tabSymbol""",as_list=True)
+	s = [a[0] for a in s]
+	for sym in s:
+		print("adding", sym)
+		redis.sadd("symbols",sym)
 	while(1):
+		if dt.now().second != 1:
+			time.sleep(1)
+			continue
 		counter += 1
 		_symbols = redis.smembers("symbols")
 		symbols = [cstr(a) for a in _symbols if a]
@@ -33,6 +43,8 @@ def start():
 				symbols = list(set(symbols))
 				
 		snap = api.get_snapshots(symbols)
+		m1s = []
+		m5s = []
 		for s in snap:
 			data = snap[s]
 			if not data:
@@ -44,19 +56,16 @@ def start():
 			dailyBar = data.get("dailyBar")
 			prevDailyBar = data.get("prevDailyBar")
 			if minuteBar:
-				minuteBar['doctype'] = "Bars"
-				minuteBar['s'] = s
-				frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
+				#minuteBar['doctype'] = "Bars"
+				#minuteBar['s'] = s
+				#frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
 				
 				# decide refresh rate
 				vol = minuteBar.get("v") or 0
 				if vol < 20000:
-					redis.sadd("5m_symbols",s)
-					redis.srem("symbols",s)
+					m5s.append(s)
 				else:
-					redis.sadd("symbols",s)
-					redis.srem("5m_symbols",s)
-					
+					m1s.append(s)
 				
 			if latestTrade and dailyBar:
 				frappe.db.sql(""" update tabSymbol set 
@@ -103,4 +112,10 @@ def start():
 						      s
 					      ))
 		frappe.db.commit()
-		time.sleep(60)
+		for s in m1s:
+			redis.sadd("symbols",s)
+			redis.srem("5m_symbols",s)
+		for s in m5s:
+			redis.srem("symbols",s)
+			redis.sadd("5m_symbols",s)
+		#time.sleep(60)
