@@ -37,7 +37,7 @@ def start():
 	s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	s = [a[0] for a in s]
 	for sym in s:
-		print("adding", sym)
+		#print("adding", sym)
 		redis.sadd("1m_symbols",sym)
 	while(1):
 		nw  = dt.now()
@@ -61,6 +61,7 @@ def start():
 		_symbols = redis.smembers("1m_symbols")
 		_sub_symbols = redis.smembers("symbols")
 		sub_symbols = [cstr(a) for a in _sub_symbols if a]
+		print("sub_symbols", sub_symbols)
 		symbols = [cstr(a) for a in _symbols if a]
 		#print("1 min",symbols)
 		if counter >=5:
