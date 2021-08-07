@@ -51,6 +51,7 @@ async def subscribe_symbol(message):
 		return
 	active = frappe.db.get_value("Symbol",symbol,"active")
 	if active:
+		sio.enter_room(source, symbol)
 		get_redis_server().sadd("symbols",symbol)
 	
 @sio.event
