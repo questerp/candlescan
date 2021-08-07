@@ -84,7 +84,6 @@ def start():
 			latestQuote = data.get("latestQuote") or {}
 			dailyBar = data.get("dailyBar") or {}
 			prevDailyBar = data.get("prevDailyBar")  or {}
-			await sio.emit("transfer",build_response("get_filings",source,data))	
 			#minuteBar['doctype'] = "Bars"
 			#minuteBar['s'] = s
 			#frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
