@@ -41,6 +41,16 @@ async def connect():
 async def disconnect():
 	print("I'm disconnected!")
 
+
+@sio.event
+async def subscribe_symbol(message):
+	init()
+	source = message.get("source_sid")
+	symbol = message.get("data")
+	if not symbol:
+		return
+	get_redis_server().sadd("symbols",symbol)
+	
 @sio.event
 async def lookup(message):
 	init()
