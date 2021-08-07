@@ -57,6 +57,7 @@ def start():
 				symbols = list(set(symbols))
 				
 		snap = api.get_snapshots(symbols)
+		print(dt.now())
 		m1s = []
 		m5s = []
 		for s in snap:
