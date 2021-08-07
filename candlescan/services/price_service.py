@@ -29,6 +29,8 @@ def start():
 		if dt.now().second != 1:
 			time.sleep(1)
 			continue
+		print("------------")
+		print(dt.now())
 		counter += 1
 		_symbols = redis.smembers("symbols")
 		symbols = [cstr(a) for a in _symbols if a]
@@ -113,5 +115,5 @@ def start():
 		for s in m5s:
 			redis.srem("symbols",s)
 			redis.sadd("5m_symbols",s)
-		print("DONE",len(m5s),len(m1s))
+		print(dt.now(),len(m5s),len(m1s))
 		#time.sleep(60)
