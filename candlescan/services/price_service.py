@@ -104,7 +104,7 @@ def start():
 						      prevDailyBar.get("v") or 0,
 						      prevDailyBar.get("n") or 0,
 						      s )
-				print(sql)
+				#print(sql)
 				frappe.db.sql(sql)
 		frappe.db.commit()
 		for s in m1s:
