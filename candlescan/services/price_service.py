@@ -50,24 +50,23 @@ def start():
 			if not data:
 				continue
 			#print(data)
-			minuteBar = data.get("minuteBar")
-			latestTrade = data.get("latestTrade")
-			latestQuote = data.get("latestQuote")
-			dailyBar = data.get("dailyBar")
-			prevDailyBar = data.get("prevDailyBar")
-			if minuteBar:
-				#minuteBar['doctype'] = "Bars"
-				#minuteBar['s'] = s
-				#frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
+			minuteBar = data.get("minuteBar") or {}
+			latestTrade = data.get("latestTrade") or {}
+			latestQuote = data.get("latestQuote") or {}
+			dailyBar = data.get("dailyBar") or {}
+			prevDailyBar = data.get("prevDailyBar")  or {}
+			#minuteBar['doctype'] = "Bars"
+			#minuteBar['s'] = s
+			#frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
+
+			# decide refresh rate
+			vol = minuteBar.get("v") or 0
+			if vol < 20000:
+				m5s.append(s)
+			else:
+				m1s.append(s)
 				
-				# decide refresh rate
-				vol = minuteBar.get("v") or 0
-				if vol < 20000:
-					m5s.append(s)
-				else:
-					m1s.append(s)
-				
-			if latestTrade and dailyBar:
+			if latestTrade.get("p"):
 				frappe.db.sql(""" update tabSymbol set 
 				price=%s, 
 				volume=%s, 
