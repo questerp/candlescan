@@ -67,27 +67,9 @@ def start():
 				m5s.append(s)
 				
 			if latestTrade.get("p"):
-				sql = """ update tabSymbol set 
-				price=%s, 
-				volume=%s, 
-				today_high=%s, 
-				today_low=%s ,
-				today_open=%s ,
-				today_close=%s ,
-				today_trades=%s ,
-				bid=%s ,
-				ask=%s ,
-				vwap=%s ,
-				prev_day_open = %s ,
-				prev_day_close = %s ,
-				prev_day_high = %s ,
-				prev_day_low = %s ,
-				prev_day_vwap = %s ,
-				prev_day_volume = %s ,
-				prev_day_trades = %s 
-				where name='%s'
-				""" % 
-					      (
+				sql = """ update tabSymbol set price=%s, volume=%s, today_high=%s, today_low=%s , today_open=%s , today_close=%s , today_trades=%s ,
+				bid=%s , ask=%s , vwap=%s , prev_day_open = %s , prev_day_close = %s , prev_day_high = %s , prev_day_low = %s , prev_day_vwap = %s ,
+				prev_day_volume = %s , prev_day_trades = %s where name='%s' """ % (
 						      latestTrade.get("p"),
 						      dailyBar.get("v"),
 						      dailyBar.get("h"),
@@ -105,8 +87,7 @@ def start():
 						      prevDailyBar.get("vw"),
 						      prevDailyBar.get("v"),
 						      prevDailyBar.get("n"),
-						      s
-					      )
+						      s )
 				print(sql)
 				frappe.db.sql(sql)
 		frappe.db.commit()
