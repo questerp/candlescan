@@ -59,6 +59,8 @@ def start():
 		print(dt.now())
 		counter += 1
 		_symbols = redis.smembers("1m_symbols")
+		_sub_symbols = redis.smembers("symbols")
+		sub_symbols = [cstr(a) for a in _sub_symbols if a]
 		symbols = [cstr(a) for a in _symbols if a]
 		#print("1 min",symbols)
 		if counter >=5:
@@ -96,10 +98,11 @@ def start():
 				m5s.append(s)
 			price = latestTrade.get("p")	
 			if price:
-				sio.emit("transfer",build_response("symbol",s,{
-					"symbol":s,
-					"price":price
-				}))
+				if s in sub_symbols:
+					sio.emit("transfer",build_response("symbol",s,{
+						"symbol":s,
+						"price":price
+					}))
 				
 				sql = """ update tabSymbol set 
 				price=%s, 
