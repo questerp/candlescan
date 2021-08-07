@@ -67,7 +67,7 @@ def start():
 				m5s.append(s)
 				
 			if latestTrade.get("p"):
-				frappe.db.sql(""" update tabSymbol set 
+				sql = """ update tabSymbol set 
 				price=%s, 
 				volume=%s, 
 				today_high=%s, 
@@ -106,7 +106,9 @@ def start():
 						      prevDailyBar.get("v"),
 						      prevDailyBar.get("n"),
 						      s
-					      ))
+					      )
+				print(sql)
+				frappe.db.sql(sql)
 		frappe.db.commit()
 		for s in m1s:
 			redis.sadd("symbols",s)
