@@ -61,10 +61,10 @@ def start():
 
 			# decide refresh rate
 			vol = minuteBar.get("v") or 0
-			if vol < 20000:
-				m5s.append(s)
-			else:
+			if vol > 20000:
 				m1s.append(s)
+			else:
+				m5s.append(s)
 				
 			if latestTrade.get("p"):
 				frappe.db.sql(""" update tabSymbol set 
@@ -75,7 +75,6 @@ def start():
 				today_open=%s ,
 				today_close=%s ,
 				today_trades=%s ,
-				
 				bid=%s ,
 				ask=%s ,
 				vwap=%s ,
@@ -86,9 +85,7 @@ def start():
 				prev_day_vwap = %s ,
 				prev_day_volume = %s ,
 				prev_day_trades = %s 
-				
-				where 
-				name='%s'
+				where name='%s'
 				""" % 
 					      (
 						      latestTrade.get("p"),
