@@ -49,7 +49,9 @@ async def subscribe_symbol(message):
 	symbol = message.get("data")
 	if not symbol:
 		return
-	get_redis_server().sadd("symbols",symbol)
+	active = frappe.db.get_value("Symbol",symbol,"active")
+	if active:
+		get_redis_server().sadd("symbols",symbol)
 	
 @sio.event
 async def lookup(message):
