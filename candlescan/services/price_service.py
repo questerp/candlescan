@@ -86,7 +86,7 @@ def start():
 				prev_day_low = %s ,
 				prev_day_vwap = %s ,
 				prev_day_volume = %s ,
-				prev_day_trades = %s ,
+				prev_day_trades = %s 
 				
 				where 
 				name='%s'
