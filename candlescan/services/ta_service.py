@@ -26,15 +26,6 @@ async def run():
 	
 		
 
-@sio.event
-async def subscribe_symbol(message):
-	init()
-	source = message.get("source_sid")
-	symbol = message.get("data")
-	if not symbol:
-		return
-	print("sub",symbol)
-	get_redis_server().sadd("symbols",symbol)
 	
 def init():
 	if not frappe.local.db:
