@@ -150,6 +150,7 @@ def process_tickers():
 	api = REST(raw_data=True)
 	assets = api.list_assets()
 	for ticker in assets:
+		print(ticker["status"])
 		if ticker["status"] != 'active':
 			continue
 		ticker['symbol'] = ticker['symbol'].replace('^','p')
