@@ -20,7 +20,7 @@ def start():
 	redis = get_redis_server()
 	counter = 0
 	# init symbols 
-	s = frappe.db.sql(""" select symbol from tabSymbol""",as_list=True)
+	s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	s = [a[0] for a in s]
 	for sym in s:
 		print("adding", sym)
