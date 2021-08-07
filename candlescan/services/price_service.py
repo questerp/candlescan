@@ -10,11 +10,25 @@ from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
 
+sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 log = logging.getLogger(__name__)
 api = None
 
+def connect():
+	try:
+		sio.connect('http://localhost:9002',headers={"microservice":"price_service"})
+	except socketio.exceptions.ConnectionError as err:
+		print("error",sio.sid,err)
+		sio.sleep(5)
+		connect()
+
+def disconnect():
+	print("I'm disconnected!")
+	connect()
+	
 def start():
+	connect()
 	logging.basicConfig(level=logging.INFO)
 	api = REST(raw_data=True)
 	redis = get_redis_server()
@@ -24,7 +38,7 @@ def start():
 	s = [a[0] for a in s]
 	for sym in s:
 		print("adding", sym)
-		redis.sadd("symbols",sym)
+		redis.sadd("1m_symbols",sym)
 	while(1):
 		nw  = dt.now()
 		if nw.hour < 4 or nw.hour > 20:
@@ -44,7 +58,7 @@ def start():
 		print("------------")
 		print(dt.now())
 		counter += 1
-		_symbols = redis.smembers("symbols")
+		_symbols = redis.smembers("1m_symbols")
 		symbols = [cstr(a) for a in _symbols if a]
 		#print("1 min",symbols)
 		if counter >=5:
@@ -70,6 +84,7 @@ def start():
 			latestQuote = data.get("latestQuote") or {}
 			dailyBar = data.get("dailyBar") or {}
 			prevDailyBar = data.get("prevDailyBar")  or {}
+			await sio.emit("transfer",build_response("get_filings",source,data))	
 			#minuteBar['doctype'] = "Bars"
 			#minuteBar['s'] = s
 			#frappe.get_doc(minuteBar).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
@@ -80,8 +95,13 @@ def start():
 				m1s.append(s)
 			else:
 				m5s.append(s)
+			price = latestTrade.get("p")	
+			if price:
+				sio.emit("transfer",build_response("symbol",s,{
+					"symbol":s,
+					"price":price
+				}))
 				
-			if latestTrade.get("p"):
 				sql = """ update tabSymbol set 
 				price=%s, 
 				volume=%s, 
@@ -101,7 +121,7 @@ def start():
 				prev_day_volume = %s ,
 				prev_day_trades = %s 
 				where name='%s' """ % (
-						      latestTrade.get("p") or 0,
+						      price or 0,
 						      dailyBar.get("v") or 0,
 						      dailyBar.get("h") or 0,
 						      dailyBar.get("l") or 0,
@@ -121,12 +141,13 @@ def start():
 						      s )
 				#print(sql)
 				frappe.db.sql(sql)
+				
 		frappe.db.commit()
 		for s in m1s:
-			redis.sadd("symbols",s)
+			redis.sadd("1m_symbols",s)
 			redis.srem("5m_symbols",s)
 		for s in m5s:
-			redis.srem("symbols",s)
+			redis.srem("1m_symbols",s)
 			redis.sadd("5m_symbols",s)
 		print(dt.now(),len(m5s),len(m1s))
 		#time.sleep(60)
