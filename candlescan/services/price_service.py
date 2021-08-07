@@ -26,6 +26,18 @@ def start():
 		print("adding", sym)
 		redis.sadd("symbols",sym)
 	while(1):
+		nw  = dt.now()
+		if nw.hour < 4 or nw.hour > 20:
+			lapseh = 0
+			lapsem = 0
+			if nw.hour < 4:
+				lapseh = 4 - nw.hour -1 # 2.45 -> 1
+				lapsem = 60 - nw.minute # -> 15
+			if nw.hour > 20:
+				lapseh = 3
+				
+			#time.sleep((lapseh*60*60)+(lapsem*60))
+			
 		if dt.now().second != 1:
 			time.sleep(1)
 			continue
