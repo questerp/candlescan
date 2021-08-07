@@ -32,13 +32,13 @@ def start():
 		counter += 1
 		_symbols = redis.smembers("symbols")
 		symbols = [cstr(a) for a in _symbols if a]
-		print("1 min",symbols)
+		#print("1 min",symbols)
 		if counter >=5:
 			counter = 0
 			__5m_symbols = redis.smembers("5m_symbols")
 			_5m_symbols = [cstr(a) for a in __5m_symbols if a]
 			if _5m_symbols:
-				print("5 min",_5m_symbols)
+				#print("5 min",_5m_symbols)
 				symbols.extend(_5m_symbols)
 				symbols = list(set(symbols))
 				
@@ -113,4 +113,5 @@ def start():
 		for s in m5s:
 			redis.srem("symbols",s)
 			redis.sadd("5m_symbols",s)
+		print("DONE",len(m5s),len(m1s))
 		#time.sleep(60)
