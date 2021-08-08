@@ -1,7 +1,7 @@
 import frappe,json
 from frappe.realtime import get_redis_server
 from candlescan.api import handle
-from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
 from frappe.utils import cstr,getdate, get_time, today,now_datetime
 import socketio
 import asyncio
@@ -18,14 +18,13 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
-		await sio.wait()
+		keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
 
-def init():
-	frappe.connect()	
+	
 		
 @sio.event
 async def connect_error(message):
@@ -34,7 +33,6 @@ async def connect_error(message):
 
 @sio.event
 async def connect():
-	init()
 	print("I'm connected!")
 
 @sio.event
@@ -44,7 +42,6 @@ async def disconnect():
 
 @sio.event
 async def subscribe_symbol(message):
-	init()
 	source = message.get("source_sid")
 	symbol = message.get("data")
 	if not symbol:
@@ -67,7 +64,6 @@ async def lookup(message):
 	
 @sio.event
 async def get_history_result(message):
-	init()
 	data = message.get('data')
 	source_sid = message.get('source_sid')
 	if not source_sid:
@@ -80,7 +76,6 @@ async def get_history_result(message):
 
 @sio.event
 async def set_default_layout(message):
-	init()
 	data = message.get('data')
 	if not data:
 		return
@@ -93,7 +88,6 @@ async def set_default_layout(message):
 		
 @sio.event
 async def get_last_result(message):
-	init()
 	scanner_id = message.get('data')
 	source_sid = message.get('source_sid')
 	if not source_sid:
@@ -114,7 +108,6 @@ def get_history(scanner,date):
 @sio.event
 async def ressource(message):
 	try:
-		init()
 		data = message.get('data')
 		#print("this is ressource",data)
 
@@ -196,7 +189,6 @@ async def ressource(message):
 			       
 @sio.event
 async def get_platform_data(data):
-	init()
 	source = data['source_sid']
 	user = get_redis_server().hget("sockets",source)
 	if source and not user:
@@ -248,7 +240,6 @@ async def get_symbol_info(message):
 
 @sio.event
 async def get_extra_data(message):
-	init()
 	source = message['source_sid']
 	data = message.get("data")
 	symbols = data.get("symbols")
