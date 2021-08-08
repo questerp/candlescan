@@ -23,7 +23,7 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"alerts_service"})
-		process()
+		await process()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
@@ -37,41 +37,42 @@ async def run():
 async def connect():
 	print("I'm connected!")
 
-def process():
-	redis = get_redis_server()
+async def process():
+	#redis = get_redis_server()
 	while(True):
 		#clear_doctype_cache("Price Alert")
 		frappe.db.sql("select 'KEEP_ALIVE'")
 		time.sleep(5)
 		frappe.local.db.commit()
-		alerts = frappe.db.sql(""" select name,user,symbol,filters_script,notify_by_email,enabled,triggered from `tabPrice Alert` where enabled=1 and triggered=0 limit 100""",as_dict=True)
-		if not alerts:
-			print("No alerts")
-			continue
-		for alert in alerts:
-			if not alert.filters_script:
+		sessions = frappe.db.sql(""" select token,user from `tabWeb Session`""",as_dict=True)
+		for session in sessions:
+			alerts = frappe.db.sql(""" select name,user,symbol,filters_script,notify_by_email,enabled,triggered from `tabPrice Alert` where enabled=1 and triggered=0 and user='%s'  """ % session.user,as_dict=True)
+			if not alerts:
+				print("No alerts")
 				continue
-			filters_script = alert.filters_script
-			filters = json.loads(filters_script)
-			sql_filter = convert_filters_script(filters)
-			symbol = alert.symbol
-			if sql_filter and symbol:
-				scr = """ select name from tabSymbol where symbol = '{symbol}' and {filter}  """.format(symbol=symbol,filter=sql_filter)
-				print("scr %s" % scr)
-				exists = frappe.db.sql(scr,as_dict=True)
-				print("exists %s" % exists)
-				if exists:
-					socket_id = frappe.db.get_value("Customer",alert.user,"socket_id")
-					print("socket_id %s" % socket_id)
-					if socket_id:
-						doc = frappe.db.set_value("Price Alert",alert.name,"triggered",1)
-						#doc.triggered = True
-						#doc.save()
-						frappe.db.commit()
-						session = frappe.db.sql(""" select token from `tabWeb Session` where user='%s'""" % alert.user,as_dict=True)
-						if session:
-							redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
-		
+			for alert in alerts:
+				if not alert.filters_script:
+					continue
+				filters_script = alert.filters_script
+				filters = json.loads(filters_script)
+				sql_filter = convert_filters_script(filters)
+				symbol = alert.symbol
+				if sql_filter and symbol:
+					scr = """ select name from tabSymbol where symbol = '{symbol}' and {filter}  """.format(symbol=symbol,filter=sql_filter)
+					print("scr %s" % scr)
+					exists = frappe.db.sql(scr,as_dict=True)
+					print("exists %s" % exists)
+					if exists:
+						socket_id = get_redis_server().hget("sockets",session.user)
+						print("socket_id %s" % socket_id)
+						if socket_id:
+							frappe.db.set_value("Price Alert",alert.name,"triggered",1)
+							#doc.triggered = True
+							#doc.save()
+							frappe.db.commit()
+							await sio.emit("transfer",build_response("alerts",socket_id,'%s alert is triggered' % alert.symbol))
+							#redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
+
 
 def convert_filters_script(filters):
 	if not filters:
