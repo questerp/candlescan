@@ -64,13 +64,16 @@ async def process():
 					print("exists %s" % exists)
 					if exists:
 						socket_id = get_redis_server().hget("sockets",session.user)
-						print("socket_id %s" % socket_id)
 						if socket_id:
+							socket_id = cstr(socket_id)
+							print("socket_id %s" % socket_id)
+							
 							frappe.db.set_value("Price Alert",alert.name,"triggered",1)
 							#doc.triggered = True
 							#doc.save()
 							frappe.db.commit()
-							await sio.emit("transfer",build_response("alerts",socket_id,'%s alert is triggered' % alert.symbol))
+							msg = '%s alert is triggered' % alert.symbol
+							await sio.emit("transfer",build_response("alerts",socket_id,msg))
 							#redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
 
 
