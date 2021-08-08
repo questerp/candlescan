@@ -5,7 +5,7 @@ from frappe.utils import cstr
 import socketio
 import asyncio
 from frappe.realtime import get_redis_server
-from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
 
 
 
@@ -17,7 +17,7 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
-		await sio.wait()
+		keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
@@ -26,12 +26,7 @@ async def run():
 	
 		
 
-	
-def init():
-	if not frappe.local.db:
-		frappe.connect()	
 
 @sio.event
 async def connect():
-	init()
 	print("I'm connected!")
