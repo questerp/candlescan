@@ -53,7 +53,6 @@ async def subscribe_symbol(message):
 	
 @sio.event
 async def lookup(message):
-	init()
 	symbol = message.get('data')
 	sid = message.get('source_sid')
 	if not symbol or len(symbol) > 8 or len(symbol) < 2:
