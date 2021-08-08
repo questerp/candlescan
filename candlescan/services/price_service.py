@@ -5,7 +5,7 @@ from datetime import datetime as dt
 import socketio
 import asyncio
 from frappe.realtime import get_redis_server
-from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
 from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
@@ -55,6 +55,7 @@ def start():
 		if dt.now().second != 1:
 			time.sleep(1)
 			continue
+		frappe.db.sql("select 'KEEP_ALIVE'")
 		print("------------")
 		print(dt.now())
 		counter += 1
