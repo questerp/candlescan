@@ -8,12 +8,40 @@ import frappe, json
 from frappe.realtime import get_redis_server
 import time
 from frappe.cache_manager import clear_doctype_cache
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
+from frappe.utils import cstr
+import socketio
+import asyncio
 
+
+
+sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
+def start():
+	asyncio.get_event_loop().run_until_complete(run())
+	asyncio.get_event_loop().run_forever()
+
+async def run():
+	try:
+		await sio.connect('http://localhost:9002',headers={"microservice":"alerts_service"})
+		process()
+	except socketio.exceptions.ConnectionError as err:
+		print("error",sio.sid,err)
+		await sio.sleep(5)
+		await run()
+
+	
+		
+
+
+@sio.event
+async def connect():
+	print("I'm connected!")
 
 def process():
 	redis = get_redis_server()
 	while(True):
 		#clear_doctype_cache("Price Alert")
+		frappe.db.sql("select 'KEEP_ALIVE'")
 		time.sleep(5)
 		frappe.local.db.commit()
 		alerts = frappe.db.sql(""" select name,user,symbol,filters_script,notify_by_email,enabled,triggered from `tabPrice Alert` where enabled=1 and triggered=0 limit 100""",as_dict=True)
