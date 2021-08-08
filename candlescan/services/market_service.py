@@ -15,7 +15,7 @@ import datetime
 import pytz
 import socketio
 import asyncio
-from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
 from secedgar.cik_lookup import CIKLookup
 import feedparser
@@ -34,26 +34,22 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"market_service"})
-		await sio.wait()
+		keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
 
-def init():
-	print(frappe.local.site)
-	if not frappe.local.db:
-		frappe.connect()	
+		
+
 
 @sio.event
 async def connect():
-	init()
 	print("I'm connected!")
 
 	
 @sio.event
 async def get_filings(message):
-	init()
 	source = message.get("source_sid")
 	symbol = message.get("data")
 	if not symbol:
@@ -76,7 +72,6 @@ async def get_filings(message):
 	
 @sio.event
 async def get_calendar(message):
-	init()
 	source = message.get("source_sid")
 	target = message.get("data")
 	if not target:
@@ -87,7 +82,6 @@ async def get_calendar(message):
 	
 @sio.event
 async def get_symbol_prices(message):
-	init()
 	source = message.get("source_sid")
 	data = message.get("data")
 	if not data:
@@ -115,7 +109,6 @@ async def get_symbol_prices(message):
 
 @sio.event
 async def get_symbol_info(message):
-	init()
 	symbol = message.get("data")
 	source = message.get('source_sid')
 	
