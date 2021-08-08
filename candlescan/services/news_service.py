@@ -1,7 +1,7 @@
 import frappe,json
 from frappe.realtime import get_redis_server
 from candlescan.api import handle
-from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
 from frappe.utils import cstr,getdate, get_time, today,now_datetime
 import socketio
 import asyncio
@@ -20,7 +20,7 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"news_service"})
-		await sio.wait()
+		keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
@@ -72,8 +72,7 @@ def fetch_news(symbol):
 	return result
 
 	
-def init():
-	frappe.connect()	
+	
 		
 @sio.event
 async def connect_error(message):
@@ -82,7 +81,6 @@ async def connect_error(message):
 
 @sio.event
 async def connect():
-	init()
 	print("I'm connected!")
 
 @sio.event
