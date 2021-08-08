@@ -24,6 +24,11 @@ class CustomSocketJsonHandler(object):
 
 json_encoder = CustomSocketJsonHandler()
 
+def keep_alive():
+	while(1):
+		frappe.db.sql("select 'KEEP_ALIVE'")
+		time.sleep(60)	
+		
 def get_user(sid):
 	user = get_redis_server().hget("sockets",sid)
 	if user:
