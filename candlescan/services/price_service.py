@@ -60,9 +60,9 @@ def start():
 		print(dt.now())
 		counter += 1
 		_symbols = redis.smembers("1m_symbols")
-		_sub_symbols = redis.smembers("symbols")
-		sub_symbols = [cstr(a) for a in _sub_symbols if a]
-		print("sub_symbols", sub_symbols)
+		#_sub_symbols = redis.smembers("symbols")
+		#sub_symbols = [cstr(a) for a in _sub_symbols if a]
+		#print("sub_symbols", sub_symbols)
 		symbols = [cstr(a) for a in _symbols if a]
 		#print("1 min",symbols)
 		if counter >=5:
