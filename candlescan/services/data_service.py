@@ -252,8 +252,9 @@ async def get_extra_data(message):
 	sql_fields =  ' ,'.join(fields)
 	sql_symbols =  ', '.join(['%s']*len(symbols))
 	sql = """select symbol,{0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
+	frappe.db.commit()
 	result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
-	print("result",result)
+	#print("result",result)
 	
 	await sio.emit("transfer",build_response("get_extra_data",source,result))
 
