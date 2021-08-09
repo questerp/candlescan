@@ -1,6 +1,6 @@
 
 from __future__ import unicode_literals
-import frappe
+import frappe,time
 from frappe.utils import cstr
 import socketio
 import asyncio
@@ -17,7 +17,15 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
-		await keep_alive()
+		while(1):
+			frappe.db.sql("""update tabSymbol set daily_change_per=((price - today_open)/today_open), daily_change_val=(price - today_open) where today_open>0 and price > 0""")
+			frappe.db.commit()
+			time.sleep(5)
+			frappe.db.sql("""update tabSymbol set gap_per=((price - prev_day_close)/prev_day_close), gap_val=(price - prev_day_close) where prev_day_close>0 and price > 0""")
+			frappe.db.commit()
+			time.sleep(60)
+			
+		#await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
