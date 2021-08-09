@@ -18,10 +18,10 @@ async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
 		while(1):
-			frappe.db.sql("""update tabSymbol set daily_change_per=((price - today_open)/today_open), daily_change_val=(price - today_open) where today_open>0 and price > 0""")
+			frappe.db.sql("""update tabSymbol set daily_change_per=100*((price - today_open)/today_open), daily_change_val=(price - today_open) where today_open>0 and price > 0""")
 			frappe.db.commit()
 			time.sleep(5)
-			frappe.db.sql("""update tabSymbol set gap_per=((price - prev_day_close)/prev_day_close), gap_val=(price - prev_day_close) where prev_day_close>0 and price > 0""")
+			frappe.db.sql("""update tabSymbol set gap_per=100*((price - prev_day_close)/prev_day_close), gap_val=(price - prev_day_close) where prev_day_close>0 and price > 0""")
 			frappe.db.commit()
 			time.sleep(60)
 			
