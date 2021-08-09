@@ -100,11 +100,11 @@ def start():
 				m5s.append(s)
 			price = latestTrade.get("p")	
 			if price:
-				if s in sub_symbols:
-					sio.emit("transfer",build_response("symbol",s,{
-						"symbol":s,
-						"price":price
-					}))
+				#if s in sub_symbols:
+				#	sio.emit("transfer",build_response("symbol",s,{
+				#		"symbol":s,
+				#		"price":price
+				#	}))
 				
 				sql = """ update tabSymbol set 
 				price=%s, 
