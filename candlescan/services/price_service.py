@@ -154,4 +154,5 @@ def start():
 			redis.srem("1m_symbols",s)
 			redis.sadd("5m_symbols",s)
 		print(dt.now(),len(m5s),len(m1s))
+		time.sleep(2)
 		#time.sleep(60)
