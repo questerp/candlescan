@@ -81,6 +81,7 @@ def start():
 		for s in snap:
 			data = snap[s]
 			if not data:
+				m5s.append(s)
 				continue
 			#print(data)
 			minuteBar = data.get("minuteBar") or {}
