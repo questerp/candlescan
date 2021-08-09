@@ -53,7 +53,7 @@ def start():
 			#time.sleep((lapseh*60*60)+(lapsem*60))
 			
 		if dt.now().second != 1:
-			time.sleep(1)
+			time.sleep(60 - dt.now().second - 1)
 			continue
 		frappe.db.sql("select 'KEEP_ALIVE'")
 		print("------------")
@@ -75,7 +75,7 @@ def start():
 				symbols = list(set(symbols))
 				
 		snap = api.get_snapshots(symbols)
-		print(dt.now())
+		print(len(symbols),dt.now())
 		m1s = []
 		m5s = []
 		for s in snap:
@@ -94,7 +94,7 @@ def start():
 
 			# decide refresh rate
 			vol = minuteBar.get("v") or 0
-			if vol > 20000:
+			if vol > 10000:
 				m1s.append(s)
 			else:
 				m5s.append(s)
