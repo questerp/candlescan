@@ -78,6 +78,7 @@ def start():
 		print(len(symbols),dt.now())
 		m1s = []
 		m5s = []
+		minuteBars = []
 		for s in snap:
 			data = snap[s]
 			if not data:
@@ -95,8 +96,10 @@ def start():
 
 			# decide refresh rate
 			vol = minuteBar.get("v") or 0
-			if vol >= 1000:
+			if vol >= 0:
 				m1s.append(s)
+				minuteBar['s'] = s
+				minuteBars.append(minuteBar)
 			else:
 				m5s.append(s)
 			price = latestTrade.get("p")	
@@ -156,6 +159,11 @@ def start():
 		for s in m5s:
 			redis.srem("1m_symbols",s)
 			redis.sadd("5m_symbols",s)
+		for s in minuteBars:
+			s['doctype'] = 'Bars'
+			frappe.get_doc(s).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
+		frappe.db.commit()
+		minuteBars = []	
 		print(dt.now(),len(m5s),len(m1s))
 		time.sleep(2)
 		#time.sleep(60)
