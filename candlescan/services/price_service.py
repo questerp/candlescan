@@ -32,13 +32,13 @@ def start():
 	logging.basicConfig(level=logging.INFO)
 	api = REST(raw_data=True)
 	redis = get_redis_server()
-	counter = 0
+	#counter = 0
 	# init symbols 
 	s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
-	s = [a[0] for a in s]
-	for sym in s:
-		#print("adding", sym)
-		redis.sadd("1m_symbols",sym)
+	symbols = [a[0] for a in s]
+	#for sym in s:
+	#	#print("adding", sym)
+	#	redis.sadd("1m_symbols",sym)
 	while(1):
 		nw  = dt.now()
 		if nw.hour < 4 or nw.hour > 20:
@@ -58,26 +58,26 @@ def start():
 		frappe.db.sql("select 'KEEP_ALIVE'")
 		print("------------")
 		print(dt.now())
-		counter += 1
-		_symbols = redis.smembers("1m_symbols")
+		#counter += 1
+		#_symbols = redis.smembers("1m_symbols")
 		#_sub_symbols = redis.smembers("symbols")
 		#sub_symbols = [cstr(a) for a in _sub_symbols if a]
 		#print("sub_symbols", sub_symbols)
-		symbols = [cstr(a) for a in _symbols if a]
+		#symbols = [cstr(a) for a in _symbols if a]
 		#print("1 min",symbols)
-		if counter >=5:
-			counter = 0
-			__5m_symbols = redis.smembers("5m_symbols")
-			_5m_symbols = [cstr(a) for a in __5m_symbols if a]
-			if _5m_symbols:
+		#if counter >=5:
+		#	counter = 0
+		#	__5m_symbols = redis.smembers("5m_symbols")
+		#	_5m_symbols = [cstr(a) for a in __5m_symbols if a]
+		#	if _5m_symbols:
 				#print("5 min",_5m_symbols)
-				symbols.extend(_5m_symbols)
-				symbols = list(set(symbols))
+		#		symbols.extend(_5m_symbols)
+		#		symbols = list(set(symbols))
 				
 		snap = api.get_snapshots(symbols)
 		print(len(symbols),dt.now())
-		m1s = []
-		m5s = []
+		#m1s = []
+		#m5s = []
 		minuteBars = []
 		for s in snap:
 			data = snap[s]
@@ -96,15 +96,15 @@ def start():
 
 			# decide refresh rate
 			vol = minuteBar.get("v") or 0
-			if vol >= 0:
-				m1s.append(s)
-				if minuteBar.get("t"):
-					minuteBar['s'] = s
-					minuteBar['name'] = "%s_%s" % (s,minuteBar.get("t"))
-					minuteBars.append(minuteBar)
-			else:
-				m5s.append(s)
-			price = latestTrade.get("p")	
+			#if vol >= 0:
+			#	m1s.append(s)
+			#else:
+			#	m5s.append(s)
+			if minuteBar:
+				minuteBar['s'] = s
+				#minuteBar['name'] = "%s_%s" % (s,minuteBar.get("t"))
+				minuteBars.append(minuteBar)
+			price = latestTrade.get("p")
 			if price:
 				#if s in sub_symbols:
 				#	sio.emit("transfer",build_response("symbol",s,{
@@ -155,26 +155,22 @@ def start():
 				frappe.db.sql(sql)
 				
 		frappe.db.commit()
-		for s in m1s:
-			redis.sadd("1m_symbols",s)
-			redis.srem("5m_symbols",s)
-		for s in m5s:
-			redis.srem("1m_symbols",s)
-			redis.sadd("5m_symbols",s)
+		#for s in m1s:
+		#	redis.sadd("1m_symbols",s)
+		#	redis.srem("5m_symbols",s)
+		#for s in m5s:
+		#	redis.srem("1m_symbols",s)
+		#	redis.sadd("5m_symbols",s)
 		if minuteBars:
 			#try:
-			frappe.db.sql("""
-					SET @@session.unique_checks = 0;
-					SET @@session.foreign_key_checks = 0;
-					INSERT INTO `tabBars` (name,t,o,h,l,c,v,n,vw)
-					VALUES {values}""".format(
-					values = ", ".join(["('%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['name'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])
-				))
+			frappe.db.sql("""SET @@session.unique_checks = 0; SET @@session.foreign_key_checks = 0;
+			INSERT INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
+			VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
 			#except Exception as e:
 			#	print(e)
 			
 		frappe.db.commit()
 		minuteBars = []	
-		print(dt.now(),len(m5s),len(m1s))
+		print(dt.now())
 		time.sleep(2)
 		#time.sleep(60)
