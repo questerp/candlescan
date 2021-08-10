@@ -98,8 +98,10 @@ def start():
 			vol = minuteBar.get("v") or 0
 			if vol >= 0:
 				m1s.append(s)
-				minuteBar['s'] = s
-				minuteBars.append(minuteBar)
+				if minuteBar.get("t"):
+					minuteBar['s'] = s
+					minuteBar['name'] = "%s_%s" % (s,minuteBar.get("t"))
+					minuteBars.append(minuteBar)
 			else:
 				m5s.append(s)
 			price = latestTrade.get("p")	
@@ -159,9 +161,18 @@ def start():
 		for s in m5s:
 			redis.srem("1m_symbols",s)
 			redis.sadd("5m_symbols",s)
-		for s in minuteBars:
-			s['doctype'] = 'Bars'
-			frappe.get_doc(s).insert(ignore_permissions=True, ignore_if_duplicate=True, ignore_mandatory=True)
+		if minuteBars:
+			try:
+				frappe.db.sql("""
+						SET @@session.unique_checks = 0;
+						SET @@session.foreign_key_checks = 0;
+						INSERT INTO `tabBars` (name,t,o,h,l,c,v,n,vw)
+						VALUES {values}""".format(
+						values = ", ".join(["('%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s.name,s.t,s.o,s.h,s.l,s.c,s.v,s.n,s.vw) for s in minuteBars])
+					))
+			except Exception as e:
+				print(e)
+			
 		frappe.db.commit()
 		minuteBars = []	
 		print(dt.now(),len(m5s),len(m1s))
