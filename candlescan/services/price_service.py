@@ -95,7 +95,7 @@ def start():
 
 			# decide refresh rate
 			vol = minuteBar.get("v") or 0
-			if vol > 10000:
+			if vol >= 1000:
 				m1s.append(s)
 			else:
 				m5s.append(s)
