@@ -34,7 +34,7 @@ def start():
 	redis = get_redis_server()
 	#counter = 0
 	# init symbols 
-	s = frappe.db.sql(""" select symbol from tabSymbol where active=1 limit 5""",as_list=True)
+	s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = [a[0] for a in s]
 	#for sym in s:
 	#	#print("adding", sym)
@@ -100,7 +100,7 @@ def start():
 			#	m1s.append(s)
 			#else:
 			#	m5s.append(s)
-			if minuteBar:
+			if minuteBar and minuteBar.get("t"):
 				minuteBar['s'] = s
 				#minuteBar['name'] = "%s_%s" % (s,minuteBar.get("t"))
 				minuteBars.append(minuteBar)
@@ -165,13 +165,13 @@ def start():
 			#try:
 			frappe.db.sql("""SET @@session.unique_checks = 0""")
 			frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
-			frappe.db.sql("""INSERT INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
+			frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
 			VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'].replace('Z',''),s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
 			#except Exception as e:
 			#	print(e)
 			
 		frappe.db.commit()
 		minuteBars = []	
-		print(dt.now())
+		print("DONE",dt.now())
 		time.sleep(2)
 		#time.sleep(60)
