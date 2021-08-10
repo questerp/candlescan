@@ -41,6 +41,7 @@ async def process():
 	#redis = get_redis_server()
 	while(True):
 		#clear_doctype_cache("Price Alert")
+		frappe.db.commit()
 		frappe.db.sql("select 'KEEP_ALIVE'")
 		time.sleep(5)
 		frappe.local.db.commit()
