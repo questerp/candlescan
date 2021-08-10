@@ -143,7 +143,7 @@ async def ressource(message):
 				if response:
 					await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 					frappe.db.commit()
-					frappe.clear_cache(doctype=doctype)
+					#frappe.clear_cache(doctype=doctype)
 					#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 			else:
@@ -152,7 +152,7 @@ async def ressource(message):
 				if response:
 					await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
 					frappe.db.commit()
-					frappe.clear_cache(doctype=doctype)
+					#frappe.clear_cache(doctype=doctype)
 					#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 		if method == "delete" and name:
