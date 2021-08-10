@@ -51,5 +51,5 @@ async def run_stock_filter(message):
 		sql = json.loads(filter.sql_script)
 		sort = "ASC" if filter.sort_mode == "Ascending" else "DESC"
 		if sql:
-			data = frappe.db.sql("""%s order by %s %s limit %s""" % (sql,filter.sort_field,sort,filter.limit_results or 50),as_dict=True)
+			data = frappe.db.sql("""%s order by %s %s limit %s""" % (sql,filter.sort_field,sort,filter.limit_results or 1),as_dict=True)
 			await sio.emit("transfer",build_response("run_stock_filter",source_sid,data))
