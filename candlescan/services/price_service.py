@@ -169,7 +169,7 @@ def start():
 					INSERT INTO `tabBars` (name,t,o,h,l,c,v,n,vw)
 					VALUES {values}""".format(
 					values = ", ".join(["('%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['name'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])
-				))''
+				))
 			#except Exception as e:
 			#	print(e)
 			
