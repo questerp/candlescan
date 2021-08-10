@@ -69,6 +69,7 @@ async def get_history_result(message):
 		return
 	scanner_id = data.get('scanner_id')
 	date = data.get('date')
+	frappe.db.commit()
 	results = get_history(scanner_id,date)
 	await sio.emit("transfer",build_response("get_history_result",source_sid,results[0]))
 	
@@ -94,6 +95,7 @@ async def get_last_result(message):
 	
 	if not scanner_id:
 		return
+	frappe.db.commit()
 	results = get_history(scanner_id,now_datetime())
 	#results = frappe.db.sql("""select state,date from `tabScanner Result` where scanner='%s' order by date desc limit 1""" % scanner_id,as_dict=True)
 	if results and len(results):
@@ -163,6 +165,7 @@ async def ressource(message):
 
 
 		if method == "list":
+			frappe.db.commit()
 			response = []
 			if doctype == "Scanner":
 				response = frappe.db.sql(""" select * from `tabCandlescan scanner` """,as_dict=True)
@@ -246,12 +249,9 @@ async def get_extra_data(message):
 	data = message.get("data")
 	symbols = data.get("symbols")
 	fields = data.get("fields")
-	print("symbols",symbols)
-	print("fields",fields)
 	
 	if not (symbols or fields):
 		return
-
 	sql_fields =  ' ,'.join(fields)
 	sql_symbols =  ', '.join(['%s']*len(symbols))
 	sql = """select symbol,{0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
@@ -268,7 +268,7 @@ async def get_last_broadcast(message):
 	
 	if not (symbol and scanner):
 		return
-	 
+	frappe.db.commit()
 	raw_state = frappe.db.get_value(scanner,None,"state")
 	if raw_state:
 		data = json.loads(raw_state)
