@@ -162,16 +162,16 @@ def start():
 			redis.srem("1m_symbols",s)
 			redis.sadd("5m_symbols",s)
 		if minuteBars:
-			try:
-				frappe.db.sql("""
-						SET @@session.unique_checks = 0;
-						SET @@session.foreign_key_checks = 0;
-						INSERT INTO `tabBars` (name,t,o,h,l,c,v,n,vw)
-						VALUES {values}""".format(
-						values = ", ".join(["('%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s.name,s.t,s.o,s.h,s.l,s.c,s.v,s.n,s.vw) for s in minuteBars])
-					))
-			except Exception as e:
-				print(e)
+			#try:
+			frappe.db.sql("""
+					SET @@session.unique_checks = 0;
+					SET @@session.foreign_key_checks = 0;
+					INSERT INTO `tabBars` (name,t,o,h,l,c,v,n,vw)
+					VALUES {values}""".format(
+					values = ", ".join(["('%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['name'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])
+				))''
+			#except Exception as e:
+			#	print(e)
 			
 		frappe.db.commit()
 		minuteBars = []	
