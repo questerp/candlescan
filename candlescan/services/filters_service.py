@@ -47,6 +47,7 @@ async def run_stock_filter(message):
 	if not source_sid:
 		return
 	#filter = frappe.get_doc("Stock Filter",name)
+	frappe.db.commit()
 	filter = frappe.db.sql("select sql_script,limit_results,name,sort_field from `tabStock Filter` where name='%s' limit 1" % name,as_dict=True)
 	if filter:
 		filter = filter[0]
