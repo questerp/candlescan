@@ -123,7 +123,7 @@ async def get_symbol_info(message):
 		
 
 def process_cik():
-	symbols = frappe.db.sql("""select symbol from tabSymbol where (cik is null or cik = '')""",as_dict=True)
+	symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 and (cik is null or cik = '')""",as_dict=True)
 	_tickets = [a['symbol'] for a in symbols]
 	for sym in _tickets:
 		try:
