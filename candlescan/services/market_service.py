@@ -124,16 +124,16 @@ async def get_symbol_info(message):
 
 def process_cik():
 	symbols = frappe.db.sql("""select symbol from tabSymbol where (cik is null or cik = '')""",as_dict=True)
-	_tickets = [a['symbol'].lower() for a in symbols]
+	_tickets = [a['symbol'] for a in symbols]
 	for sym in _tickets:
 		try:
-			lookups = CIKLookup([sym], user_agent="Candlescan Application")
-			symbol = sym.upper()
-			cik = lookups.lookup_dict[sym]
-			print("CIK",symbol,cik)
-			if cik:
-				frappe.db.set_value("Symbol",symbol,"cik",cik)
-				frappe.db.commit()
+			lookups = CIKLookup(sym, user_agent="Candlescan Application")
+			if lookups.ciks:
+				cik = lookups.ciks[0]
+				print(sym,cik)
+				if cik:
+					frappe.db.set_value("Symbol",sym,"cik",cik)
+					frappe.db.commit()
 		except Exception as ex:
 			print(sym,"Not valid")
 			
