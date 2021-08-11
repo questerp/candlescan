@@ -55,6 +55,7 @@ async def get_filings(message):
 	if not symbol:
 		return
 	symbol = symbol.upper()
+	frappe.db.commit()
 	cik = frappe.db.get_value("Symbol",symbol,"cik")
 	print("cik",cik)
 	
