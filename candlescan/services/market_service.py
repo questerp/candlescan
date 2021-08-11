@@ -130,7 +130,7 @@ def process_cik():
 			lookups = CIKLookup(sym, user_agent="Candlescan Application")
 			if lookups.ciks:
 				cik = lookups.ciks[0]
-				print(sym,cik)
+				print("::",sym,"-->",cik)
 				if cik:
 					frappe.db.set_value("Symbol",sym,"cik",cik)
 					frappe.db.commit()
