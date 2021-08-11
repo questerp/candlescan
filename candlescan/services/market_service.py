@@ -17,7 +17,7 @@ import socketio
 import asyncio
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
-from secedgar.cik_lookup import CIKLookup
+from secedgar.cik_lookup import get_cik_map
 import feedparser
 from alpaca_trade_api.rest import REST, TimeFrame
 from frappe.utils import cstr, today, add_days, getdate, add_months
@@ -123,19 +123,16 @@ async def get_symbol_info(message):
 		
 
 def process_cik():
-	symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 and (cik is null or cik = '')""",as_dict=True)
-	_tickets = [a['symbol'] for a in symbols]
-	for sym in _tickets:
-		try:
-			lookups = CIKLookup(sym, user_agent="Candlescan Application")
-			print("::",sym,"-->",lookups.ciks)
-			if lookups.ciks:
-				cik = lookups.ciks[0]
-				if cik:
-					frappe.db.set_value("Symbol",sym,"cik",cik)
-					frappe.db.commit()
-		except Exception as ex:
-			print(sym,"Not valid")
+	ciks = get_cik_map()
+	if ciks:
+		tickers = ciks["ticker"]
+		for sym in tickers:
+			cik = tickers[sym]
+			print(sym,cik)
+			if frappe.db.exists("Symbol",sym):
+				frappe.db.set_value("Symbol",sym,"cik",cik)
+		frappe.db.commit()
+		print("Done !")
 			
 
 def process_tickers():
