@@ -102,7 +102,7 @@ def start():
 			#	m5s.append(s)
 			if minuteBar and minuteBar.get("t"):
 				minuteBar['s'] = s
-				minuteBar['t'] = minuteBar['t'].replace('Z','')
+				minuteBar['t'] = minuteBar['t'].replace('Z','').replace('T',' ')
 				minuteBars.append(minuteBar)
 			price = latestTrade.get("p")
 			if price:
