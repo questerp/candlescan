@@ -206,7 +206,8 @@ def backfill():
 						candles = bars[b]
 						print("candles",len(candles))
 						for m in range(1000):
-							ts = start.timestamp()
+							current = start +  timedelta(minutes=m)
+							ts = current.timestamp()
 							candle = list(filter(lambda x: x['t'] == ts, candles))
 							#print(ts,candles[0])
 							if candle:
@@ -218,7 +219,7 @@ def backfill():
 							else:
 								candle = {
 									"s":b,
-									"t": cstr(start),
+									"t": cstr(current),
 									"o":None,
 									"c":None,
 									"h":None,
@@ -228,13 +229,13 @@ def backfill():
 									"vw":0,
 								}
 							minute_bars.append(candle)
-							start = start +  timedelta(minutes=1)
+							#start = start +  timedelta(minutes=1)
 					
 						print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult),"between",start,"-",end)
 						insert_minute_bars(minute_bars,True)
 						frappe.db.sql("select 'KEEP_ALIVE'")
 				
-			#start = end
+			start = end
 			
 			
 				
