@@ -205,7 +205,7 @@ def backfill():
 						candles = bars[b]
 						for m in range(1000):
 							ts = start.timestamp()
-							candle = filter(lambda x: x['t'] == ts, candles)
+							candle = list(filter(lambda x: x['t'] == ts, candles))
 							print(candle)
 							if candle:
 								candle = candle[0]
