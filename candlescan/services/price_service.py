@@ -203,11 +203,13 @@ def backfill():
 						item['s'] = b
 						item['vw'] = 0
 						item['n'] = 0
-						print(item)
 						minute_bars.append(item)
+				print(minute_bars)
 				insert_minute_bars(minute_bars,True)
 							
 def insert_minute_bars(minuteBars,commit=True):
+	if not minuteBars:
+		return
 	frappe.db.sql("""SET @@session.unique_checks = 0""")
 	frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
 	frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
