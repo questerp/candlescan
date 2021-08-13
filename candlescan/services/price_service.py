@@ -203,7 +203,7 @@ def backfill():
 				if bars :
 					for b in bars:
 						candles = bars[b]
-						print("candles",len(candles))
+						print(b,len(candles))
 						for m in range(1000):
 							current = start +  timedelta(minutes=m)
 							ts = current.timestamp()
@@ -230,7 +230,7 @@ def backfill():
 							minute_bars.append(candle)
 							#start = start +  timedelta(minutes=1)
 					
-					print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult),"between",start,"-",end)
+					print(len(minute_bars),"DONE - symbols:",i*10,"/",len(allresult),"between",start,"-",end)
 					insert_minute_bars(minute_bars,True)
 					minute_bars = []
 					bars = None
