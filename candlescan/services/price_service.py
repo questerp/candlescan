@@ -194,6 +194,7 @@ def backfill():
 				exist_symbols = []
 			allresult = [a for a in all_symbols if a not in exist_symbols]
 			i = 0
+			print("exist_symbols",len(exist_symbols))
 			end = start + timedelta(minutes=1000)
 			for result in chunks(allresult,100):
 				i+=1
