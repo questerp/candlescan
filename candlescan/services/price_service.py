@@ -203,7 +203,7 @@ def backfill():
 				if bars :
 					for b in bars:
 						candles = bars[b]
-						print(b,candles)
+						print(b,len(candles))
 						for m in range(1000):
 							current = start +  timedelta(minutes=m)
 							ts = current.timestamp()
@@ -218,7 +218,7 @@ def backfill():
 								candle['vw'] = 0
 								candle['n'] = 0
 							else:
-								print("no candle",ts)
+								print("no candle",current)
 								candle = {
 									"s":b,
 									"t": cstr(current),
