@@ -207,7 +207,7 @@ def backfill():
 						for m in range(1000):
 							ts = start.timestamp()
 							candle = list(filter(lambda x: x['t'] == ts, candles))
-							print(candle)
+							print(ts,candles[0])
 							if candle:
 								candle = candle[0]
 								candle['t'] = cstr(dt.fromtimestamp(candle['t']))
