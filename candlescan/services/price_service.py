@@ -187,9 +187,9 @@ def backfill():
 		start = start + timedelta(minutes=1)
 		print("start",start)
 		if start.hour >= 4 or start.hour <= 20:
-			exist_symbols = frappe.db.sql(""" select s from tabBars where t='%s'""" % start,as_list=True)
+			exist_symbols = frappe.db.sql(""" select DISTINCT s from tabBars where t='%s'""" % start,as_list=True)
 			if exist_symbols:
-				exist_symbols = exist_symbols[0]
+				exist_symbols = [a[0] for a in exist_symbols]
 			else:
 				exist_symbols = []
 			allresult = [a for a in all_symbols if a not in exist_symbols]
