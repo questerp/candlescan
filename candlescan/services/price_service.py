@@ -203,6 +203,7 @@ def backfill():
 						item['s'] = b
 						item['vw'] = 0
 						item['n'] = 0
+						print(item)
 						minute_bars.append(item)
 				insert_minute_bars(minute_bars,True)
 							
