@@ -176,6 +176,7 @@ def start():
 		#time.sleep(60)
 
 def backfill():
+	connect()
 	start = add_days(dt.now(),-2)
 	start = start.replace(second=0).replace(microsecond=0)
 	all_symbols = frappe.db.sql("""select symbol from tabSymbol""",as_list=True)[0]
