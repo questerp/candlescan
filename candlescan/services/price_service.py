@@ -165,7 +165,7 @@ def start():
 			#try:
 			frappe.db.sql("""SET @@session.unique_checks = 0""")
 			frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
-			frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
+			frappe.db.sql("""INSERT  INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
 			VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'].replace('Z',''),s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
 			#except Exception as e:
 			#	print(e)
@@ -173,5 +173,10 @@ def start():
 		frappe.db.commit()
 		minuteBars = []	
 		print("DONE",dt.now())
+		
+		# fetching backfill
+		
+		
+		
 		time.sleep(2)
 		#time.sleep(60)
