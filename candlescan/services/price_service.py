@@ -180,7 +180,7 @@ def backfill():
 	api = REST(raw_data=True)
 	start = add_days(dt.now(),-2)
 	start = start.replace(second=0).replace(microsecond=0)
-	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 limit 20""",as_list=True)
+	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	all_symbols = [a[0] for a in all_symbols] 
 	print("backfill",len(all_symbols),dt.now())
 	for t in range(2880):
@@ -192,23 +192,27 @@ def backfill():
 				exist_symbols = exist_symbols[0]
 			else:
 				exist_symbols = []
-			result = [a for a in all_symbols if a not in exist_symbols]
-			print("to be fetched",len(result))
-			
-			bars = api.get_barset(result,"minute",limit=1,start=start.isoformat())
-			minute_bars = []
-			if bars :
-				for b in bars:
-					candles = bars[b]
-					for item in candles:
-						item['t'] = cstr(start)
-						item['s'] = b
-						item['vw'] = 0
-						item['n'] = 0
-						minute_bars.append(item)
-					print(b,len(candles))
-				insert_minute_bars(minute_bars,True)
-							
+			allresult = [a for a in all_symbols if a not in exist_symbols]
+			for result in chunks(allresult,1000):
+				print("chunks",len(result))
+				bars = api.get_barset(result,"minute",limit=1,start=start.isoformat())
+				minute_bars = []
+				if bars :
+					for b in bars:
+						candles = bars[b]
+						for item in candles:
+							item['t'] = cstr(start)
+							item['s'] = b
+							item['vw'] = 0
+							item['n'] = 0
+							minute_bars.append(item)
+						print(b,len(candles))
+					insert_minute_bars(minute_bars,True)
+				
+def chunks(l, n):
+    n = max(1, n)
+    return (l[i:i+n] for i in range(0, len(l), n))	
+
 def insert_minute_bars(minuteBars,commit=True):
 	if not minuteBars:
 		return
