@@ -198,7 +198,7 @@ def backfill():
 			end = start + timedelta(minutes=1000)
 			for result in chunks(allresult,100):
 				i+=1
-				bars = api.get_barset(result,"minute",limit=1000,start=start.isoformat())					
+				bars = api.get_barset(result,"minute",limit=1000,start=start.astimezone().isoformat())					
 				minute_bars = []
 				if bars :
 					for b in bars:
