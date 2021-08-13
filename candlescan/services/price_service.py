@@ -179,7 +179,8 @@ def backfill():
 	start = add_days(dt.now(),-2)
 	start = start.replace(second=0)
 	all_symbols = frappe.db.sql("""select symbol from tabSymbol""",as_list=True)[0]
-	for t in range(101):
+	print("backfill",dt.now())
+	for t in range(2880):
 		start = start + timedelta(minutes=1)
 		print("start",start)
 		if start.hour >= 4 or start.hour <= 20:
@@ -188,6 +189,7 @@ def backfill():
 				exist_symbols = exist_symbols[0]
 			else:
 				exist_symbols = []
+			print("exist_symbols",len(exist_symbols))
 			result = [a for a in all_symbols if a not in exist_symbols]
 			bars = api.get_barset(result,"minute",limit=1,start=start.isoformat())
 			minute_bars = []
