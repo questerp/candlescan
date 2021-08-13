@@ -211,6 +211,8 @@ def backfill():
 				print(start,"DONE",i*100,"/",len(allresult))
 				insert_minute_bars(minute_bars,True)
 			start = start + timedelta(minutes=1000)
+			frappe.db.sql("select 'KEEP_ALIVE'")
+			
 			
 				
 def chunks(l, n):
