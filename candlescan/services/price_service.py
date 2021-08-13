@@ -206,10 +206,8 @@ def backfill():
 							
 def insert_minute_bars(minuteBars,commit=True):
 	frappe.db.sql("""SET @@session.unique_checks = 0""")
-			frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
-			frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
-			VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
-			#except Exception as e:
-			#	print(e)
+	frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
+	frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
+	VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
 	if commit:
 		frappe.db.commit()
