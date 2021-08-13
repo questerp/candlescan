@@ -206,6 +206,8 @@ def backfill():
 					for b in bars:
 						candles = bars[b]
 						print(b,len(candles))
+						for  c in candles:
+							print(dt.fromtimestamp(c['t']))
 						for m in range(1000):
 							current = start +  timedelta(minutes=m)
 							ts = current.timestamp()
