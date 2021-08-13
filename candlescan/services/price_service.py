@@ -176,7 +176,6 @@ def start():
 		#time.sleep(60)
 
 def backfill():
-	connect()
 	api = REST(raw_data=True)
 	now = dt.now()
 	start = add_days(dt.now(),-3)
