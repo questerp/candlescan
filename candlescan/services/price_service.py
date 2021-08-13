@@ -199,10 +199,9 @@ def backfill():
 			for result in chunks(allresult,100):
 				i+=1
 				bars = api.get_barset(result,"minute",limit=1000,start=start.isoformat())					
-				
+				minute_bars = []
 				if bars :
 					for b in bars:
-						minute_bars = []
 						candles = bars[b]
 						print("candles",len(candles))
 						for m in range(1000):
@@ -231,9 +230,11 @@ def backfill():
 							minute_bars.append(candle)
 							#start = start +  timedelta(minutes=1)
 					
-						print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult),"between",start,"-",end)
-						insert_minute_bars(minute_bars,True)
-						frappe.db.sql("select 'KEEP_ALIVE'")
+					print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult),"between",start,"-",end)
+					insert_minute_bars(minute_bars,True)
+					minute_bars = []
+					bars = None
+					frappe.db.sql("select 'KEEP_ALIVE'")
 				
 			start = end
 			
