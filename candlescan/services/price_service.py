@@ -17,7 +17,6 @@ api = None
 
 def connect():
 	try:
-		api = REST(raw_data=True)
 		sio.connect('http://localhost:9002',headers={"microservice":"price_service"})
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
@@ -30,6 +29,7 @@ def disconnect():
 	
 def start():
 	connect()
+	api = REST(raw_data=True)
 	logging.basicConfig(level=logging.INFO)
 	redis = get_redis_server()
 	#counter = 0
@@ -177,6 +177,7 @@ def start():
 
 def backfill():
 	connect()
+	api = REST(raw_data=True)
 	start = add_days(dt.now(),-2)
 	start = start.replace(second=0).replace(microsecond=0)
 	all_symbols = frappe.db.sql("""select symbol from tabSymbol""",as_list=True)[0]
