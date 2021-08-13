@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import frappe, logging, time
-from frappe.utils import cstr
-from datetime import datetime as dt
+from frappe.utils import cstr,add_days
+from datetime import timedelta,datetime as dt
 import socketio
 import asyncio
 from frappe.realtime import get_redis_server
@@ -18,6 +18,7 @@ api = None
 def connect():
 	try:
 		sio.connect('http://localhost:9002',headers={"microservice":"price_service"})
+		api = REST(raw_data=True)
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		sio.sleep(5)
@@ -30,7 +31,6 @@ def disconnect():
 def start():
 	connect()
 	logging.basicConfig(level=logging.INFO)
-	api = REST(raw_data=True)
 	redis = get_redis_server()
 	#counter = 0
 	# init symbols 
@@ -102,7 +102,7 @@ def start():
 			#	m5s.append(s)
 			if minuteBar and minuteBar.get("t"):
 				minuteBar['s'] = s
-				#minuteBar['name'] = "%s_%s" % (s,minuteBar.get("t"))
+				minuteBar['t'] = minuteBar['t'].replace('Z','')
 				minuteBars.append(minuteBar)
 			price = latestTrade.get("p")
 			if price:
@@ -163,13 +163,7 @@ def start():
 		#	redis.sadd("5m_symbols",s)
 		if minuteBars:
 			#try:
-			frappe.db.sql("""SET @@session.unique_checks = 0""")
-			frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
-			frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
-			VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'].replace('Z',''),s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
-			#except Exception as e:
-			#	print(e)
-			
+			insert_minute_bars(minuteBars,False)
 		frappe.db.commit()
 		minuteBars = []	
 		print("DONE",dt.now())
@@ -180,3 +174,40 @@ def start():
 		
 		time.sleep(2)
 		#time.sleep(60)
+
+def backfill():
+	start = add_days(dt.now(),-2)
+	start = start.replace(second=0)
+	all_symbols = frappe.db.sql("""select symbol from tabSymbol""",as_list=True)[0]
+	for t in range(101):
+		start = start + timedelta(minutes=1)
+		print("start",start)
+		if start.hour >= 4 or start.hour <= 20:
+			exist_symbols = frappe.db.sql(""" select s from tabBars where t=%s""" % start,as_list=True)
+			if exist_symbols:
+				exist_symbols = exist_symbols[0]
+			else:
+				exist_symbols = []
+			result = [a for a in all_symbols if a not in exist_symbols]
+			bars = api.get_barset(result,"minute",limit=1,start=start.isoformat())
+			minute_bars = []
+			if bars :
+				for b in bars:
+					candles = bars[b]
+					for item in candles:
+						item['t'] = cstr(start)
+						item['s'] = b
+						item['vw'] = 0
+						item['n'] = 0
+						minute_bars.append(item)
+				insert_minute_bars(minute_bars,True)
+							
+def insert_minute_bars(minuteBars,commit=True):
+	frappe.db.sql("""SET @@session.unique_checks = 0""")
+			frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
+			frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
+			VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
+			#except Exception as e:
+			#	print(e)
+	if commit:
+		frappe.db.commit()
