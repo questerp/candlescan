@@ -178,12 +178,12 @@ def start():
 def backfill():
 	connect()
 	api = REST(raw_data=True)
-	start = add_days(dt.now(),-2)
+	start = add_days(dt.now(),-3)
 	start = start.replace(second=0).replace(microsecond=0)
 	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	all_symbols = [a[0] for a in all_symbols] 
 	print("backfill",len(all_symbols),dt.now())
-	for t in range(2880):
+	while(1):
 		start = start + timedelta(minutes=1)
 		print("start",start)
 		if start.hour >= 4 or start.hour <= 20:
@@ -194,8 +194,7 @@ def backfill():
 				exist_symbols = []
 			allresult = [a for a in all_symbols if a not in exist_symbols]
 			for result in chunks(allresult,100):
-				print("chunks",len(result))
-				bars = api.get_barset(result,"minute",limit=100,start=start.isoformat())
+				bars = api.get_barset(result,"minute",limit=1000,start=start.isoformat())					
 				minute_bars = []
 				if bars :
 					for b in bars:
@@ -207,8 +206,10 @@ def backfill():
 							item['n'] = 0
 							minute_bars.append(item)
 							#start = start + timedelta(minutes=1)
-						print(b,len(candles))
-					insert_minute_bars(minute_bars,True)
+				print("DONE",start)
+				insert_minute_bars(minute_bars,True)
+			start = start + timedelta(minutes=1000)
+			
 				
 def chunks(l, n):
     n = max(1, n)
