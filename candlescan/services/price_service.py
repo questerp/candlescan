@@ -180,7 +180,8 @@ def backfill():
 	api = REST(raw_data=True)
 	start = add_days(dt.now(),-2)
 	start = start.replace(second=0).replace(microsecond=0)
-	all_symbols = frappe.db.sql("""select symbol from tabSymbol""",as_list=True)[0]
+	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1""",as_list=True)
+	all_symbols = [a[0] for a in all_symbols] 
 	print("backfill",len(all_symbols),dt.now())
 	for t in range(2880):
 		start = start + timedelta(minutes=1)
