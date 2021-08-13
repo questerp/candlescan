@@ -206,8 +206,8 @@ def backfill():
 					for b in bars:
 						candles = bars[b]
 						print(b,len(candles))
-						for  c in candles:
-							print(dt.fromtimestamp(c['t']))
+						#for  c in candles:
+						#	print(dt.fromtimestamp(c['t']))
 						for m in range(1000):
 							current = start +  timedelta(minutes=m)
 							ts = current.timestamp()
@@ -215,14 +215,14 @@ def backfill():
 							#print(ts,candles[0])
 							if candle:
 								candle = candle[0]
-								print("candle",candle)
+								#print("candle",candle)
 								
 								candle['t'] = cstr(dt.fromtimestamp(candle['t']))
 								candle['s'] = b
 								candle['vw'] = 0
 								candle['n'] = 0
 							else:
-								print("no candle",current)
+								#print("no candle",current)
 								candle = {
 									"s":b,
 									"t": cstr(current),
@@ -235,7 +235,7 @@ def backfill():
 									"vw":0,
 								}
 							minute_bars.append(candle)
-							time.sleep(1)
+							#time.sleep(1)
 							#start = start +  timedelta(minutes=1)
 					
 					print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult),"between",start,"-",end)
