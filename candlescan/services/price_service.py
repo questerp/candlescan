@@ -193,7 +193,9 @@ def backfill():
 			else:
 				exist_symbols = []
 			allresult = [a for a in all_symbols if a not in exist_symbols]
+			i = 0
 			for result in chunks(allresult,100):
+				i+=1
 				bars = api.get_barset(result,"minute",limit=1000,start=start.isoformat())					
 				minute_bars = []
 				if bars :
@@ -206,7 +208,7 @@ def backfill():
 							item['n'] = 0
 							minute_bars.append(item)
 							#start = start + timedelta(minutes=1)
-				print("DONE",start)
+				print(start,"DONE",i*100,"/",len(allresult))
 				insert_minute_bars(minute_bars,True)
 			start = start + timedelta(minutes=1000)
 			
