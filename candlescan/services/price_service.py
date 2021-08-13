@@ -196,6 +196,7 @@ def backfill():
 			allresult = [a for a in all_symbols if a not in exist_symbols]
 			i = 0
 			for result in chunks(allresult,100):
+				print(result)
 				i+=1
 				bars = api.get_barset(result,"minute",limit=1000,start=start.isoformat())					
 				minute_bars = []
@@ -209,7 +210,7 @@ def backfill():
 							item['n'] = 0
 							minute_bars.append(item)
 							#start = start + timedelta(minutes=1)
-				print(start,"DONE",i*100,"/",len(allresult))
+				print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult))
 				insert_minute_bars(minute_bars,True)
 			start = start + timedelta(minutes=1000)
 			frappe.db.sql("select 'KEEP_ALIVE'")
