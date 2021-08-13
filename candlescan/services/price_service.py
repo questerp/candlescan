@@ -234,7 +234,7 @@ def backfill():
 						insert_minute_bars(minute_bars,True)
 						frappe.db.sql("select 'KEEP_ALIVE'")
 				
-			start = end
+			#start = end
 			
 			
 				
