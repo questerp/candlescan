@@ -192,7 +192,6 @@ def backfill():
 				exist_symbols = exist_symbols[0]
 			else:
 				exist_symbols = []
-			print("exist_symbols",len(exist_symbols))
 			result = [a for a in all_symbols if a not in exist_symbols]
 			print("to be fetched",len(result))
 			
@@ -207,7 +206,7 @@ def backfill():
 						item['vw'] = 0
 						item['n'] = 0
 						minute_bars.append(item)
-				print(minute_bars)
+					print(b,len(candles))
 				insert_minute_bars(minute_bars,True)
 							
 def insert_minute_bars(minuteBars,commit=True):
