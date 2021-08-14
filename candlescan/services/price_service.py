@@ -14,7 +14,7 @@ import numpy as np
 
 class Symbol(tb.IsDescription):
 	ticker = tb.StringCol(16)
-	time = tb.UInt64Col()
+	time = tb.Float64Col()
 	open = tb.Float64Col()
 	close = tb.Float64Col()
 	high = tb.Float64Col()
