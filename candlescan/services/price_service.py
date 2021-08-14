@@ -273,23 +273,26 @@ def insert_minute_bars(minuteBars,commit=True):
 	if not minuteBars:
 		return
 	h5file = tb.open_file("bars.h5", mode="a", title="Bars")
-	table = h5file.root.bars_group.bars
-	symbol = table.row
-	for bar in minuteBars:
-		print(bar)
-		
-		symbol['ticker'] = bar['s']
-		symbol['time'] = bar['t']
-		symbol['open'] = bar['o']
-		symbol['close'] = bar['c']
-		symbol['high'] = bar['h']
-		symbol['low'] = bar['l']
-		symbol['volume'] = bar['v']
-		symbol['trades'] = bar['n']
-		symbol.append()
-		
-	table.flush()
-	h5file.close()
+	try:
+		table = h5file.root.bars_group.bars
+		symbol = table.row
+		for bar in minuteBars:
+			#print(bar)
+
+			symbol['ticker'] = bar['s']
+			symbol['time'] = bar['t']
+			symbol['open'] = bar['o']
+			symbol['close'] = bar['c']
+			symbol['high'] = bar['h']
+			symbol['low'] = bar['l']
+			symbol['volume'] = bar['v']
+			symbol['trades'] = bar['n']
+			symbol.append()
+	catch :
+		print("ERROR")
+	finally:
+		table.flush()
+		h5file.close()
 	
 	#frappe.db.sql("""SET @@session.unique_checks = 0""")
 	#frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
