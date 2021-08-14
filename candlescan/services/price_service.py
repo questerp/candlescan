@@ -209,7 +209,7 @@ def backfill():
 				i = 0
 				print("exist_symbols",len(exist_symbols))
 				end = start + timedelta(minutes=1000)
-				for result in chunks(allresult,100):
+				for result in chunks(allresult,200):
 					i+=1
 					strstart = start.astimezone().isoformat()
 					print(strstart)
