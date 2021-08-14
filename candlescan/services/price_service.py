@@ -226,11 +226,11 @@ def backfill():
 								candle = {
 									"s":b,
 									"t": cstr(current),
-									"o":None,
-									"c":None,
-									"h":None,
-									"l":None,
-									"n":None,
+									"o":'',
+									"c":'',
+									"h":'',
+									"l":'',
+									"n":'',
 									"v":0,
 									"vw":0,
 								}
