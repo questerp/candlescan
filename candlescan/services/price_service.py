@@ -191,6 +191,7 @@ def backfill():
 	print("backfill",len(all_symbols),dt.now())
 	h5file = get_h5file()
 	table = h5file.root.bars_group.bars
+	chuck = 500
 	
 	try:
 		while(start<now):
@@ -209,7 +210,7 @@ def backfill():
 				i = 0
 				print("exist_symbols",len(exist_symbols))
 				end = start + timedelta(minutes=1000)
-				for result in chunks(allresult,200):
+				for result in chunks(allresult,chuck):
 					i+=1
 					strstart = start.astimezone().isoformat()
 					print(strstart)
@@ -251,7 +252,7 @@ def backfill():
 								#time.sleep(1)
 								#start = start +  timedelta(minutes=1)
 
-						print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult),"between",start,"-",end)
+						print(len(minute_bars),"DONE - symbols:",i*chuck,"/",len(allresult),"between",start,"-",end)
 						insert_minute_bars(minute_bars,True)
 						minute_bars = []
 						bars = None
