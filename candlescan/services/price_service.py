@@ -275,7 +275,7 @@ def init_bars_db():
 def insert_minute_bars(minuteBars,commit=True):
 	if not minuteBars:
 		return
-	h5file = open_file("bars.h5", mode="a", title="Bars")
+	h5file = open_file("/home/bars.h5", mode="a", title="Bars")
 	frappe.db.sql("""SET @@session.unique_checks = 0""")
 	frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
 	frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
