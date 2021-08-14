@@ -26,6 +26,7 @@ sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconn
 
 log = logging.getLogger(__name__)
 api = None
+global_h5file =None
 
 def connect():
 	try:
@@ -184,9 +185,9 @@ def backfill():
 	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	all_symbols = [a[0] for a in all_symbols] 
 	print("backfill",len(all_symbols),dt.now())
-	h5file = tb.open_file("bars.h5", mode="a", title="Bars")
+	h5file = get_h5file()
 	table = h5file.root.bars_group.bars
-	indexrows = table.cols.time.create_index()
+	
 	try:
 		while(start<now):
 			start = start + timedelta(minutes=1)
@@ -266,9 +267,11 @@ def chunks(l, n):
 
 def init_bars_db():
 	print("init")
-	h5file = tb.open_file("bars.h5", mode="a", title="Bars")
+	h5file = get_h5file()
 	group = h5file.create_group("/", 'bars_group', 'Candlebars')
 	table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
+	indexrows = table.cols.time.create_index()
+	indexrows = table.cols.ticker.create_index()
 	table.flush()
 	print(h5file)
 	h5file.close()
@@ -278,7 +281,7 @@ def init_bars_db():
 def insert_minute_bars(minuteBars,commit=True):
 	if not minuteBars:
 		return
-	h5file = tb.open_file("bars.h5", mode="a", title="Bars")
+	h5file = get_h5file()
 	try:
 		table = h5file.root.bars_group.bars
 		symbol = table.row
@@ -307,3 +310,8 @@ def insert_minute_bars(minuteBars,commit=True):
 	#if commit:
 		
 	#	frappe.db.commit()
+	
+def get_h5file():
+	if not global_h5file:
+		global_h5file = tb.open_file("bars.h5", mode="a", title="Bars")
+	return global_h5file
