@@ -11,6 +11,8 @@ from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
 import tables as tb
 import numpy as np
+import threading
+
 
 class Symbol(tb.IsDescription):
 	ticker = tb.StringCol(16)
@@ -23,7 +25,7 @@ class Symbol(tb.IsDescription):
 	trades = tb.Float64Col()
 
 sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
-
+lock = threading.Lock()
 log = logging.getLogger(__name__)
 api = None
 global_h5file =None
@@ -258,7 +260,7 @@ def backfill():
 		print("ERROR")
 	finally:
 		table.flush()
-		h5file.close()	
+		synchronized_close_file()
 			
 				
 def chunks(l, n):
@@ -274,7 +276,7 @@ def init_bars_db():
 	indexrows = table.cols.ticker.create_index()
 	table.flush()
 	print(h5file)
-	h5file.close()
+	synchronized_close_file()
 	
 	
 
@@ -282,8 +284,9 @@ def insert_minute_bars(minuteBars,commit=True):
 	if not minuteBars:
 		return
 	h5file = get_h5file()
+	table = h5file.root.bars_group.bars
+	
 	try:
-		table = h5file.root.bars_group.bars
 		symbol = table.row
 		for bar in minuteBars:
 			#print(bar)
@@ -301,7 +304,7 @@ def insert_minute_bars(minuteBars,commit=True):
 		print("ERROR")
 	finally:
 		table.flush()
-		h5file.close()
+		synchronized_close_file()
 	
 	#frappe.db.sql("""SET @@session.unique_checks = 0""")
 	#frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
@@ -311,8 +314,27 @@ def insert_minute_bars(minuteBars,commit=True):
 		
 	#	frappe.db.commit()
 	
+def get_minute_bars(symbol,start,end=None):
+	if not (symbol and start ):
+		return
+	h5file = get_h5file()
+	table = h5file.root.bars_group.bars
+	if not end:
+		end = dt.now().timestamp()
+	try:
+		data = [ x for x in table.where("""(ticker == %s) & (time>=%s) & (time<=%s)""" % (symbol,start,end) ) ]
+		return data
+	except:
+		print("ERROR")
+
+		
 def get_h5file():
 	global global_h5file
 	if not  global_h5file or not global_h5file.isopen:
-		global_h5file = tb.open_file("bars.h5", mode="a", title="Bars")
+		with lock:
+			global_h5file = tb.open_file("bars.h5", mode="a", title="Bars")
 	return global_h5file
+
+def synchronized_close_file():
+    with lock:
+        get_h5file().close()
