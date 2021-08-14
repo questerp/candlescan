@@ -265,7 +265,7 @@ def chunks(l, n):
 
 def init_bars_db():
 	print("init")
-	h5file = tb.open_file("../bars/bars.h5", mode="a", title="Bars")
+	h5file = tb.open_file("bars.h5", mode="a", title="Bars")
 	group = h5file.create_group("/", 'bars_group', 'Candlebars')
 	table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
 	table.flush()
