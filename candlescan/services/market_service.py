@@ -23,6 +23,7 @@ from alpaca_trade_api.rest import REST, TimeFrame
 from frappe.utils import cstr, today, add_days, getdate, add_months
 from frappe.realtime import get_redis_server
 from alpaca_trade_api.common import URL
+from candlescan.services.price_service import get_minute_bars
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 api = None
@@ -96,17 +97,12 @@ async def get_symbol_prices(message):
 	if not (symbol or frequency or start):
 		return
 	
-	td = TimeFrame.Minute
-	if frequency == "1Min":
-		td = TimeFrame.Minute
-	if frequency == "1Hour":
-		td = TimeFrame.Hour 
-	if frequency == "1Day":
-		td = TimeFrame.Day
-		
+	
+	
+	data = get_minute_bars(symbol,start,end)
 	#data = api.get_bars(symbol, td,start, end)._raw
 	#data = get_prices(symbol,period_type, period, frequency_type, frequency)
-	#await sio.emit("transfer",build_response("get_symbol_prices",source,data))
+	await sio.emit("transfer",build_response("get_symbol_prices",source,data))
 
 @sio.event
 async def get_symbol_info(message):
