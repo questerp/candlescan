@@ -13,13 +13,13 @@ import tables as tb
 import numpy as np
 
 class Symbol(tb.IsDescription):
-	ticker = StringCol(16)
-	open = Float64Col()
-	close = Float64Col()
-	high = Float64Col()
-	low = Float64Col()
-	volume = Float64Col()
-	trades = Float64Col()
+	ticker = tb.StringCol(16)
+	open = tb.Float64Col()
+	close = tb.Float64Col()
+	high = tb.Float64Col()
+	low = tb.Float64Col()
+	volume = tb.Float64Col()
+	trades = tb.Float64Col()
 
 sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
