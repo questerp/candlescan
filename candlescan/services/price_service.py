@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 import frappe, logging, time
-from frappe.utils import cstr,add_days
+from frappe.utils import cstr,add_days, get_datetime
 from datetime import timedelta,datetime as dt
 import socketio
 import asyncio
@@ -14,6 +14,7 @@ import numpy as np
 
 class Symbol(tb.IsDescription):
 	ticker = tb.StringCol(16)
+	time = tb.UInt64Col()
 	open = tb.Float64Col()
 	close = tb.Float64Col()
 	high = tb.Float64Col()
@@ -69,22 +70,7 @@ def start():
 		frappe.db.sql("select 'KEEP_ALIVE'")
 		print("------------")
 		print(dt.now())
-		#counter += 1
-		#_symbols = redis.smembers("1m_symbols")
-		#_sub_symbols = redis.smembers("symbols")
-		#sub_symbols = [cstr(a) for a in _sub_symbols if a]
-		#print("sub_symbols", sub_symbols)
-		#symbols = [cstr(a) for a in _symbols if a]
-		#print("1 min",symbols)
-		#if counter >=5:
-		#	counter = 0
-		#	__5m_symbols = redis.smembers("5m_symbols")
-		#	_5m_symbols = [cstr(a) for a in __5m_symbols if a]
-		#	if _5m_symbols:
-				#print("5 min",_5m_symbols)
-		#		symbols.extend(_5m_symbols)
-		#		symbols = list(set(symbols))
-				
+
 		snap = api.get_snapshots(symbols)
 		print(len(symbols),dt.now())
 		#m1s = []
@@ -113,8 +99,12 @@ def start():
 			#	m5s.append(s)
 			if minuteBar and minuteBar.get("t"):
 				minuteBar['s'] = s
-				minuteBar['t'] = minuteBar['t'].replace('Z','').replace('T',' ')
-				minuteBars.append(minuteBar)
+				try:
+					minuteBar['t'] = get_datetime(minuteBar['t']).timestamp()
+					minuteBars.append(minuteBar)
+				except:
+					pass
+				
 			price = latestTrade.get("p")
 			if price:
 				#if s in sub_symbols:
@@ -198,11 +188,16 @@ def backfill():
 		start = start + timedelta(minutes=1)
 		print("start",start)
 		if start.hour >= 4 or start.hour <= 20:
-			exist_symbols = frappe.db.sql(""" select DISTINCT s from tabBars where t='%s'""" % start,as_list=True)
-			if exist_symbols:
-				exist_symbols = [a[0] for a in exist_symbols]
-			else:
-				exist_symbols = []
+			h5file = open_file("bars.h5", mode="a", title="Bars")
+			table = h5file.root.bars_group.bars
+			exist_symbols = [ x['ticker'] for x in table.where("""(time == %s)""" % start.timestamp()) ]
+			#exist_symbols = frappe.db.sql(""" select DISTINCT s from tabBars where t='%s'""" % start,as_list=True)
+			table.flush()
+			h5file.close()
+			#if exist_symbols:
+			#	exist_symbols = [a[0] for a in exist_symbols]
+			#else:
+			#	exist_symbols = []
 			allresult = [a for a in all_symbols if a not in exist_symbols]
 			i = 0
 			print("exist_symbols",len(exist_symbols))
@@ -228,7 +223,7 @@ def backfill():
 								candle = candle[0]
 								#print("candle",candle)
 								
-								candle['t'] = cstr(dt.fromtimestamp(candle['t']))
+								#candle['t'] = cstr(dt.fromtimestamp(candle['t']))
 								candle['s'] = b
 								candle['vw'] = 0
 								candle['n'] = 0
@@ -236,7 +231,7 @@ def backfill():
 								#print("no candle",current)
 								candle = {
 									"s":b,
-									"t": cstr(current),
+									"t": ts,
 									"o":'',
 									"c":'',
 									"h":'',
@@ -265,20 +260,39 @@ def chunks(l, n):
 
 def init_bars_db():
 	print("init")
-	h5file = tb.open_file("/home/bars.h5", mode="a", title="Bars")
+	h5file = tb.open_file("bars.h5", mode="a", title="Bars")
 	group = h5file.create_group("/", 'bars_group', 'Candlebars')
 	table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
 	table.flush()
 	print(h5file)
+	h5file.close()
+	
 	
 
 def insert_minute_bars(minuteBars,commit=True):
 	if not minuteBars:
 		return
-	h5file = open_file("/home/bars.h5", mode="a", title="Bars")
-	frappe.db.sql("""SET @@session.unique_checks = 0""")
-	frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
-	frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
-	VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
-	if commit:
-		frappe.db.commit()
+	h5file = open_file("bars.h5", mode="a", title="Bars")
+	table = h5file.root.bars_group.bars
+	symbol = table.row
+	for bar in minuteBars:
+		symbol['ticker'] = bar['s']
+		symbol['time'] = bar['t']
+		symbol['open'] = bar['o']
+		symbol['close'] = bar['c']
+		symbol['high'] = bar['h']
+		symbol['low'] = bar['l']
+		symbol['volume'] = bar['v']
+		symbol['trades'] = bar['n']
+		symbol.append()
+		
+	table.flush()
+	h5file.close()
+	
+	#frappe.db.sql("""SET @@session.unique_checks = 0""")
+	#frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
+	#frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
+	#VALUES {values}""".format(values = ", ".join(["('%s_%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (s['s'],s['t'],s['s'],s['t'],s['o'],s['h'],s['l'],s['c'],s['v'],s['n'],s['vw']) for s in minuteBars])))
+	#if commit:
+		
+	#	frappe.db.commit()
