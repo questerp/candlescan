@@ -93,11 +93,8 @@ async def get_symbol_prices(message):
 	start = data.get("start")
 	end = data.get("end")
 	
-	
-	if not (symbol or frequency or start):
+	if not (symbol or  start):
 		return
-	
-	
 	
 	data = get_minute_bars(symbol,start,end)
 	#data = api.get_bars(symbol, td,start, end)._raw
