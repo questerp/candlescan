@@ -184,74 +184,80 @@ def backfill():
 	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	all_symbols = [a[0] for a in all_symbols] 
 	print("backfill",len(all_symbols),dt.now())
-	while(start<now):
-		start = start + timedelta(minutes=1)
-		print("start",start)
-		if start.hour >= 4 or start.hour <= 20:
-			h5file = tb.open_file("bars.h5", mode="a", title="Bars")
-			table = h5file.root.bars_group.bars
-			exist_symbols = [ x['ticker'] for x in table.where("""(time == %s)""" % start.timestamp()) ]
-			#exist_symbols = frappe.db.sql(""" select DISTINCT s from tabBars where t='%s'""" % start,as_list=True)
-			table.flush()
-			h5file.close()
-			#if exist_symbols:
-			#	exist_symbols = [a[0] for a in exist_symbols]
-			#else:
-			#	exist_symbols = []
-			allresult = [a for a in all_symbols if a not in exist_symbols]
-			i = 0
-			print("exist_symbols",len(exist_symbols))
-			end = start + timedelta(minutes=1000)
-			for result in chunks(allresult,100):
-				i+=1
-				strstart = start.astimezone().isoformat()
-				print(strstart)
-				bars = api.get_barset(result,"minute",limit=1000,start=strstart)					
-				minute_bars = []
-				if bars :
-					for b in bars:
-						candles = bars[b]
-						print(b,len(candles))
-						#for  c in candles:
-						#	print(dt.fromtimestamp(c['t']))
-						for m in range(1000):
-							current = start +  timedelta(minutes=m)
-							ts = current.timestamp()
-							candle = list(filter(lambda x: x['t'] == ts, candles))
-							#print(ts,candles[0])
-							if candle:
-								candle = candle[0]
-								#print("candle",candle)
-								
-								#candle['t'] = cstr(dt.fromtimestamp(candle['t']))
-								candle['s'] = b
-								candle['vw'] = 0
-								candle['n'] = 0
-							else:
-								#print("no candle",current)
-								candle = {
-									"s":b,
-									"t": ts,
-									"o":0,
-									"c":0,
-									"h":0,
-									"l":0,
-									"n":0,
-									"v":0,
-									"vw":0,
-								}
-							minute_bars.append(candle)
-							#time.sleep(1)
-							#start = start +  timedelta(minutes=1)
-					
-					print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult),"between",start,"-",end)
-					insert_minute_bars(minute_bars,True)
+	h5file = tb.open_file("bars.h5", mode="a", title="Bars")
+	table = h5file.root.bars_group.bars
+	indexrows = table.cols.time.create_index()
+	try:
+		while(start<now):
+			start = start + timedelta(minutes=1)
+			print("start",start)
+			if start.hour >= 4 or start.hour <= 20:
+
+				exist_symbols = [ x['ticker'] for x in table.where("""(time == %s)""" % start.timestamp()) ]
+				#exist_symbols = frappe.db.sql(""" select DISTINCT s from tabBars where t='%s'""" % start,as_list=True)
+
+				#if exist_symbols:
+				#	exist_symbols = [a[0] for a in exist_symbols]
+				#else:
+				#	exist_symbols = []
+				allresult = [a for a in all_symbols if a not in exist_symbols]
+				i = 0
+				print("exist_symbols",len(exist_symbols))
+				end = start + timedelta(minutes=1000)
+				for result in chunks(allresult,100):
+					i+=1
+					strstart = start.astimezone().isoformat()
+					print(strstart)
+					bars = api.get_barset(result,"minute",limit=1000,start=strstart)					
 					minute_bars = []
-					bars = None
-					frappe.db.sql("select 'KEEP_ALIVE'")
-				
-			start = end
-			
+					if bars :
+						for b in bars:
+							candles = bars[b]
+							print(b,len(candles))
+							#for  c in candles:
+							#	print(dt.fromtimestamp(c['t']))
+							for m in range(1000):
+								current = start +  timedelta(minutes=m)
+								ts = current.timestamp()
+								candle = list(filter(lambda x: x['t'] == ts, candles))
+								#print(ts,candles[0])
+								if candle:
+									candle = candle[0]
+									#print("candle",candle)
+
+									#candle['t'] = cstr(dt.fromtimestamp(candle['t']))
+									candle['s'] = b
+									candle['vw'] = 0
+									candle['n'] = 0
+								else:
+									#print("no candle",current)
+									candle = {
+										"s":b,
+										"t": ts,
+										"o":0,
+										"c":0,
+										"h":0,
+										"l":0,
+										"n":0,
+										"v":0,
+										"vw":0,
+									}
+								minute_bars.append(candle)
+								#time.sleep(1)
+								#start = start +  timedelta(minutes=1)
+
+						print(len(minute_bars),"DONE - symbols:",i*100,"/",len(allresult),"between",start,"-",end)
+						insert_minute_bars(minute_bars,True)
+						minute_bars = []
+						bars = None
+						frappe.db.sql("select 'KEEP_ALIVE'")
+
+				start = end
+	except:
+		print("ERROR")
+	finally:
+		table.flush()
+		h5file.close()	
 			
 				
 def chunks(l, n):
