@@ -312,6 +312,7 @@ def insert_minute_bars(minuteBars,commit=True):
 	#	frappe.db.commit()
 	
 def get_h5file():
-	if not global_h5file or not global_h5file.isopen:
+	global global_h5file
+	if not  global_h5file or not global_h5file.isopen:
 		global_h5file = tb.open_file("bars.h5", mode="a", title="Bars")
 	return global_h5file
