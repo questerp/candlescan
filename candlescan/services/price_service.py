@@ -264,10 +264,13 @@ def chunks(l, n):
     return (l[i:i+n] for i in range(0, len(l), n))	
 
 def init_bars_db():
-	h5file = open_file("bars/bars.h5", mode="a", title="Bars")
+	print("init")
+	h5file = open_file("../bars/bars.h5", mode="a", title="Bars")
 	group = h5file.create_group("/", 'bars_group', 'Candlebars')
 	table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
 	table.flush()
+	print(h5file)
+	
 
 def insert_minute_bars(minuteBars,commit=True):
 	if not minuteBars:
