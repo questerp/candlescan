@@ -188,7 +188,7 @@ def backfill():
 		start = start + timedelta(minutes=1)
 		print("start",start)
 		if start.hour >= 4 or start.hour <= 20:
-			h5file = open_file("bars.h5", mode="a", title="Bars")
+			h5file = tb.open_file("bars.h5", mode="a", title="Bars")
 			table = h5file.root.bars_group.bars
 			exist_symbols = [ x['ticker'] for x in table.where("""(time == %s)""" % start.timestamp()) ]
 			#exist_symbols = frappe.db.sql(""" select DISTINCT s from tabBars where t='%s'""" % start,as_list=True)
