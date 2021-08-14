@@ -9,6 +9,17 @@ from candlescan.utils.socket_utils import get_user,validate_data,build_response,
 from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
+import tables as tb
+import numpy as np
+
+class Symbol(tb.IsDescription):
+	ticker = StringCol(16)
+	open = Float64Col()
+	close = Float64Col()
+	high = Float64Col()
+	low = Float64Col()
+	volume = Float64Col()
+	trades = Float64Col()
 
 sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
@@ -252,9 +263,16 @@ def chunks(l, n):
     n = max(1, n)
     return (l[i:i+n] for i in range(0, len(l), n))	
 
+def init_bars_db():
+	h5file = open_file("bars/bars.h5", mode="a", title="Bars")
+	group = h5file.create_group("/", 'bars_group', 'Candlebars')
+	table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
+	table.flush()
+
 def insert_minute_bars(minuteBars,commit=True):
 	if not minuteBars:
 		return
+	h5file = open_file("bars.h5", mode="a", title="Bars")
 	frappe.db.sql("""SET @@session.unique_checks = 0""")
 	frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
 	frappe.db.sql("""INSERT IGNORE INTO `tabBars` (name,s,t,o,h,l,c,v,n,vw)
