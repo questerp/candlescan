@@ -288,7 +288,7 @@ def insert_minute_bars(minuteBars,commit=True):
 			symbol['volume'] = bar['v']
 			symbol['trades'] = bar['n']
 			symbol.append()
-	catch :
+	except:
 		print("ERROR")
 	finally:
 		table.flush()
