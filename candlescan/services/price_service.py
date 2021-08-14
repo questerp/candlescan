@@ -262,7 +262,7 @@ def backfill():
 	except:
 		print("ERROR")
 	finally:
-		table.flush()
+		#table.flush()
 		synchronized_close_file()
 			
 				
