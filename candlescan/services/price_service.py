@@ -322,7 +322,7 @@ def get_minute_bars(symbol,start,end=None):
 	if not end:
 		end = dt.now().timestamp()
 	try:
-		data = [ x for x in table.where("""(ticker == %s) & (time>=%s) & (time<=%s)""" % (symbol,start,end) ) ]
+		data = [ x for x in table.where("""(ticker == '%s') & (time>=%s) & (time<=%s)""" % (symbol,start,end) ) ]
 		return data
 	except Exception as ex:
 		print("ERROR",ex)
