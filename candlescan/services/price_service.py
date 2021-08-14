@@ -317,12 +317,16 @@ def insert_minute_bars(minuteBars,commit=True):
 def get_minute_bars(symbol,start,end=None):
 	if not (symbol and start ):
 		return
+	print(dt.now())
 	h5file = get_h5file()
 	table = h5file.root.bars_group.bars
 	if not end:
 		end = dt.now().timestamp()
 	try:
+		print(dt.now())
 		data = [ x[:] for x in table.where("""(ticker == '%s') & (time>=%s) & (time<=%s)""" % (symbol,start,end) ) ]
+		print(dt.now())
+		
 		return data
 	except Exception as ex:
 		print("ERROR",ex)
