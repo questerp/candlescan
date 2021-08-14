@@ -191,7 +191,7 @@ def backfill():
 	print("backfill",len(all_symbols),dt.now())
 	h5file = get_h5file()
 	table = h5file.root.bars_group.bars
-	chuck = 500
+	chuck = 400
 	
 	try:
 		while(start<now):
