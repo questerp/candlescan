@@ -276,6 +276,8 @@ def insert_minute_bars(minuteBars,commit=True):
 	table = h5file.root.bars_group.bars
 	symbol = table.row
 	for bar in minuteBars:
+		print(bar)
+		
 		symbol['ticker'] = bar['s']
 		symbol['time'] = bar['t']
 		symbol['open'] = bar['o']
@@ -284,7 +286,6 @@ def insert_minute_bars(minuteBars,commit=True):
 		symbol['low'] = bar['l']
 		symbol['volume'] = bar['v']
 		symbol['trades'] = bar['n']
-		print(bar)
 		symbol.append()
 		
 	table.flush()
