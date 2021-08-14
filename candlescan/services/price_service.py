@@ -324,8 +324,8 @@ def get_minute_bars(symbol,start,end=None):
 	try:
 		data = [ x for x in table.where("""(ticker == %s) & (time>=%s) & (time<=%s)""" % (symbol,start,end) ) ]
 		return data
-	except:
-		print("ERROR")
+	except Exception as ex:
+		print("ERROR",ex)
 
 		
 def get_h5file():
