@@ -23,6 +23,8 @@ class Symbol(tb.IsDescription):
 	low = tb.Float64Col()
 	volume = tb.Float64Col()
 	trades = tb.Float64Col()
+	valide = tb.BoolCol()
+	 
 
 sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 lock = threading.Lock()
@@ -274,6 +276,8 @@ def init_bars_db():
 	table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
 	indexrows = table.cols.time.create_index()
 	indexrows = table.cols.ticker.create_index()
+	indexrows = table.cols.valide.create_index()
+	
 	table.flush()
 	print(h5file)
 	synchronized_close_file()
@@ -299,6 +303,7 @@ def insert_minute_bars(minuteBars,commit=True):
 			symbol['low'] = bar['l']
 			symbol['volume'] = bar['v']
 			symbol['trades'] = bar['n']
+			symbol['valide'] = symbol['open'] > 0
 			symbol.append()
 	except:
 		print("ERROR")
@@ -317,19 +322,16 @@ def insert_minute_bars(minuteBars,commit=True):
 def get_minute_bars(symbol,start,end=None):
 	if not (symbol and start ):
 		return
-	print(dt.now())
 	h5file = get_h5file()
 	table = h5file.root.bars_group.bars
 	if not end:
 		end = dt.now().timestamp()
 	try:
-		print(dt.now())
-		data = [ x[:] for x in table.where("""(ticker == '%s') & (time>=%s) & (time<=%s)""" % (symbol,start,end) ) ]
-		print(dt.now())
-		
+		data = [ x[:] for x in table.where("""(ticker == '%s') & (time>=%s) & (time<=%s) & (valide)""" % (symbol,start,end) ) ]
 		return data
 	except Exception as ex:
 		print("ERROR",ex)
+		return []
 
 		
 def get_h5file():
