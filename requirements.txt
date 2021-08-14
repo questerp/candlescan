@@ -8,4 +8,4 @@ python-socketio==5.3.0
 secedgar
 FinNews
 alpaca-trade-api
-pandas_ta
+TA-Lib
