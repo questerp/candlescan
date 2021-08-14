@@ -89,7 +89,7 @@ async def get_symbol_prices(message):
 	if not data:
 		return
 	symbol = data.get("symbol")
-	frequency = data.get("frequency")
+	#frequency = data.get("frequency")
 	start = data.get("start")
 	end = data.get("end")
 	
