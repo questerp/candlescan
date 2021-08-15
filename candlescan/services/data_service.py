@@ -25,6 +25,7 @@ async def run():
 		
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
 		with lock:
+			get_redis_server()
 			threading.Thread(target=handle_queue).start()	
 		await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
