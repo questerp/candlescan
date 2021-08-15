@@ -317,7 +317,7 @@ def insert_minute_bars(minuteBars,send=False):
 			symbol['valide'] = symbol['open'] > 0
 			symbol.append()
 			if send and bar['s'] and  bar['s'] in symbols:
-				print("queue_data")
+				print("queue_data",bar['s'])
 				ev  = "bars_%s"% bar['s']
 				queue_data(ev,ev,bar)
 				#sio.emit("transfer",build_response(ev,ev,bar))
