@@ -21,9 +21,9 @@ async def run():
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
 		redis = get_redis_server()
 		while(1):
-			await asyncio.sleep(1)
+			#await asyncio.sleep(1)
 			data = redis.lpop("queue")
-			print('data',data)
+			#print('data',data)
 			if data:
 				try:
 					resp = json.loads(data)
