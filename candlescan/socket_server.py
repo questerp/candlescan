@@ -50,6 +50,9 @@ async def transfer(sid, data):
 	await sio.emit(event, data, room=to)
 
 
+@sio.event	
+async def leave(sid, room):
+	sio.leave_room(sid, room)
 	
 @sio.event	
 async def join(sid, room):
