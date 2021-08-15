@@ -169,8 +169,12 @@ def start():
 		#	redis.sadd("5m_symbols",s)
 		if minuteBars:
 			#try:
-			insert_minute_bars(minuteBars,False)
+			insert_minute_bars(minuteBars,True)
 		frappe.db.commit()
+		
+		
+		
+		
 		minuteBars = []	
 		print("DONE",dt.now())
 		
@@ -253,7 +257,7 @@ def backfill():
 								#start = start +  timedelta(minutes=1)
 
 						print(len(minute_bars),"DONE - symbols:",i*chuck,"/",len(allresult),"between",start,"-",end)
-						insert_minute_bars(minute_bars,True)
+						insert_minute_bars(minute_bars)
 						minute_bars = []
 						bars = None
 						frappe.db.sql("select 'KEEP_ALIVE'")
@@ -285,7 +289,7 @@ def init_bars_db():
 	
 	
 
-def insert_minute_bars(minuteBars,commit=True):
+def insert_minute_bars(minuteBars,send=False):
 	if not minuteBars:
 		return
 	h5file = get_h5file()
@@ -306,6 +310,8 @@ def insert_minute_bars(minuteBars,commit=True):
 			symbol['trades'] = bar['n']
 			symbol['valide'] = symbol['open'] > 0
 			symbol.append()
+			if send:
+				sio.emit("transfer",build_response("symbol","bars_%s"% bar['s'],bar))
 	except:
 		print("ERROR")
 	finally:
