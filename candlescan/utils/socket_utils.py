@@ -23,7 +23,11 @@ class CustomSocketJsonHandler(object):
 	def loads(*args, **kwargs):
 		return json.loads(*args, **kwargs)
 	
-
+def queue_data(event,room,data):
+	if event and room and data:
+		data = build_response(event,room,data)
+		sc = json.dumps(data)
+		get_redis_server().lpush("queue",sc)
 
 json_encoder = CustomSocketJsonHandler()
 
