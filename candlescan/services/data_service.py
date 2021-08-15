@@ -25,20 +25,21 @@ async def run():
 		
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
 		with lock:
-			threading.Thread(target=handle_queue,args=(frappe.conf.redis_socketio,)).start()	
+			threading.Thread(target=handle_queue).start()	
 		await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
 
-def handle_queue(redis_socketio):
+def handle_queue():
 	try:
-		from redis import Redis
-		redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
+		#from redis import Redis
+		#redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
+		#redis = get_redis_server()
 		while(1):
 			time.sleep(2) 
-			data = redis.lpop("queue")
+			data =  get_redis_server().lpop("queue")
 			print("data",data)
 			if data:
 				try:
