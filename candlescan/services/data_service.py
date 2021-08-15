@@ -33,7 +33,7 @@ async def run():
 		await run()
 
 def handle_queue():
-	try:
+	#try:
 		#from redis import Redis
 		#redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
 		#redis = get_redis_server()
@@ -47,10 +47,10 @@ def handle_queue():
 					sio.emit("transfer",resp)
 				except Exception as ex:
 					print(ex)
-	except Exception as ex:
-		print(ex)
-		time.sleep(1)
-		handle_queue()
+	#except Exception as ex:
+		#raise
+	#	time.sleep(1)
+	#	handle_queue()
 		
 @sio.event
 async def connect_error(message):
