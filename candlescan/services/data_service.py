@@ -22,8 +22,10 @@ def start():
 
 async def run():
 	try:
-		redis = get_redis_server()
+		
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
+		await sio.sleep(5)
+		redis = get_redis_server()
 		with lock:
 			threading.Thread(target=handle_queue,args=(redis)).start()	
 		await keep_alive()
