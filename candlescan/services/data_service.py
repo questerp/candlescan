@@ -25,7 +25,7 @@ async def run():
 		
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
 		with lock:
-			threading.Thread(target=handle_queue,args=(frappe.conf.redis_socketio)).start()	
+			threading.Thread(target=handle_queue,args=(frappe.conf.redis_socketio,)).start()	
 		await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
