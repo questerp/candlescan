@@ -5,7 +5,7 @@ from datetime import timedelta,datetime as dt
 import socketio
 import asyncio
 from frappe.realtime import get_redis_server
-from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
+from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive,queue_data
 from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
@@ -318,7 +318,8 @@ def insert_minute_bars(minuteBars,send=False):
 			symbol.append()
 			if send and bar['s'] and  bar['s'] in symbols:
 				ev  = "bars_%s"% bar['s']
-				sio.emit("transfer",build_response(ev,ev,bar))
+				queue_data(ev,ev,bar)
+				#sio.emit("transfer",build_response(ev,ev,bar))
 	except:
 		print("ERROR")
 	finally:
