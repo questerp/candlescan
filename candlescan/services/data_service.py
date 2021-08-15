@@ -55,7 +55,7 @@ async def subscribe_symbol(message):
 async def lookup(message):
 	symbol = message.get('data')
 	sid = message.get('source_sid')
-	if not symbol or len(symbol) > 8 or len(symbol) < 2:
+	if not symbol or len(symbol) > 9 or len(symbol) < 1:
 		return
 	symbols = frappe.db.sql("""select symbol from tabSymbol where name LIKE  %(symbol)s limit 10 """ ,{"symbol":'%%%s%%' % symbol},as_dict=True)
 	await sio.emit("transfer",build_response("lookup",sid,symbols))
