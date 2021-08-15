@@ -37,7 +37,7 @@ def handle_queue(redis_socketio):
 		from redis import Redis
 		redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
 		while(1):
-			await sio.sleep(2) 
+			time.sleep(2) 
 			data = redis.lpop("queue")
 			print("data",data)
 			if data:
