@@ -28,15 +28,19 @@ async def run():
 		await run()
 
 def handle_queue():
-	redis = get_redis_server()
-	while(1):
-		data = redis.lpop("queue")
-		if data:
-			try:
-				resp = json.loads(data)
-				sio.emit("transfer",resp)
-			except Exception as ex:
-				print(ex)
+	try:
+		redis = get_redis_server()
+		while(1):
+			data = redis.lpop("queue")
+			if data:
+				try:
+					resp = json.loads(data)
+					sio.emit("transfer",resp)
+				except Exception as ex:
+					print(ex)
+	except Exception as ex:
+		print(ex)
+		handle_queue()
 		
 @sio.event
 async def connect_error(message):
