@@ -294,7 +294,13 @@ def insert_minute_bars(minuteBars,send=False):
 		return
 	h5file = get_h5file()
 	table = h5file.root.bars_group.bars
-	
+	symbols = []
+	if send:
+		redis = get_redis_server()
+		symbols = redis.smembers("symbols")
+		if symbols:
+			symbols = [cstr(a) for a in symbols]
+		print(symbols)
 	try:
 		symbol = table.row
 		for bar in minuteBars:
@@ -310,7 +316,7 @@ def insert_minute_bars(minuteBars,send=False):
 			symbol['trades'] = bar['n']
 			symbol['valide'] = symbol['open'] > 0
 			symbol.append()
-			if send and bar['s']:
+			if send and bar['s'] and  bar['s'] in symbols:
 				ev  = "bars_%s"% bar['s']
 				sio.emit("transfer",build_response(ev,ev,bar))
 	except:
