@@ -40,6 +40,7 @@ def handle_queue():
 					print(ex)
 	except Exception as ex:
 		print(ex)
+		time.sleep(1)
 		handle_queue()
 		
 @sio.event
