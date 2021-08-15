@@ -6,6 +6,7 @@ from frappe.utils import cstr,getdate, get_time, today,now_datetime
 import socketio
 import asyncio
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
+import time
 
 public_ressources = ["Scanner"]
 
@@ -18,7 +19,18 @@ def start():
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
-		await keep_alive()
+		redis = get_redis_server()
+		while(1):
+			time.sleep(1)
+			data = redis.lpop("queue")
+			if data:
+				try:
+					resp = json.loads(data)
+					await sio.emit("transfer",resp)
+				except Exception as ex:
+					print(ex)
+				
+		#await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
