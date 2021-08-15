@@ -311,7 +311,8 @@ def insert_minute_bars(minuteBars,send=False):
 			symbol['valide'] = symbol['open'] > 0
 			symbol.append()
 			if send and bar['s']:
-				sio.emit("transfer",build_response(bar['s'],"bars_%s"% bar['s'],bar))
+				ev  = "bars_%s"% bar['s']
+				sio.emit("transfer",build_response(ev,ev,bar))
 	except:
 		print("ERROR")
 	finally:
