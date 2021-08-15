@@ -23,6 +23,7 @@ async def run():
 		while(1):
 			await asyncio.sleep(1)
 			data = redis.lpop("queue")
+			print('data',data)
 			if data:
 				try:
 					resp = json.loads(data)
