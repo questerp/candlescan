@@ -8,6 +8,9 @@ import asyncio
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
 import time
 import threading
+from threading import Lock
+
+lock = Lock()
 
 public_ressources = ["Scanner"]
 
@@ -21,7 +24,8 @@ async def run():
 	try:
 		redis = get_redis_server()
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
-		threading.Thread(target=handle_queue,args=(redis)).start()	
+		with lock:
+			threading.Thread(target=handle_queue,args=(redis)).start()	
 		await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
