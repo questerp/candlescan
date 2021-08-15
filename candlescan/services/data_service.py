@@ -13,7 +13,6 @@ public_ressources = ["Scanner"]
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 
 def start():
-	asyncio.get_event_loop().create_task(keep_alive())
 	asyncio.get_event_loop().run_until_complete(run())
 	asyncio.get_event_loop().run_forever()
 
