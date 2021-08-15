@@ -19,17 +19,18 @@ def start():
 
 async def run():
 	try:
+		redis = get_redis_server()
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
-		threading.Thread(target=handle_queue).start()	
+		threading.Thread(target=handle_queue,args=(redis)).start()	
 		await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
 
-def handle_queue():
+def handle_queue(redis):
 	try:
-		redis = get_redis_server()
+		#redis = get_redis_server()
 		while(1):
 			data = redis.lpop("queue")
 			if data:
