@@ -28,8 +28,9 @@ def queue_data(event,room,data):
 	if event and room and data:
 		data = build_response(event,room,data)
 		sc = json.dumps(data)
-		response_queue.put(sc)
-		#get_redis_server().lpush("queue",sc)
+		#response_queue.put(sc)
+		get_redis_server().lpush("queue",sc)
+	print("NO EVENT ROOM DATA")
 
 json_encoder = CustomSocketJsonHandler()
 
