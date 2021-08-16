@@ -45,6 +45,14 @@ def disconnect():
 	connect()
 	
 def start():
+	try:
+		_start()
+	except Exception as e:
+		print(e)
+		time.sleep(2)
+		start()
+		
+def _start():
 	connect()
 	api = REST(raw_data=True)
 	logging.basicConfig(level=logging.INFO)
