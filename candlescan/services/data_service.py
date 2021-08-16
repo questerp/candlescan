@@ -45,6 +45,7 @@ def handle_queue():
 			if data:
 				print("data",data)
 				try:
+					data = cstr(data)
 					resp = json.loads(data)
 					sio.emit("transfer",resp)
 				except Exception as ex:
