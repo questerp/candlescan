@@ -40,16 +40,18 @@ def handle_queue():
 		#redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
 		#redis = get_redis_server()
 		while(1):
-			if response_queue.empty():
-               			time.sleep(0.05)
-			data = response_queue.get() #  get_redis_server().lpop("queue")
-			print("data",data)
+			#if response_queue.empty():
+			data =  get_redis_server().lpop("queue")#response_queue.get() # 
 			if data:
+				print("data",data)
 				try:
 					resp = json.loads(data)
 					sio.emit("transfer",resp)
 				except Exception as ex:
 					print(ex)
+			else:
+				time.sleep(0.05)
+				
 	except Exception as ex:
 		#raise
 		time.sleep(1)
