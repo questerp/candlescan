@@ -47,7 +47,8 @@ def handle_queue():
 				try:
 					data = cstr(data)
 					resp = json.loads(data)
-					sio.emit("transfer",resp)
+					asyncio.get_event_loop().create_task(sio.emit("transfer",resp))
+					
 				except Exception as ex:
 					print(ex)
 			else:
