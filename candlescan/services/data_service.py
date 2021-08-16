@@ -52,7 +52,8 @@ def handle_queue():
 				except Exception as ex:
 					print(ex)
 			else:
-				time.sleep(0.05)
+				print("data",get_redis_server().keys(),data)
+				time.sleep(1)
 				
 	except Exception as ex:
 		#raise
