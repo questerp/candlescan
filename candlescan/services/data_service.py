@@ -9,6 +9,7 @@ from candlescan.utils.candlescan import get_yahoo_prices as get_prices
 import time
 import threading
 from threading import Lock
+from candlescan.utils.shared_memory_obj import response_queue 
 
 lock = Lock()
 
@@ -39,8 +40,9 @@ def handle_queue():
 		#redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
 		#redis = get_redis_server()
 		while(1):
-			time.sleep(2) 
-			data =  get_redis_server().lpop("queue")
+			if response_queue.empty():
+               			time.sleep(0.05)
+			data = response_queue.get() #  get_redis_server().lpop("queue")
 			print("data",data)
 			if data:
 				try:
