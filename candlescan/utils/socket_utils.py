@@ -31,6 +31,7 @@ def queue_data(event,room,data):
 		sc = json.dumps(data)
 		#response_queue.put(sc)
 		get_redis_server().lpush("queue",sc)
+		print("queue",get_redis_server().lpop("queue"))
 
 json_encoder = CustomSocketJsonHandler()
 
