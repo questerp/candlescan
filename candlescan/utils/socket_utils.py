@@ -4,6 +4,7 @@ from frappe.utils import cstr
 from frappe.realtime import get_redis_server
 from urllib.parse import unquote
 from frappe.utils.response import json_handler
+from candlescan.utils.shared_memory_obj import response_queue 
 import time
 import asyncio
 
@@ -27,7 +28,8 @@ def queue_data(event,room,data):
 	if event and room and data:
 		data = build_response(event,room,data)
 		sc = json.dumps(data)
-		get_redis_server().lpush("queue",sc)
+		response_queue.put(sc)
+		#get_redis_server().lpush("queue",sc)
 
 json_encoder = CustomSocketJsonHandler()
 
