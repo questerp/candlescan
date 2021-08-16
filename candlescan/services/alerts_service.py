@@ -36,8 +36,16 @@ async def run():
 @sio.event
 async def connect():
 	print("I'm connected!")
-
+	
 async def process():
+	try:
+		await _process()
+	except Exception as e:
+		print(e)
+		await sio.sleep(1)
+		await process()
+		
+async def _process():
 	#redis = get_redis_server()
 	while(True):
 		#clear_doctype_cache("Price Alert")
