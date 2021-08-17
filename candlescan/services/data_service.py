@@ -59,9 +59,9 @@ def handle_queue():
 		while(1):
 			#if response_queue.empty():
 			data =  get_redis_server().lpop("queue")#response_queue.get() # 
-			print("data",data)
 			if data:
 				try:
+					print("data",data)
 					data = cstr(data)
 					resp = json.loads(data)
 					
