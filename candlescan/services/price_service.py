@@ -239,6 +239,8 @@ def backfill():
 							#	print(dt.fromtimestamp(c['t']))
 							for m in range(1000):
 								current = start +  timedelta(minutes=m)
+								if current >= dt.now():
+									break
 								ts = current.timestamp()
 								candle = list(filter(lambda x: x['t'] == ts, candles))
 								#print(ts,candles[0])
