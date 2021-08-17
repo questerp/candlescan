@@ -27,18 +27,25 @@ async def run():
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
 		with lock:
 			get_redis_server()
-			threading.Thread(target=handle_queue,args=(sio,)).start()	
+			threading.Thread(target=handle_queue).start()	
 		await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
 
-def handle_queue(sio):
+def handle_queue():
 	try:
 		#from redis import Redis
 		#redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
 		#redis = get_redis_server()
+		sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
+		try:
+			sio.connect('http://localhost:9002',headers={"microservice":"handle_queue"})
+		except socketio.exceptions.ConnectionError as err:
+			print("error",sio.sid,err)
+			sio.sleep(2)
+			handle_queue()
 		try:
 			# make sure we have an event loop, if not create a new one
 			loop = asyncio.get_event_loop()
@@ -55,7 +62,7 @@ def handle_queue(sio):
 					print("data",resp)
 					
 					if resp:
-						asyncio.get_event_loop().create_task(sio.emit("transfer",resp))
+						sio.emit("transfer",resp)
 					
 				except Exception as ex:
 					print("ERROR",ex)
