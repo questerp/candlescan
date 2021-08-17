@@ -271,8 +271,8 @@ def backfill():
 						frappe.db.sql("select 'KEEP_ALIVE'")
 
 				start = end
-	except:
-		print("ERROR")
+	except Exception as e:
+		print("ERROR",e)
 	finally:
 		#table.flush()
 		synchronized_close_file()
