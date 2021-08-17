@@ -27,14 +27,14 @@ async def run():
 		await sio.connect('http://localhost:9002',headers={"microservice":"data_service"})
 		with lock:
 			get_redis_server()
-			threading.Thread(target=handle_queue).start()	
+			threading.Thread(target=handle_queue,args=(sio,)).start()	
 		await keep_alive()
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		await sio.sleep(5)
 		await run()
 
-def handle_queue():
+def handle_queue(sio):
 	try:
 		#from redis import Redis
 		#redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
