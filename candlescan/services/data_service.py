@@ -49,10 +49,11 @@ def handle_queue():
 			#if response_queue.empty():
 			data =  get_redis_server().lpop("queue")#response_queue.get() # 
 			if data:
-				print("data",data)
 				try:
 					data = cstr(data)
 					resp = json.loads(data)
+					print("data",resp)
+					
 					if resp:
 						asyncio.get_event_loop().create_task(sio.emit("transfer",resp))
 					
