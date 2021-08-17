@@ -223,6 +223,8 @@ def backfill():
 				i = 0
 				print("to be fetched",start.timestamp(),len(allresult),"exist_symbols",len(exist_symbols))
 				end = start + timedelta(minutes=1000)
+				if end >= dt.now():
+					end = dt.now()
 				for result in chunks(allresult,chuck):
 					i+=1
 					strstart = start.astimezone().isoformat()
