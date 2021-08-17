@@ -202,7 +202,7 @@ def backfill():
 	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	all_symbols = [a[0] for a in all_symbols] 
 	print("backfill",len(all_symbols),dt.now())
-	h5file = get_h5file()
+	h5file = synchronized_open_file()
 	table = h5file.root.bars_group.bars
 	chuck = 200
 	
@@ -280,7 +280,7 @@ def backfill():
 		print("ERROR",e)
 	finally:
 		#table.flush()
-		synchronized_close_file()
+		synchronized_close_file(h5file)
 			
 				
 def chunks(l, n):
@@ -289,23 +289,27 @@ def chunks(l, n):
 
 def init_bars_db():
 	print("init")
-	h5file = get_h5file()
-	group = h5file.create_group("/", 'bars_group', 'Candlebars')
-	table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
-	#indexrows = table.cols.time.create_index()
-	indexrows = table.cols.ticker.create_index()
-	indexrows = table.cols.valide.create_index()
-	
-	table.flush()
-	print(h5file)
-	synchronized_close_file()
+	h5file = synchronized_open_file()
+	try:
+		group = h5file.create_group("/", 'bars_group', 'Candlebars')
+		table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
+		#indexrows = table.cols.time.create_index()
+		indexrows = table.cols.ticker.create_index()
+		indexrows = table.cols.valide.create_index()
+
+		table.flush()
+		print(h5file)
+	exceot Exception as e:
+		print("init_bars_db",e)
+	finally:
+		synchronized_close_file(h5file)
 	
 	
 
 def insert_minute_bars(minuteBars,send=False):
 	if not minuteBars:
 		return
-	h5file = get_h5file()
+	h5file = synchronized_open_file()
 	table = h5file.root.bars_group.bars
 	symbols = []
 	if send:
@@ -339,7 +343,7 @@ def insert_minute_bars(minuteBars,send=False):
 		print("insert_minute_bars ERROR",table,e)
 	finally:
 		table.flush()
-		synchronized_close_file()
+		synchronized_close_file(h5file)
 	
 	#frappe.db.sql("""SET @@session.unique_checks = 0""")
 	#frappe.db.sql("""SET @@session.foreign_key_checks = 0""")
@@ -352,7 +356,7 @@ def insert_minute_bars(minuteBars,send=False):
 def get_minute_bars(symbol,start,end=None):
 	if not (symbol and start ):
 		return
-	h5file = get_h5file()
+	h5file = synchronized_open_file()
 	table = h5file.root.bars_group.bars
 	if not end:
 		end = dt.now().timestamp()
@@ -369,16 +373,13 @@ def get_minute_bars(symbol,start,end=None):
 		print("ERROR get_minute_bars",ex)
 		return ex
 	finally:
-		synchronized_close_file()
+		synchronized_close_file(h5file)
 
-		
-def get_h5file():
-	global global_h5file
-	if not  global_h5file or not global_h5file.isopen:
-		with lock:
-			global_h5file = tb.open_file("bars.h5", mode="a", title="Bars")
-	return global_h5file
-
-def synchronized_close_file():
+def synchronized_open_file():
     with lock:
-        get_h5file().close()
+        return tb.open_file("bars.h5", mode="a", title="Bars")
+
+def synchronized_close_file(file):
+    with lock:
+        return file.close()
+		
