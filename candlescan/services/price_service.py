@@ -332,7 +332,7 @@ def insert_minute_bars(minuteBars,send=False):
 				queue_data(ev,ev,bar)
 				#sio.emit("transfer",build_response(ev,ev,bar))
 	except Exception as e:
-		print("ERROR",e)
+		print("insert_minute_bars ERROR",table,e)
 	finally:
 		table.flush()
 		synchronized_close_file()
@@ -362,7 +362,7 @@ def get_minute_bars(symbol,start,end=None):
 				ts.append(i[5])
 		return result
 	except Exception as ex:
-		print("ERROR",ex)
+		print("ERROR get_minute_bars",ex)
 		return []
 	finally:
 		synchronized_close_file()
