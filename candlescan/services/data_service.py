@@ -39,6 +39,12 @@ def handle_queue():
 		#from redis import Redis
 		#redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
 		#redis = get_redis_server()
+		try:
+			# make sure we have an event loop, if not create a new one
+			loop = asyncio.get_event_loop()
+		# loop.set_debug(True)
+		except RuntimeError:
+			asyncio.set_event_loop(asyncio.new_event_loop())
 		while(1):
 			#if response_queue.empty():
 			data =  get_redis_server().lpop("queue")#response_queue.get() # 
