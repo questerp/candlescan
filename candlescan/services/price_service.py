@@ -220,7 +220,7 @@ def backfill():
 				#	exist_symbols = []
 				allresult = [a for a in all_symbols if a not in exist_symbols]
 				i = 0
-				print("exist_symbols",start.timestamp(),len(exist_symbols))
+				print("to be fetched",start.timestamp(),len(allresult))
 				end = start + timedelta(minutes=1000)
 				for result in chunks(allresult,chuck):
 					i+=1
