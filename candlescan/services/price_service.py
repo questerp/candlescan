@@ -313,8 +313,8 @@ def insert_minute_bars(minuteBars,send=False):
 		symbol = table.row
 		for bar in minuteBars:
 			#print(bar)
-
-			symbol['ticker'] = bar['s']
+			ticker =  cstr(bar['s'])
+			symbol['ticker'] = ticker
 			symbol['time'] = bar['t']
 			symbol['open'] = bar['o']
 			symbol['close'] = bar['c']
@@ -324,13 +324,13 @@ def insert_minute_bars(minuteBars,send=False):
 			symbol['trades'] = bar['n']
 			symbol['valide'] = symbol['open'] > 0
 			symbol.append()
-			if send and bar['s'] and  bar['s'] in symbols:
-				print("queue_data",bar['s'])
-				ev  = "bars_%s"% lower(bar['s'])
+			if send and ticker  and  ticker in symbols:
+				print("queue_data",ticker)
+				ev  = "bars_%s"% lower(ticker)
 				queue_data(ev,ev,bar)
 				#sio.emit("transfer",build_response(ev,ev,bar))
-	except:
-		print("ERROR")
+	except Exception as e:
+		print("ERROR",e)
 	finally:
 		table.flush()
 		synchronized_close_file()
