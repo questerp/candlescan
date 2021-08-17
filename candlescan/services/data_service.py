@@ -40,8 +40,8 @@ def handle_queue():
 		#from redis import Redis
 		#redis = Redis.from_url(redis_socketio or "redis://localhost:12311")
 		#redis = get_redis_server()
-		print("sio.connected:",sio.connected)
-		if not sio or (sio and not sio.connected):
+		#print("sio.connected:",sio.connected)
+		if not sio or not sio.connected :
 			sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 			try:
 				sio.connect('http://localhost:9002',headers={"microservice":"handle_queue"})
