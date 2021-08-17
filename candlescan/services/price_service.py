@@ -34,7 +34,8 @@ global_h5file =None
 
 def connect():
 	try:
-		sio.connect('http://localhost:9002',headers={"microservice":"price_service"})
+		if not sio.connected:
+			sio.connect('http://localhost:9002',headers={"microservice":"price_service"})
 	except socketio.exceptions.ConnectionError as err:
 		print("error",sio.sid,err)
 		sio.sleep(5)
