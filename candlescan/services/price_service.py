@@ -15,7 +15,7 @@ import threading
 
 
 class Symbol(tb.IsDescription):
-	ticker = tb.StringCol(16)
+	ticker = tb.StringCol(24)
 	time = tb.Float64Col()
 	open = tb.Float64Col()
 	close = tb.Float64Col()
