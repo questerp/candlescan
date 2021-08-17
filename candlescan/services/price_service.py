@@ -299,7 +299,7 @@ def init_bars_db():
 
 		table.flush()
 		print(h5file)
-	exceot Exception as e:
+	except Exception as e:
 		print("init_bars_db",e)
 	finally:
 		synchronized_close_file(h5file)
