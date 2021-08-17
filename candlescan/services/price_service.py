@@ -326,7 +326,7 @@ def insert_minute_bars(minuteBars,send=False):
 			symbol.append()
 			if send and ticker  and  ticker in symbols:
 				print("queue_data",ticker)
-				ev  = "bars_%s"% lower(ticker)
+				ev  = "bars_%s"%  ticker.lower()
 				queue_data(ev,ev,bar)
 				#sio.emit("transfer",build_response(ev,ev,bar))
 	except Exception as e:
