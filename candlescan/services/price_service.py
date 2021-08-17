@@ -367,7 +367,7 @@ def get_minute_bars(symbol,start,end=None):
 		return result
 	except Exception as ex:
 		print("ERROR get_minute_bars",ex)
-		return []
+		return ex
 	finally:
 		synchronized_close_file()
 
