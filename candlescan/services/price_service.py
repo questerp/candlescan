@@ -211,7 +211,7 @@ def backfill():
 			print("start",start)
 			if start.hour >= 4 or start.hour <= 20:
 
-				exist_symbols = [ x['ticker'] for x in table.where("""(time == %s)""" % start.timestamp()) ]
+				exist_symbols = [ cstr(x['ticker']) for x in table.where("""(time == %s)""" % start.timestamp()) ]
 				#exist_symbols = frappe.db.sql(""" select DISTINCT s from tabBars where t='%s'""" % start,as_list=True)
 
 				#if exist_symbols:
