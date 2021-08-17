@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import frappe
 import time
 from frappe.realtime import get_redis_server
+from frappe.utils import getdate,today
 import feedparser
 from dateutil import parser
 from datetime import timedelta
@@ -44,6 +45,11 @@ def start():
 			halt['symbol'] = entry.ndaq_issuesymbol
 			halt['status'] = "Halted" if not entry.ndaq_resumptiontradetime else "Resumed"
 			halt['hdate'] = entry.ndaq_haltdate
+			if halt['hdate']:
+				_date = getdate(halt['hdate'])
+				if _date != getdate(today()):
+					continue
+				
 			halt['htime'] = entry.ndaq_halttime
 			halt['resumption_date'] = entry.ndaq_resumptiondate
 			halt['resumption_time'] = entry.ndaq_resumptiontradetime
