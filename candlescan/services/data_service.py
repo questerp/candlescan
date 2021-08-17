@@ -77,6 +77,7 @@ def handle_queue():
 				
 	except Exception as ex:
 		#raise
+		print("Exception handle_queue",ex)
 		time.sleep(1)
 		handle_queue()
 		
