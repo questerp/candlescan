@@ -363,6 +363,8 @@ def get_minute_bars(symbol,start,end=None):
 	except Exception as ex:
 		print("ERROR",ex)
 		return []
+	finally:
+		synchronized_close_file()
 
 		
 def get_h5file():
