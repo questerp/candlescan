@@ -92,7 +92,7 @@ def _start():
 		minuteBars = []
 		nw =  dt.now()
 		ts = nw.replace(second=0).replace(microsecond=0).replace(minute=nw.minute-1).timestamp()
-		empty_candle = get_empty_candle()
+		#empty_candle = get_empty_candle()
 		for s in snap:
 			data = snap[s]
 			if not data:
