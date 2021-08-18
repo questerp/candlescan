@@ -90,6 +90,9 @@ def _start():
 		#m1s = []
 		#m5s = []
 		minuteBars = []
+		nw =  dt.now()
+		ts = nw.replace(second=0).replace(microsecond=0).replace(minute=nw.minute-1).timestamp()
+		empty_candle = get_empty_candle()
 		for s in snap:
 			data = snap[s]
 			if not data:
@@ -115,7 +118,11 @@ def _start():
 				minuteBar['s'] = s
 				try:
 					minuteBar['t'] = get_datetime(minuteBar['t']).timestamp()
-					minuteBars.append(minuteBar)
+					if minuteBar['t']  == ts:
+						minuteBars.append(minuteBar)
+					else:
+						minuteBars.append(get_empty_candle(s,ts))
+						
 				except:
 					pass
 				
@@ -205,7 +212,7 @@ def backfill():
 	h5file = synchronized_open_file()
 	table = h5file.root.bars_group.bars
 	chuck = 200
-	
+	#empty_candle = get_empty_candle()
 	try:
 		while(start<now):
 			start = start + timedelta(minutes=1)
@@ -254,17 +261,7 @@ def backfill():
 									candle['n'] = 0
 								else:
 									#print("no candle",current)
-									candle = {
-										"s":b,
-										"t": ts,
-										"o":0,
-										"c":0,
-										"h":0,
-										"l":0,
-										"n":0,
-										"v":0,
-										"vw":0,
-									}
+									candle = get_empty_candle(b,ts)
 								minute_bars.append(candle)
 								#time.sleep(1)
 								#start = start +  timedelta(minutes=1)
@@ -281,7 +278,20 @@ def backfill():
 	finally:
 		#table.flush()
 		synchronized_close_file(h5file)
-			
+		
+		
+def get_empty_candle(b,ts):
+	return  {
+			"s":b,
+			"t": ts,
+			"o":0,
+			"c":0,
+			"h":0,
+			"l":0,
+			"n":0,
+			"v":0,
+			"vw":0,
+		}
 				
 def chunks(l, n):
     n = max(1, n)
@@ -371,7 +381,7 @@ def get_minute_bars(symbol,start,end=None):
 		return result
 	except Exception as ex:
 		print("ERROR get_minute_bars",ex)
-		return ex
+		return []
 	finally:
 		synchronized_close_file(h5file)
 
