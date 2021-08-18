@@ -209,7 +209,7 @@ def backfill():
 	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	all_symbols = [a[0] for a in all_symbols] 
 	print("backfill",len(all_symbols),dt.now())
-	h5file = synchronized_open_file()
+	h5file = synchronized_open_file("a")
 	table = h5file.root.bars_group.bars
 	chuck = 200
 	#empty_candle = get_empty_candle()
@@ -299,7 +299,7 @@ def chunks(l, n):
 
 def init_bars_db():
 	print("init")
-	h5file = synchronized_open_file()
+	h5file = synchronized_open_file("a")
 	try:
 		group = h5file.create_group("/", 'bars_group', 'Candlebars')
 		table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
@@ -319,7 +319,7 @@ def init_bars_db():
 def insert_minute_bars(minuteBars,send=False):
 	if not minuteBars:
 		return
-	h5file = synchronized_open_file()
+	h5file = synchronized_open_file("a")
 	table = h5file.root.bars_group.bars
 	symbols = []
 	if send:
@@ -366,7 +366,7 @@ def insert_minute_bars(minuteBars,send=False):
 def get_minute_bars(symbol,start,end=None):
 	if not (symbol and start ):
 		return
-	h5file = synchronized_open_file()
+	h5file = synchronized_open_file("r")
 	table = h5file.root.bars_group.bars
 	if not end:
 		end = dt.now().timestamp()
@@ -385,9 +385,9 @@ def get_minute_bars(symbol,start,end=None):
 	finally:
 		synchronized_close_file(h5file)
 
-def synchronized_open_file():
+def synchronized_open_file(mode):
     with lock:
-        return tb.open_file("bars.h5", mode="a", title="Bars")
+        return tb.open_file("bars.h5", mode=mode, title="Bars")
 
 def synchronized_close_file(file):
     with lock:
