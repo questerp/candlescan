@@ -9,6 +9,8 @@ from candlescan.utils.socket_utils import get_user,validate_data,build_response,
 from candlescan.services.price_service import synchronized_open_file,synchronized_close_file
 from datetime import timedelta,datetime as dt
 from frappe.utils import cstr,add_days, get_datetime
+import pandas as pd
+import talib as ta
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -42,8 +44,8 @@ async def run():
 		await run()
 
 	
-def ta(volume):
-	symbols = frappe.db.sql("select symbol from tabSymbol where active=1 and 1m_volume >=%s" % volume,as_list=1)
+def ta(volume_min,volume_max):
+	symbols = frappe.db.sql("select symbol from tabSymbol where active=1 and 1m_volume >=%s and 1m_volume<=%s" %( volume_min,volume_max),as_list=1)
 	symbols = [a[0] for a in symbols]
 	file = synchronized_open_file()
 	try:
@@ -57,6 +59,11 @@ def ta(volume):
 				if id >50:
 					break
 				candles.append(candle[:])
+			print("candles",len(candles))
+			exit
+			
+			
+			ema = ta.stream(candles)
 			
 			#data = [ x[:] for x in table.where("""(ticker == b'%s') & (time>=%s) & (time<=%s) & (valide)""" % (symbol,start,end) ) ]
 	except Exception as ex:
