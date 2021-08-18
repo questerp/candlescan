@@ -47,7 +47,7 @@ async def run():
 def ta(volume_min,volume_max):
 	symbols = frappe.db.sql("select symbol from tabSymbol where active=1 and 1m_volume >=%s and 1m_volume<=%s" %( volume_min,volume_max),as_list=1)
 	symbols = [a[0] for a in symbols]
-	file = synchronized_open_file()
+	file = synchronized_open_file("r")
 	try:
 		table = file.root.bars_group.bars
 		start = dt.now()
@@ -60,7 +60,6 @@ def ta(volume_min,volume_max):
 					break
 				candles.append(candle[:])
 			print("candles",len(candles))
-			exit
 			
 			
 			ema = ta.stream(candles)
