@@ -303,7 +303,7 @@ def init_bars_db():
 	try:
 		group = h5file.create_group("/", 'bars_group', 'Candlebars')
 		table = h5file.create_table(group, 'bars', Symbol, "1 minute Candlebars")
-		#indexrows = table.cols.time.create_index()
+		indexrows = table.cols.time.create_csindex()
 		indexrows = table.cols.ticker.create_index()
 		indexrows = table.cols.valide.create_index()
 
