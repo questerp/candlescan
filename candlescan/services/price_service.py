@@ -235,7 +235,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 				df.set_index("time")
 				_bars = []
 				try:
-					collection.append(ticker, df,threaded=True)
+					collection.append(ticker, df)
 				except ValueError:
 					collection.write(ticker, df)
 					print("store not found, creating new one")
