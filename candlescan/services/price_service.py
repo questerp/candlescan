@@ -202,7 +202,10 @@ def init_bars_db():
 		symbols = [a[0] for a in symbols]
 		for s in symbols:
 			#if s not in items:
-			collection.write(s, pd.DataFrame([{"ticker":s,"open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":0}]),overwrite=True)
+			print(s)
+			df = pd.DataFrame([{"ticker":s,"open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":0}])
+			df.set_index("time",inplace=True)					  
+			collection.write(s, df,overwrite=True)
 		print("DONE")
 		print(collection.list_items())
 		
@@ -232,7 +235,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			#_bars = [a for a in bars if a['ticker'] == ticker]
 			if _bars:
 				df = pd.DataFrame(_bars)
-				df.set_index("time")
+				df.set_index("time",inplace=True)
 				_bars = []
 				try:
 					collection.append(ticker, df)
