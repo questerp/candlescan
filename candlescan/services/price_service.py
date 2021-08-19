@@ -202,7 +202,7 @@ def init_bars_db():
 		symbols = [a[0] for a in symbols]
 		for s in symbols:
 			if s not in items:
-				collection.write(s, pd.DataFrame(),overwrite=True)
+				collection.write(s, pd.DataFrame([{"ticker":s,"open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":0}]),overwrite=True)
 		print("DONE")
 		print(collection.list_items())
 		
