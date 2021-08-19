@@ -94,6 +94,7 @@ def _start():
 				minuteBar['t'] = get_datetime(minuteBar['t']).timestamp()
 			
 			if not minuteBar.get('t') or utcminute != minuteBar['t']:
+				print("continue",utcminute,minuteBar.get('t'))
 				continue
 			vol = minuteBar.get("v") or 0
 			minuteBar['s'] = s
