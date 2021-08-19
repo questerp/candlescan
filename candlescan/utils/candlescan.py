@@ -5,7 +5,7 @@ from frappe.realtime import get_redis_server
 from frappe.utils.background_jobs import enqueue,get_redis_conn,get_jobs,enqueue_doc,execute_job
 from rq.job import Job
 import time
-from frappe.utils import cstr
+from frappe.utils import cstr,add_days, get_datetime
 from rq.registry import StartedJobRegistry
 from rq import Connection, Queue, Worker
 from candlescan import handle
@@ -13,7 +13,25 @@ import asyncio
 import threading
 import candlescan.utils.yahoo_finance_api2 as yf
 from frappe.utils import cint,now_datetime
+from datetime import timedelta,datetime as dt
+from pytz import timezone	
+_timezone = timezone("America/New_York")
 
+
+def to_candle(data,symbol=None):
+    if not symbol and not data.get("s"):
+        frappe.throw("Symbol is required")
+		
+    return {
+        'ticker': cstr(data.get("s")) or symbol,
+        'time': data.get("t"),
+        'open': data.get("o") or 0,
+        'close': data.get("c") or 0,
+        'high': data.get("h") or 0,
+        'low': data.get("l") or 0,
+        'volume': data.get("v") or 0,
+        'trades': data.get("n") or 0
+    }
 
 
 def clear_user_notifications():
