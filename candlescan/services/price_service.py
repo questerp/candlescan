@@ -180,6 +180,8 @@ def backfill(days=0):
 						#candles = [to_candle(a,b) for a in candles]
 					insert_minute_bars(result,minute_bars)
 					print(len(minute_bars),"DONE - symbols:",i*chuck,"/" ,"start",beg)
+				else:
+					print("No data")
 					
 			
 	except Exception as e:
@@ -229,7 +231,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			_bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
 			#_bars = [a for a in bars if a['ticker'] == ticker]
 			if _bars:
-				df = pd.DataFram(bars)
+				df = pd.DataFrame(bars)
 				df.set_index("time")
 				bars = []
 				try:
