@@ -6,7 +6,7 @@ import socketio
 import asyncio
 from frappe.realtime import get_redis_server
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive,queue_data
-from candlescan.utils.candlescan import to_candle,get_tz
+from candlescan.utils.candlescan import to_candle
 from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
