@@ -200,7 +200,7 @@ def init_bars_db():
 		items = collection.list_items()
 		symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols = [a[0] for a in symbols]
-		df = pd.DataFrame([{"ticker":s,"open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":0}])
+		df = pd.DataFrame([{"ticker":"","open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":0}])
 		df.set_index("time",inplace=True)					  
 		
 		for s in symbols:
