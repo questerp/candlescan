@@ -194,11 +194,12 @@ def init_bars_db():
 		#collection = store.collection('1MIN')
 		items = collection.list_items()
 		symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
-		symbols = [a[0] for a in s]
+		symbols = [a[0] for a in symbols]
 		for s in symbols:
 			if s not in items:
 				collection.write(s, [])
 		print("DONE")
+		print(collection.list_items())
 		
 	except Exception as e:
 		print("init_bars_db",e)
