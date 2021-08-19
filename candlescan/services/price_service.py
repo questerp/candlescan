@@ -74,7 +74,10 @@ def _start():
 		print("------------")
 		print(nw)
 		utc =  dt.utcnow()
-		utcminute = utc.replace(second=0).replace(microsecond=0).replace(minute=utc.minute-1).timestamp()
+		minute = utc.minute-1
+		if minute<0 or minute>59:
+			minute = 0
+		utcminute = utc.replace(second=0).replace(microsecond=0).replace(minute=minute).timestamp()
 		
 		print("utcminute",utcminute)
 		snap = api.get_snapshots(symbols)
@@ -94,7 +97,7 @@ def _start():
 				minuteBar['t'] = get_datetime(minuteBar['t']).timestamp()
 			
 			if not minuteBar.get('t') or utcminute != minuteBar['t']:
-				print("continue",utcminute,minuteBar.get('t'))
+				#print("continue",utcminute,minuteBar.get('t'))
 				continue
 			vol = minuteBar.get("v") or 0
 			minuteBar['s'] = s
@@ -147,7 +150,7 @@ def _start():
 		if minuteBars:
 			insert_minute_bars(symbols,minuteBars,True)
 		minuteBars = []	
-		print("DONE",dt.now())
+		print("----> DONE",dt.now())
 		time.sleep(1)
 
 def backfill(days=0):
