@@ -224,7 +224,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		if symbols:
 			symbols = [cstr(a) for a in symbols]
 		print(symbols)
-	try:
+	#try:
 	
 		
 		#minuteBars = []
@@ -237,7 +237,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			#_bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
 			#_bars = [a for a in bars if a['ticker'] == ticker]
 			
-			items  =df.loc[df['ticker']==ticker]
+			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
 			if items :
 				#df = pd.DataFrame(_bars)
 				#df.set_index("time",inplace=True)
@@ -254,8 +254,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 					queue_data(ev,ev,_bars[-1])
 				
 		
-	except Exception as e:
-		print("insert_minute_bars ERROR",e)
+	#except Exception as e:
+	#	print("insert_minute_bars ERROR",e)
 	
 	
 def get_minute_bars(symbol,start,end=None):
