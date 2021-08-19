@@ -231,9 +231,9 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			_bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
 			#_bars = [a for a in bars if a['ticker'] == ticker]
 			if _bars:
-				df = pd.DataFrame(bars)
+				df = pd.DataFrame(_bars)
 				df.set_index("time")
-				bars = []
+				_bars = []
 				try:
 					collection.append(ticker, df,threaded=True)
 				except ValueError:
