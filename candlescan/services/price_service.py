@@ -167,16 +167,17 @@ def backfill(days=0):
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
 			
 			print("start",beg)
+			i = 0
 			for result in chunks(all_symbols,chuck):
+				i+=1
 				bars = api.get_barset(result,"minute",limit=1000,start=beg)					
 				minute_bars = []
 				if bars :
 					for b in bars:
-						candles = bars[b]
-						candles = [to_candle(a,b) for a in candles]
-						insert_minute_bars(result,candles)
-
-					print(len(bars),"DONE - symbols:",i*chuck,"/" ,"start",beg)
+						minute_bars.extend(bars[b])
+						#candles = [to_candle(a,b) for a in candles]
+					insert_minute_bars(result,minute_bars)
+					print(len(minute_bars),"DONE - symbols:",i*chuck,"/" ,"start",beg)
 					
 			
 	except Exception as e:
@@ -218,12 +219,13 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		print(symbols)
 	try:
 	
-		bars = [to_candle(a) for a in minuteBars]
-		minuteBars = []
+		
+		#minuteBars = []
 		#tickers = list(set([a['ticker'] for a in bars]))
 		
 		for ticker in tickers:
-			_bars = [a for a in bars if a['ticker'] == ticker]
+			_bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
+			#_bars = [a for a in bars if a['ticker'] == ticker]
 			if _bars:
 				df = pd.DataFram(bars)
 				df.set_index("time")
