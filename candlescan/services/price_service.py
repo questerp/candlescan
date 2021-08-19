@@ -235,7 +235,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		for ticker in tickers:
 			#_bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
 			#_bars = [a for a in bars if a['ticker'] == ticker]
-			items  =df[df.ticker==ticker]
+			items  =df[(df.ticker==ticker)]
 			if items :
 				#df = pd.DataFrame(_bars)
 				#df.set_index("time",inplace=True)
