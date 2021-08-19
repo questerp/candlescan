@@ -201,8 +201,8 @@ def init_bars_db():
 		symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols = [a[0] for a in symbols]
 		for s in symbols:
-			if s not in items:
-				collection.write(s, pd.DataFrame([{"ticker":s,"open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":0}]),overwrite=True)
+			#if s not in items:
+			collection.write(s, pd.DataFrame([{"ticker":s,"open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":0}]),overwrite=True)
 		print("DONE")
 		print(collection.list_items())
 		
