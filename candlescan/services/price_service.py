@@ -174,6 +174,8 @@ def backfill(days=0):
 				minute_bars = []
 				if bars :
 					for b in bars:
+						for a in bars[b]:
+							a['s'] = b
 						minute_bars.extend(bars[b])
 						#candles = [to_candle(a,b) for a in candles]
 					insert_minute_bars(result,minute_bars)
