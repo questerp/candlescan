@@ -9,4 +9,5 @@ secedgar
 FinNews
 alpaca-trade-api
 TA-Lib
+dask==2.1.0
 pystore==0.1.12
