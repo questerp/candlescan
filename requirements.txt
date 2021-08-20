@@ -9,4 +9,4 @@ secedgar
 FinNews
 alpaca-trade-api
 TA-Lib
-pystore
+pystore==0.1.12
