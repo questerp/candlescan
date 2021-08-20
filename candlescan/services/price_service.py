@@ -202,7 +202,8 @@ def init_bars_db():
 	try:
 		#store = pystore.store('bars')
 		#collection = store.collection('1MIN')
-		items = collection.list_items()
+		#items = collection.list_items()
+		collection = store.collection("1MIN",overwrite=True)
 		symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols = [a[0] for a in symbols]
 		df = pd.DataFrame([{"ticker":"","open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":dt.min}])
