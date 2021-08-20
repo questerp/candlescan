@@ -258,6 +258,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 					ev  = "bars_%s"%  ticker.lower()
 					print("queue_data",ev)
 					queue_data(ev,ev,_bars[-1])
+			else:
+				print("no items")
 				
 		
 	#except Exception as e:
