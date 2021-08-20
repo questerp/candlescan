@@ -54,6 +54,7 @@ def _start():
 	redis = get_redis_server()
 	s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = [a[0] for a in s]
+	minutedelta = timedelta(minutes=1)
 	while(1):
 		nw  = dt.now()
 		if nw.hour < 4 or nw.hour > 20:
@@ -74,10 +75,9 @@ def _start():
 		print("------------")
 		print(nw)
 		utc =  dt.utcnow()
-		minute = utc.minute-1
-		if minute<0 or minute>59:
-			minute = 0
-		utcminute = utc.replace(second=0).replace(microsecond=0).replace(minute=minute).timestamp()
+		
+		utcminute =   utc - minutedelta
+		utcminute = utcminute.replace(second=0).replace(microsecond=0) 
 		
 		print("utcminute",utcminute)
 		snap = api.get_snapshots(symbols)
@@ -94,7 +94,7 @@ def _start():
 			prevDailyBar = data.get("prevDailyBar")  or {}
 			
 			if minuteBar['t']:
-				minuteBar['t'] = get_datetime(minuteBar['t']).timestamp()
+				minuteBar['t'] = get_datetime(minuteBar['t'])#.timestamp()
 			
 			if not minuteBar.get('t') or utcminute != minuteBar['t']:
 				#print("continue",utcminute,minuteBar.get('t'))
@@ -180,6 +180,7 @@ def backfill(days=0):
 					for b in bars:
 						for a in bars[b]:
 							a['s'] = b
+							a['t'] = dt.fromtimestamp(a['t'])
 						minute_bars.extend(bars[b])
 						#candles = [to_candle(a,b) for a in candles]
 					insert_minute_bars(result,minute_bars)
@@ -204,7 +205,7 @@ def init_bars_db():
 		items = collection.list_items()
 		symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols = [a[0] for a in symbols]
-		df = pd.DataFrame([{"ticker":"","open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":0}])
+		df = pd.DataFrame([{"ticker":"","open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":dt.min}])
 		df.set_index("time",inplace=True)					  
 		
 		for s in symbols:
@@ -235,7 +236,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		#tickers = list(set([a['ticker'] for a in bars]))
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
-		df.set_index("time",inplace=True)
+		#df.set_index("time",inplace=True)
 		#print(tickers,df.tail())
 		for ticker in tickers:
 			#_bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
