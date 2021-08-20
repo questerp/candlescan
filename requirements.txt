@@ -9,4 +9,7 @@ secedgar
 FinNews
 alpaca-trade-api
 TA-Lib
-pystore
+pystore==0.1.13
+dask==2.3.0
+fastparquet==0.3.2
+numba==0.45.1
