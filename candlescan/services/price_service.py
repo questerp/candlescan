@@ -233,7 +233,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		if symbols:
 			symbols = [cstr(a) for a in symbols]
 		#print(symbols)
-	try:
+	#try:
 	
 		
 		#minuteBars = []
@@ -266,8 +266,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 				print("no items")
 				
 		
-	except Exception as e:
-		print("insert_minute_bars ERROR",e)
+	#except Exception as e:
+	#	print("insert_minute_bars ERROR",e)
 	
 	
 def get_minute_bars(symbol,start,end=None):
