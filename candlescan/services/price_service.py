@@ -232,8 +232,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		symbols = redis.smembers("symbols")
 		if symbols:
 			symbols = [cstr(a) for a in symbols]
-	try:
 
+	try:
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
 		df.set_index("time",inplace=True)
@@ -247,9 +247,9 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			if items :
 				try:
 					collection.append(ticker, items)
-				except ValueError:
-					print("store not found, creating new one")
-					collection.write(ticker, df,overwrite=True)
+				#except ValueError:
+				#	print("store not found, creating new one")
+				#	collection.write(ticker, df,overwrite=True)
 				except Exception as e:
 					print("append error", e)
 
