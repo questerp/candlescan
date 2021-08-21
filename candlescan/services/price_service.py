@@ -210,7 +210,7 @@ def init_bars_db():
 		symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols = [a[0] for a in symbols]
 		df = pd.DataFrame([{"ticker":"","open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":dt.now()}])
-		df.set_index("time",inplace=True)					  
+		df.set_index("time",inplace=True)
 		
 		for s in symbols:
 			#if s not in items:
@@ -233,7 +233,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		if symbols:
 			symbols = [cstr(a) for a in symbols]
 		#print(symbols)
-	#try:
+	try:
 	
 		
 		#minuteBars = []
@@ -266,8 +266,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 				print("no items")
 				
 		
-	#except Exception as e:
-	#	print("insert_minute_bars ERROR",e)
+	except Exception as e:
+		print("insert_minute_bars ERROR",e)
 	
 	
 def get_minute_bars(symbol,start,end=None):
