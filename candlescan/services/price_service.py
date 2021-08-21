@@ -168,6 +168,8 @@ def backfill(days=0):
 	try:
 		for d in range(days+1):
 			start =  add_days(dt.now(),-1*d) #-1
+			if start.weekday() in [5,6]:
+				continue
 			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
 			
