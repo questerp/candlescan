@@ -222,7 +222,7 @@ def init_bars_db():
 		print("init_bars_db",e)
 
 	
-@multitasking.task 
+#@multitasking.task 
 def insert_minute_bars(tickers,minuteBars,send_last=False):
 	if not minuteBars:
 		return
