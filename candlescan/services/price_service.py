@@ -232,26 +232,25 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		symbols = redis.smembers("symbols")
 		if symbols:
 			symbols = [cstr(a) for a in symbols]
-		#print(symbols)
+		# print(symbols)
 	try:
-	
-		
-		#minuteBars = []
-		#tickers = list(set([a['ticker'] for a in bars]))
+
+		# minuteBars = []
+		# tickers = list(set([a['ticker'] for a in bars]))
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
 		df.set_index("time",inplace=True)
-		#print(tickers,df.tail())
+		# print(tickers,df.tail())
 		for ticker in tickers:
-			#_bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
-			#_bars = [a for a in bars if a['ticker'] == ticker]
+			# _bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
+			# _bars = [a for a in bars if a['ticker'] == ticker]
 			
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
-			print(len(items))
+			print("items",len(items))
 			if items :
-				#df = pd.DataFrame(_bars)
-				#df.set_index("time",inplace=True)
-				#_bars = []
+				# df = pd.DataFrame(_bars)
+				# df.set_index("time",inplace=True)
+				# _bars = []
 				try:
 					collection.append(ticker, items,threaded=False)
 				except ValueError:
@@ -264,8 +263,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 					queue_data(ev,ev,_bars[-1])
 			else:
 				print("no items")
-				
-		
+
+
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
 	
