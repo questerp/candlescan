@@ -232,34 +232,22 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		symbols = redis.smembers("symbols")
 		if symbols:
 			symbols = [cstr(a) for a in symbols]
-		# print(symbols)
 	try:
 
-		# minuteBars = []
-		# tickers = list(set([a['ticker'] for a in bars]))
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
 		df.set_index("time",inplace=True)
-		# print(tickers,df.tail())
 		for ticker in tickers:
-			# _bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
-			# _bars = [a for a in bars if a['ticker'] == ticker]
-			
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
-			print("items",len(items))
 			if items :
-				# df = pd.DataFrame(_bars)
-				# df.set_index("time",inplace=True)
-				# _bars = []
 				try:
-					collection.append(ticker, items,threaded=False)
+					collection.append(ticker, items)
 				except ValueError:
 					collection.write(ticker, df)
 					print("store not found, creating new one")
 
 				if send_last and  ticker in symbols:
 					ev  = "bars_%s"%  ticker.lower()
-					print("queue_data",ev)
 					queue_data(ev,ev,_bars[-1])
 			else:
 				print("no items")
