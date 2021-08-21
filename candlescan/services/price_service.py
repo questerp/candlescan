@@ -222,7 +222,7 @@ def init_bars_db():
 		print("init_bars_db",e)
 
 	
-#@multitasking.task 
+@multitasking.task 
 def insert_minute_bars(tickers,minuteBars,send_last=False):
 	if not minuteBars:
 		return
@@ -233,23 +233,18 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		if symbols:
 			symbols = [cstr(a) for a in symbols]
 
-	#try:
+	try:
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
 		df.set_index("time",inplace=True)
 		for ticker in tickers:
-			items = None
-			try:
-				items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
-			except Exception as e:
-				print("df.loc ERROR",e)
-
+			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
 			if items :
 				try:
 					collection.append(ticker, items)
-				#except ValueError:
-				#	print("store not found, creating new one")
-				#	collection.write(ticker, df,overwrite=True)
+				except ValueError:
+					print("store not found, creating new one")
+					collection.write(ticker, df,overwrite=True)
 				except Exception as e:
 					print("append error", e)
 
@@ -260,8 +255,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			else:
 				print("no items")
 
-	#except Exception as e:
-	#	print("insert_minute_bars ERROR",e)
+	except Exception as e:
+		print("insert_minute_bars ERROR",e)
 	
 	
 def get_minute_bars(symbol,start,end=None):
