@@ -243,7 +243,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 				try:
 					collection.append(ticker, items)
 				except ValueError:
-					collection.write(ticker, df)
+					collection.write(ticker, df,overwrite=True)
 					print("store not found, creating new one")
 
 				if send_last and  ticker in symbols:
@@ -251,7 +251,6 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 					queue_data(ev,ev,_bars[-1])
 			else:
 				print("no items")
-
 
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
