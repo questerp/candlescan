@@ -247,6 +247,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			#_bars = [a for a in bars if a['ticker'] == ticker]
 			
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
+			print(len(items))
 			if items :
 				#df = pd.DataFrame(_bars)
 				#df.set_index("time",inplace=True)
