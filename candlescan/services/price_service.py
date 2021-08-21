@@ -13,6 +13,7 @@ from alpaca_trade_api.rest import REST
 import pandas as pd
 import threading
 import pystore
+import multitasking
 
 	 
 
@@ -219,7 +220,7 @@ def init_bars_db():
 		print("init_bars_db",e)
 
 	
-
+@multitasking.task 
 def insert_minute_bars(tickers,minuteBars,send_last=False):
 	if not minuteBars:
 		return
@@ -229,15 +230,15 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		symbols = redis.smembers("symbols")
 		if symbols:
 			symbols = [cstr(a) for a in symbols]
-		print(symbols)
-	#try:
+		#print(symbols)
+	try:
 	
 		
 		#minuteBars = []
 		#tickers = list(set([a['ticker'] for a in bars]))
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
-		#df.set_index("time",inplace=True)
+		df.set_index("time",inplace=True)
 		#print(tickers,df.tail())
 		for ticker in tickers:
 			#_bars = [to_candle(a,ticker) for a in minuteBars  if a['s'] == ticker]
@@ -262,8 +263,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 				print("no items")
 				
 		
-	#except Exception as e:
-	#	print("insert_minute_bars ERROR",e)
+	except Exception as e:
+		print("insert_minute_bars ERROR",e)
 	
 	
 def get_minute_bars(symbol,start,end=None):
