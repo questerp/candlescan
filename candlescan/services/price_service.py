@@ -240,7 +240,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		for ticker in tickers:
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
 
-			if items.empty :
+			if not items.empty :
 				try:
 					collection.append(ticker, items)
 				except ValueError:
