@@ -96,7 +96,7 @@ def _start():
 			
 			if minuteBar['t']:
 				minuteBar['t'] = get_datetime(minuteBar['t'])#.timestamp()
-				print("t",minuteBar['t'])
+				#print("t",minuteBar['t'])
 				
 			if not minuteBar.get('t') or utcminute != minuteBar['t']:
 				#print("continue",utcminute,minuteBar.get('t'))
