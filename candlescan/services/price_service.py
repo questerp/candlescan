@@ -244,7 +244,10 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 
 			if items :
 				try:
+					print("bfr append")
 					collection.append(ticker, items)
+					print("after append")
+
 				except ValueError:
 					print("store not found, creating new one")
 					collection.write(ticker, df,overwrite=True)
@@ -253,6 +256,8 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 
 
 				if send_last and  ticker in symbols:
+					print("bars_s")
+
 					ev  = "bars_%s"%  ticker.lower()
 					queue_data(ev,ev,_bars[-1])
 			else:
