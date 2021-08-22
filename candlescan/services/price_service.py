@@ -259,7 +259,7 @@ def get_minute_bars(symbol,start,end=None):
 	if not (symbol and start ):
 		return
 	if not end:
-		end = dt.now().timestamp()
+		end = dt.utcnow().isoformat()
 	try:
 		result = []
 		item = collection.item(symbol)
