@@ -74,7 +74,7 @@ def _start():
 		frappe.db.sql("select 'KEEP_ALIVE'")
 		nw =  dt.now()
 		print("------------")
-		print(nw)
+		#print(nw)
 		utc =  dt.utcnow()
 		
 		utcminute =   utc - minutedelta
@@ -82,7 +82,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		snap = api.get_snapshots(symbols)
-		print(len(symbols),dt.now())
+		#print(len(symbols),dt.now())
 		minuteBars = []
 		for s in snap:
 			data = snap[s]
@@ -96,7 +96,8 @@ def _start():
 			
 			if minuteBar['t']:
 				minuteBar['t'] = get_datetime(minuteBar['t'])#.timestamp()
-			
+				print("t",minuteBar['t'])
+				
 			if not minuteBar.get('t') or utcminute != minuteBar['t']:
 				#print("continue",utcminute,minuteBar.get('t'))
 				continue
