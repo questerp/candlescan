@@ -241,10 +241,11 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
 			if items :
 				try:
-					collection.append(ticker, items)
+					pass
+					#collection.append(ticker, items)
 				except ValueError:
 					print("store not found, creating new one")
-					collection.write(ticker, df,overwrite=True)
+					#collection.write(ticker, df,overwrite=True)
 				except Exception as e:
 					print("append error", e)
 
