@@ -238,30 +238,17 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		df = pd.DataFrame(_bars)
 		df.set_index("time",inplace=True)
 		for ticker in tickers:
-			print(ticker)
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
-			print(len(items))
 
-			if items :
+			if items.empty :
 				try:
-					print("bfr append")
 					collection.append(ticker, items)
-					print("after append")
-
 				except ValueError:
-					print("store not found, creating new one")
 					collection.write(ticker, df,overwrite=True)
-				except Exception as e:
-					print("append error", e)
-
 
 				if send_last and  ticker in symbols:
-					print("bars_s")
-
 					ev  = "bars_%s"%  ticker.lower()
 					queue_data(ev,ev,_bars[-1])
-			else:
-				print("no items")
 
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
