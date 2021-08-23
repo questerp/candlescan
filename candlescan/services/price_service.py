@@ -236,16 +236,21 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 	if not minuteBars:
 		return
 	symbols = []
-	if send_last:
-		redis = get_redis_server()
-		symbols = redis.smembers("symbols")
-		if symbols:
-			symbols = [cstr(a) for a in symbols]
+	last = None
+
 
 	try:
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
+		if send_last:
+			last = _bars[-1]
+			redis = get_redis_server()
+			symbols = redis.smembers("symbols")
+			if symbols:
+				symbols = [cstr(a) for a in symbols]
+			
 		df.set_index("time",inplace=True,drop=True)
+		
 		for ticker in tickers:
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
 
@@ -256,12 +261,9 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 					#print("--- ValueError ---",ve)
 					collection.write(ticker, items,overwrite=True)
 
-				if send_last and  ticker in symbols:
+				if last and send_last and  ticker in symbols:
 					ev  = "bars_%s"%  ticker.lower()
-					obj = items.iloc[-1]
-					obj['timestamp'] = obj.index
-					obj = obj.to_dict()
-					queue_data(ev,ev,obj)
+					queue_data(ev,ev,last)
 
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
@@ -284,7 +286,7 @@ def get_minute_bars(symbol,start,end=None):
 		if item != None:
 			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
 			print("data",data)
-			data['timestamp'] = data.index
+			data['time'] = data.index
 			result = data.to_dict("records")
 		return result
 	except Exception as ex:
