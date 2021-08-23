@@ -258,7 +258,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 
 				if send_last and  ticker in symbols:
 					ev  = "bars_%s"%  ticker.lower()
-					queue_data(ev,ev,_bars[-1])
+					queue_data(ev,ev,items[-1])
 
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
