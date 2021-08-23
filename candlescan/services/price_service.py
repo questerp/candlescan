@@ -95,9 +95,10 @@ def _start():
 				dailyBar = data.get("dailyBar") or {}
 				prevDailyBar = data.get("prevDailyBar")  or {}
 				
-				if minuteBar['t']:
+				if minuteBar.get('t'):
 					minuteBar['t'] = get_datetime(minuteBar['t'])#.timestamp()
 					#print("t",minuteBar['t'])
+				
 					
 				if not minuteBar.get('t') or utcminute != minuteBar['t']:
 					#print("continue",utcminute,minuteBar.get('t'))
