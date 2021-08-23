@@ -266,8 +266,11 @@ def get_minute_bars(symbol,start,end=None):
 	try:
 		result = []
 		item = collection.item(symbol)
+		print("start",start)
+		print("end",end)
 		if item != None:
 			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
+			print("data",data)
 			result = data.to_dict("records")
 		return result
 	except Exception as ex:
