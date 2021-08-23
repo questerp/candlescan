@@ -262,6 +262,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
+		input()
 	
 	
 def get_minute_bars(symbol,start,end=None):
