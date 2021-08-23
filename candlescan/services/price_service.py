@@ -236,24 +236,22 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 	if not minuteBars:
 		return
 	symbols = []
-	last = None
-
+	if send_last:
+		redis = get_redis_server()
+		symbols = redis.smembers("symbols")
+		if symbols:
+			symbols = [cstr(a) for a in symbols]
 
 	try:
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
-		if send_last:
-			last = _bars[-1]
-			redis = get_redis_server()
-			symbols = redis.smembers("symbols")
-			if symbols:
-				symbols = [cstr(a) for a in symbols]
-			
-		df.set_index("time",inplace=True,drop=True)
 		
 		for ticker in tickers:
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
-
+			last = None
+			if send_last:
+				last = items.iloc[-1].to_dict()
+			items.set_index("time",inplace=True,drop=True)
 			if not items.empty :
 				try:
 					collection.append(ticker, items)
