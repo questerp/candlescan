@@ -101,7 +101,8 @@ def _start():
 				
 					
 				if not minuteBar.get('t') or utcminute != minuteBar['t']:
-					#print("continue",utcminute,minuteBar.get('t'))
+					print("continue",utcminute,minuteBar.get('t'))
+					input()
 					continue
 				vol = minuteBar.get("v") or 0
 				minuteBar['s'] = s
