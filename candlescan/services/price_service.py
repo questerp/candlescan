@@ -78,7 +78,7 @@ def _start():
 		utc =  dt.utcnow()
 		
 		utcminute =   utc - minutedelta
-		utcminute = utcminute.replace(second=0).replace(microsecond=0) 
+		utcminute = utcminute.replace(second=0).replace(microsecond=0)
 		
 		print("utcminute",utcminute)
 		snap = api.get_snapshots(symbols)
@@ -96,7 +96,7 @@ def _start():
 				prevDailyBar = data.get("prevDailyBar")  or {}
 				
 				if minuteBar.get('t'):
-					minuteBar['t'] = get_datetime(minuteBar['t'])#.timestamp()
+					minuteBar['t'] = get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 					#print("t",minuteBar['t'])
 				
 					
