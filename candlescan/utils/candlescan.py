@@ -22,7 +22,7 @@ active_symbols = []
 def get_active_symbols():
     if not active_symbols:
         s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
-	    active_symbols = [a[0] for a in s]
+        active_symbols = [a[0] for a in s]
     return active_symbols
 
 def to_candle(data,symbol=None):
