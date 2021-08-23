@@ -154,7 +154,7 @@ def _start():
 						frappe.db.sql(sql)
 					except Exception as e:
 						print("error sql",e)
-						
+
 			except Exception as e:
 				print("error",e)
 					
@@ -207,7 +207,52 @@ def backfill(days=0):
 	except Exception as e:
 		print("backfill ERROR",e)
 		
+
+def backfill_daily(days=1000):
+	api = REST(raw_data=True)
 	
+	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
+	#all_symbols = get_active_symbols()# [a[0] for a in all_symbols] 
+	print("backfill_daily",dt.now())
+	chuck = 200
+	limit = 1000
+	TZ = 'America/New_York'
+	collection_day = store.collection("1DAY",overwrite=True)
+	
+	#empty_candle = get_empty_candle()
+	try:
+		for result in chunks(get_active_symbols(),chuck):
+			i+=1
+			bars = api.get_barset(result,"day",limit=1000)
+			if bars :
+				for b in bars:
+					try:
+						day_bars = []
+						for a in bars[b]:
+							a['t'] = dt.fromtimestamp(a['t'])
+							day_bars.append(to_candle(a,b))
+						
+						df = pd.DataFrame(day_bars)
+						df.set_index("time",inplace=True,drop=True)
+
+						if not df.empty :
+							try:
+								collection_day.append(b, df)
+							except ValueError as ve:
+								#print(ticker,"--- ValueError ---",ve)
+								collection_day.write(b, df,overwrite=True)
+						print(len(day_bars),"DONE - symbols:",i*chuck)
+
+					except Exception as e:
+						print("backfill ERROR",e)
+
+			else:
+				print("No data")
+					
+			
+	except Exception as e:
+		print("backfill ERROR",e)
+
 def chunks(l, n):
     n = max(1, n)
     return (l[i:i+n] for i in range(0, len(l), n))	
@@ -219,6 +264,8 @@ def init_bars_db():
 		#collection = store.collection('1MIN')
 		#items = collection.list_items()
 		collection = store.collection("1MIN",overwrite=True)
+		collection_day = store.collection("1DAY",overwrite=True)
+
 		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
 		df = pd.DataFrame([{"ticker":"","open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":dt.now()}])
@@ -227,8 +274,11 @@ def init_bars_db():
 		for s in symbols:
 			#if s not in items:
 			collection.write(s, df,overwrite=True)
+			collection_day.write(s, df,overwrite=True)
 		print("DONE")
-		print(collection.list_items())
+		#print(collection.list_items())
+		collection = store.collection("1DAY",overwrite=True)
+
 		
 	except Exception as e:
 		print("init_bars_db",e)
