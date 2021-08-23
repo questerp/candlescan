@@ -245,6 +245,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 				try:
 					collection.append(ticker, items)
 				except ValueError:
+					print("--- ValueError ---")
 					collection.write(ticker, items,overwrite=True)
 
 				if send_last and  ticker in symbols:
