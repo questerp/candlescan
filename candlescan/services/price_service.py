@@ -150,8 +150,8 @@ def _start():
 								s )
 					frappe.db.sql(sql)
 
-				except Exception as e:
-					print("error",e)
+			except Exception as e:
+				print("error",e)
 					
 		frappe.db.commit()
 		if minuteBars:
