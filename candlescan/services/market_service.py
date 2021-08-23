@@ -16,7 +16,7 @@ import pytz
 import socketio
 import asyncio
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
-from candlescan.utils.candlescan import get_yahoo_prices as get_prices
+from candlescan.utils.candlescan import clear_active_symbols, get_yahoo_prices as get_prices
 from secedgar.cik_lookup import get_cik_map
 import feedparser
 from alpaca_trade_api.rest import REST, TimeFrame
@@ -154,3 +154,4 @@ def process_tickers():
 	if cik:
 		print("Processing CIK")
 		process_cik()
+	clear_active_symbols()

@@ -26,6 +26,11 @@ def get_active_symbols():
         active_symbols = [a[0] for a in s]
     return active_symbols
 
+def clear_active_symbols():
+    active_symbols = []
+    get_active_symbols()
+
+
 def to_candle(data,symbol=None):
     if not symbol and not data.get("s"):
         frappe.throw("Symbol is required")
