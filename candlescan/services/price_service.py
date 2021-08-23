@@ -157,8 +157,9 @@ def _start():
 		frappe.db.commit()
 		if minuteBars:
 			insert_minute_bars(symbols,minuteBars,True)
+		print("----> DONE",len(minuteBars),dt.now())
+		
 		minuteBars = []	
-		print("----> DONE",dt.now())
 		time.sleep(1)
 
 def backfill(days=0):
