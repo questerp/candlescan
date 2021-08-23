@@ -95,10 +95,10 @@ async def get_symbol_prices(message):
 	end = data.get("end")
 	
 	if not (symbol or  start) :
-		await sio.emit("transfer",build_response("errors",source,"Invalid data for: %" % symbol))
+		await sio.emit("transfer",build_response("errors",source,"Invalid data for: %s" % symbol))
 		return
 	if symbol not in get_active_symbols():
-		await sio.emit("transfer",build_response("errors",source,"Invalid Symbol: %" % symbol))
+		await sio.emit("transfer",build_response("errors",source,"Invalid Symbol: %s" % symbol))
 		return
 	
 	data = get_minute_bars(symbol,start,end)
