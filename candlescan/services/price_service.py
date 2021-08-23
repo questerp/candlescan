@@ -272,8 +272,8 @@ def get_minute_bars(symbol,start,end=None):
 		if item != None:
 			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
 			print("data",data)
+			data['timestamp'] = data.index
 			result = data.to_dict("records")
-			result['timestamp'] = data.index
 		return result
 	except Exception as ex:
 		print("ERROR get_minute_bars",ex)
