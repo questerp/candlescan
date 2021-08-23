@@ -150,8 +150,11 @@ def _start():
 								prevDailyBar.get("v") or 0,
 								prevDailyBar.get("n") or 0,
 								s )
-					frappe.db.sql(sql)
-
+					try:
+						frappe.db.sql(sql)
+					except Exception as e:
+						print("error sql",e)
+						
 			except Exception as e:
 				print("error",e)
 					
