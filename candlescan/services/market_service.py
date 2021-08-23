@@ -16,7 +16,7 @@ import pytz
 import socketio
 import asyncio
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive
-from candlescan.utils.candlescan import clear_active_symbols, get_yahoo_prices as get_prices
+from candlescan.utils.candlescan import get_active_symbols,clear_active_symbols, get_yahoo_prices as get_prices
 from secedgar.cik_lookup import get_cik_map
 import feedparser
 from alpaca_trade_api.rest import REST, TimeFrame
@@ -89,11 +89,16 @@ async def get_symbol_prices(message):
 	if not data:
 		return
 	symbol = data.get("symbol")
+	
 	#frequency = data.get("frequency")
 	start = data.get("start")
 	end = data.get("end")
 	
-	if not (symbol or  start):
+	if not (symbol or  start) :
+		await sio.emit("transfer",build_response("errors",source,"Invalid data for: %" % symbol))
+		return
+	if symbol not in get_active_symbols():
+		await sio.emit("transfer",build_response("errors",source,"Invalid Symbol: %" % symbol))
 		return
 	
 	data = get_minute_bars(symbol,start,end)
