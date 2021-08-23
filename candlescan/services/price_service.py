@@ -6,7 +6,7 @@ import socketio
 import asyncio
 from frappe.realtime import get_redis_server
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive,queue_data
-from candlescan.utils.candlescan import to_candle
+from candlescan.utils.candlescan import to_candle,get_active_symbols
 from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
@@ -53,8 +53,8 @@ def _start():
 	api = REST(raw_data=True)
 	logging.basicConfig(level=logging.INFO)
 	redis = get_redis_server()
-	s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
-	symbols = [a[0] for a in s]
+	#s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
+	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
 	while(1):
 		nw  = dt.now()
@@ -158,9 +158,9 @@ def _start():
 def backfill(days=0):
 	api = REST(raw_data=True)
 	
-	all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
-	all_symbols = [a[0] for a in all_symbols] 
-	print("backfill",len(all_symbols),dt.now())
+	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
+	#all_symbols = get_active_symbols()# [a[0] for a in all_symbols] 
+	print("backfill",dt.now())
 	chuck = 200
 	limit = 1000
 	TZ = 'America/New_York'
@@ -176,7 +176,7 @@ def backfill(days=0):
 			
 			print("start",beg)
 			i = 0
-			for result in chunks(all_symbols,chuck):
+			for result in chunks(get_active_symbols(),chuck):
 				i+=1
 				bars = api.get_barset(result,"minute",limit=1000,start=beg)					
 				minute_bars = []
@@ -208,8 +208,8 @@ def init_bars_db():
 		#collection = store.collection('1MIN')
 		#items = collection.list_items()
 		collection = store.collection("1MIN",overwrite=True)
-		symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
-		symbols = [a[0] for a in symbols]
+		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
+		symbols =  get_active_symbols()#[a[0] for a in symbols]
 		df = pd.DataFrame([{"ticker":"","open":0,"close":0,"high":0,"low":0,"volume":0,"trades":0,"time":dt.now()}])
 		df.set_index("time",inplace=True,drop=True)
 		

@@ -17,6 +17,13 @@ from datetime import timedelta,datetime as dt
 from pytz import timezone	
 _timezone = timezone("America/New_York")
 
+active_symbols = []
+
+def get_active_symbols():
+    if not active_symbols:
+        s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
+	    active_symbols = [a[0] for a in s]
+    return active_symbols
 
 def to_candle(data,symbol=None):
     if not symbol and not data.get("s"):
