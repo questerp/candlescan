@@ -258,12 +258,15 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 def get_minute_bars(symbol,start,end=None):
 	if not (symbol and start ):
 		return
+	start = dt.fromtimestamp(start)
 	if not end:
-		end = dt.utcnow().isoformat()
+		end = dt.utcnow()#.isoformat()
+	else:
+		end = dt.fromtimestamp(end)
 	try:
 		result = []
 		item = collection.item(symbol)
-		if item:
+		if item != None:
 			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
 			result = data.to_dict("records")
 		return result
