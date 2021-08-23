@@ -5,12 +5,11 @@ from candlescan.utils.socket_utils import get_user,validate_data,build_response,
 from frappe.utils import cstr,getdate, get_time, today,now_datetime
 import socketio
 import asyncio
-from candlescan.utils.candlescan import get_yahoo_prices as get_prices
+from candlescan.utils.candlescan import get_active_symbols,get_yahoo_prices as get_prices
 import time
 import threading
 from threading import Lock
 from candlescan.utils.shared_memory_obj import response_queue 
-
 lock = Lock()
 
 public_ressources = ["Scanner"]
