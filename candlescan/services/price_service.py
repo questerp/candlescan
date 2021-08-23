@@ -23,6 +23,7 @@ log = logging.getLogger(__name__)
 api = None
 store = pystore.store('bars')
 collection = store.collection('1MIN')
+collection_day = store.collection("1DAY")
 
 def connect():
 	try:
@@ -253,6 +254,8 @@ def backfill_daily(days=1000):
 	except Exception as e:
 		print("backfill ERROR",e)
 
+	print("DONE")
+
 def chunks(l, n):
     n = max(1, n)
     return (l[i:i+n] for i in range(0, len(l), n))	
@@ -277,7 +280,7 @@ def init_bars_db():
 			collection_day.write(s, df,overwrite=True)
 		print("DONE")
 		#print(collection.list_items())
-		collection = store.collection("1DAY",overwrite=True)
+		#collection = store.collection("1DAY",overwrite=True)
 
 		
 	except Exception as e:
@@ -324,7 +327,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 		#input()
 	
 	
-def get_minute_bars(symbol,start,end=None):
+def get_minute_bars(symbol,timeframe,start,end=None):
 	if not (symbol and start ):
 		return
 	start = dt.fromtimestamp(start)
@@ -334,7 +337,12 @@ def get_minute_bars(symbol,start,end=None):
 		end = dt.fromtimestamp(end)
 	try:
 		result = []
-		item = collection.item(symbol)
+		item = None
+		if timeframe == "m":
+			item = collection.item(symbol)
+		else:
+			item = collection_day.item(symbol)
+
 		print("start",start)
 		print("end",end)
 		if item != None:

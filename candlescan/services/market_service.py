@@ -93,6 +93,7 @@ async def get_symbol_prices(message):
 	#frequency = data.get("frequency")
 	start = data.get("start")
 	end = data.get("end")
+	timeframe = data.get("timeframe")
 	
 	if not (symbol or  start) :
 		await sio.emit("transfer",build_response("errors",source,"Invalid data for: %s" % symbol))
@@ -101,7 +102,7 @@ async def get_symbol_prices(message):
 		await sio.emit("transfer",build_response("errors",source,"Invalid Symbol: %s" % symbol))
 		return
 	
-	data = get_minute_bars(symbol,start,end)
+	data = get_minute_bars(symbol,timeframe,start,end)
 	#data = api.get_bars(symbol, td,start, end)._raw
 	#data = get_prices(symbol,period_type, period, frequency_type, frequency)
 	await sio.emit("transfer",build_response("get_symbol_prices",source,data))
