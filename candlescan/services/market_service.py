@@ -133,6 +133,7 @@ def process_tickers():
 	#NYSE=True, NASDAQ=True, AMEX=True
 	api = REST(raw_data=True)
 	assets = api.list_assets()
+	cik = False
 	for ticker in assets:
 		#ticker['symbol'] = ticker['symbol'].replace('^','p')
 		#ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
@@ -140,6 +141,7 @@ def process_tickers():
 		print(ticker['symbol'],exist)
 		
 		if not exist:
+			cik = True
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
 				'active': ticker["status"] == 'active',
@@ -149,4 +151,6 @@ def process_tickers():
 				'market_class': ticker['class']
 			})
 			insert_symbol(symbol)
-			
+	if cik:
+		print("Processing CIK")
+		process_cik()
