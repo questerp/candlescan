@@ -160,7 +160,7 @@ def _start():
 			insert_minute_bars(symbols,minuteBars,True)
 		print("----> DONE",len(minuteBars),dt.now())
 		
-		minuteBars = []	
+		#minuteBars = []	
 		time.sleep(1)
 
 def backfill(days=0):
@@ -259,7 +259,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 				try:
 					collection.append(ticker, items)
 				except ValueError as ve:
-					print("--- ValueError ---",ve)
+					print(ticker,"--- ValueError ---",ve)
 					collection.write(ticker, items,overwrite=True)
 
 				if last and send_last and  ticker in symbols:
