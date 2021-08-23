@@ -250,11 +250,11 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
 			last = None
 			
-			items.set_index("time",inplace=True,drop=True)
+			
 			if not items.empty :
 				if send_last :
 					last = items.iloc[-1].to_dict()
-
+				items.set_index("time",inplace=True,drop=True)
 				try:
 					collection.append(ticker, items)
 				except ValueError as ve:
