@@ -17,7 +17,7 @@ from datetime import timedelta,datetime as dt
 from pytz import timezone	
 _timezone = timezone("America/New_York")
 
-active_symbols = []
+global active_symbols = []
 
 def get_active_symbols():
     if not active_symbols:
