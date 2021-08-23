@@ -28,7 +28,7 @@ def queue_data(event,room,data):
 	print("keys",get_redis_server().keys())
 	if event and room and data:
 		data = build_response(event,room,data)
-		sc = json.dumps(data)
+		sc = json.dumps(data,default=str)
 		#response_queue.put(sc)
 		get_redis_server().lpush("queue",sc)
 		#print("queue",get_redis_server().lpop("queue"))

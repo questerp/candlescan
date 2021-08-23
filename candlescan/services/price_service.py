@@ -82,7 +82,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		snap = api.get_snapshots(symbols)
-		#print(len(symbols),dt.now())
+		print("get_snapshots DONE",dt.now())
 		minuteBars = []
 		for s in snap:
 			try:
