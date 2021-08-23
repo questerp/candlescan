@@ -258,7 +258,9 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 
 				if send_last and  ticker in symbols:
 					ev  = "bars_%s"%  ticker.lower()
-					obj = items.iloc[-1].to_dict()
+					obj = items.iloc[-1]
+					obj['timestamp'] = obj.index
+					obj = obj.to_dict()
 					queue_data(ev,ev,obj)
 
 	except Exception as e:
