@@ -245,13 +245,13 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 	try:
 		_bars = [to_candle(a) for a in minuteBars ]
 		df = pd.DataFrame(_bars)
-		print("tickers",len(tickers))
+		#print("tickers",len(tickers))
 		for ticker in tickers:
 			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
 			last = None
 			
 			if not items.empty :
-				print(" items not empty", len(items))
+				#print(" items not empty", len(items))
 
 				if send_last :
 					last = items.iloc[-1].to_dict()
@@ -259,7 +259,7 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 				try:
 					collection.append(ticker, items)
 				except ValueError as ve:
-					#print("--- ValueError ---",ve)
+					print("--- ValueError ---",ve)
 					collection.write(ticker, items,overwrite=True)
 
 				if last and send_last and  ticker in symbols:
