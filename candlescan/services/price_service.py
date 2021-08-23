@@ -218,7 +218,7 @@ def backfill_daily(days=1000):
 	limit = 1000
 	TZ = 'America/New_York'
 	collection_day = store.collection("1DAY",overwrite=True)
-	
+	i = 0
 	#empty_candle = get_empty_candle()
 	try:
 		for result in chunks(get_active_symbols(),chuck):
