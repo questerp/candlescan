@@ -85,69 +85,74 @@ def _start():
 		#print(len(symbols),dt.now())
 		minuteBars = []
 		for s in snap:
-			data = snap[s]
-			if not data:
-				continue
-			minuteBar = data.get("minuteBar") or {}
-			latestTrade = data.get("latestTrade") or {}
-			latestQuote = data.get("latestQuote") or {}
-			dailyBar = data.get("dailyBar") or {}
-			prevDailyBar = data.get("prevDailyBar")  or {}
-			
-			if minuteBar['t']:
-				minuteBar['t'] = get_datetime(minuteBar['t'])#.timestamp()
-				#print("t",minuteBar['t'])
+			try:
+				data = snap[s]
+				if not data:
+					continue
+				minuteBar = data.get("minuteBar") or {}
+				latestTrade = data.get("latestTrade") or {}
+				latestQuote = data.get("latestQuote") or {}
+				dailyBar = data.get("dailyBar") or {}
+				prevDailyBar = data.get("prevDailyBar")  or {}
 				
-			if not minuteBar.get('t') or utcminute != minuteBar['t']:
-				#print("continue",utcminute,minuteBar.get('t'))
-				continue
-			vol = minuteBar.get("v") or 0
-			minuteBar['s'] = s
-			minuteBars.append(minuteBar)
-							
-			price = latestTrade.get("p")
-			if price:
-				
-				sql = """ update tabSymbol set 
-				price=%s, 
-				volume=%s, 
-				1m_volume=%s,
-				today_high=%s, 
-				today_low=%s ,
-				today_open=%s ,
-				today_close=%s ,
-				today_trades=%s ,
-				bid=%s , 
-				ask=%s ,
-				vwap=%s , 
-				prev_day_open = %s ,
-				prev_day_close = %s , 
-				prev_day_high = %s ,
-				prev_day_low = %s , 
-				prev_day_vwap = %s ,
-				prev_day_volume = %s ,
-				prev_day_trades = %s 
-				where name='%s' """ % (
-							price or 0,
-							dailyBar.get("v") or 0,
-							vol,
-							dailyBar.get("h") or 0,
-							dailyBar.get("l") or 0,
-							dailyBar.get("o") or 0,
-							dailyBar.get("c") or 0,
-							dailyBar.get("n") or 0,
-							latestQuote.get("bp") or 0,
-							latestQuote.get("ap") or 0,
-							minuteBar.get("vw") or 0,
-							prevDailyBar.get("o") or 0,
-							prevDailyBar.get("c") or 0,
-							prevDailyBar.get("h") or 0,
-							prevDailyBar.get("l") or 0,
-							prevDailyBar.get("vw") or 0,
-							prevDailyBar.get("v") or 0,
-							prevDailyBar.get("n") or 0,
-						      s )
-				frappe.db.sql(sql)
+				if minuteBar['t']:
+					minuteBar['t'] = get_datetime(minuteBar['t'])#.timestamp()
+					#print("t",minuteBar['t'])
+					
+				if not minuteBar.get('t') or utcminute != minuteBar['t']:
+					#print("continue",utcminute,minuteBar.get('t'))
+					continue
+				vol = minuteBar.get("v") or 0
+				minuteBar['s'] = s
+				minuteBars.append(minuteBar)
+								
+				price = latestTrade.get("p")
+				if price:
+					
+					sql = """ update tabSymbol set 
+					price=%s, 
+					volume=%s, 
+					1m_volume=%s,
+					today_high=%s, 
+					today_low=%s ,
+					today_open=%s ,
+					today_close=%s ,
+					today_trades=%s ,
+					bid=%s , 
+					ask=%s ,
+					vwap=%s , 
+					prev_day_open = %s ,
+					prev_day_close = %s , 
+					prev_day_high = %s ,
+					prev_day_low = %s , 
+					prev_day_vwap = %s ,
+					prev_day_volume = %s ,
+					prev_day_trades = %s 
+					where name='%s' """ % (
+								price or 0,
+								dailyBar.get("v") or 0,
+								vol,
+								dailyBar.get("h") or 0,
+								dailyBar.get("l") or 0,
+								dailyBar.get("o") or 0,
+								dailyBar.get("c") or 0,
+								dailyBar.get("n") or 0,
+								latestQuote.get("bp") or 0,
+								latestQuote.get("ap") or 0,
+								minuteBar.get("vw") or 0,
+								prevDailyBar.get("o") or 0,
+								prevDailyBar.get("c") or 0,
+								prevDailyBar.get("h") or 0,
+								prevDailyBar.get("l") or 0,
+								prevDailyBar.get("vw") or 0,
+								prevDailyBar.get("v") or 0,
+								prevDailyBar.get("n") or 0,
+								s )
+					frappe.db.sql(sql)
+
+				except Exception as e:
+					print("error",e)
+					
 		frappe.db.commit()
 		if minuteBars:
 			insert_minute_bars(symbols,minuteBars,True)
