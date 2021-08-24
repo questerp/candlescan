@@ -210,7 +210,7 @@ def backfill(days=0):
 						#candles = [to_candle(a,b) for a in candles]
 						if _bars:
 							insert_minute_bars(b,_bars)
-					print(len(bars),"DONE - symbols:", "/" ,"start",beg)
+					print(chuck*i,"DONE - symbols:", "/" ,"start",beg)
 				else:
 					print("No data")
 					
