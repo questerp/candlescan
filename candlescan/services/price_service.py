@@ -193,7 +193,7 @@ def backfill(days=0):
 			i = 0
 			for result in chunks(get_active_symbols(),chuck):
 				i+=1
-				bars = api.get_barset(result,"minute",limit=1000,start=beg)					
+				bars = api.get_barset(result,"minute",limit=limit,start=beg)					
 				minute_bars = []
 				if bars :
 					for b in bars:
