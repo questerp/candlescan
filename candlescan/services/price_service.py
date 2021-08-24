@@ -167,6 +167,9 @@ def _start():
 		#minuteBars = []	
 		time.sleep(1)
 
+
+	
+
 def backfill(days=0):
 	api = REST(raw_data=True)
 	
