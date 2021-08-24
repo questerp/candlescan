@@ -187,6 +187,8 @@ def backfill(days=0,symbols=None):
 	#empty_candle = get_empty_candle()
 	if not symbols:
 		symbols  = get_active_symbols()
+	else:
+		print(symbols)
 	try:
 		for d in range(days+1):
 			start =  add_days(dt.now(),-1*d) #-1
