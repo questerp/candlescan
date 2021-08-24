@@ -219,7 +219,6 @@ def backfill_daily(days=1000):
 	#all_symbols = get_active_symbols()# [a[0] for a in all_symbols] 
 	print("backfill_daily",dt.now())
 	chuck = 200
-	limit = 1000
 	TZ = 'America/New_York'
 	collection_day = store.collection("1DAY",overwrite=True)
 	i = 0
@@ -227,7 +226,7 @@ def backfill_daily(days=1000):
 	try:
 		for result in chunks(get_active_symbols(),chuck):
 			i+=1
-			bars = api.get_barset(result,"day",limit=1000)
+			bars = api.get_barset(result,"day",limit=days)
 			if bars :
 				for b in bars:
 					try:
