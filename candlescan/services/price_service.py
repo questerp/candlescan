@@ -300,10 +300,8 @@ def init_bars_db(target = 0):
 		for s in symbols:
 			#if s not in items:
 			if minute:
-				collection.delete_item(s)
 				collection.write(s, df,overwrite=True)
 			if day:
-				collection_day.delete_item(s)
 				collection_day.write(s, df,overwrite=True)
 		print("DONE")
 		#print(collection.list_items())
