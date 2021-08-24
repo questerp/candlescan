@@ -282,8 +282,10 @@ def init_bars_db(target = 0):
 		day = target in [0,2]
 		minute = target in [0,1]
 		if minute:
+			store.delete_collection("1MIN")
 			collection = store.collection("1MIN",overwrite=True)
 		if day:
+			store.delete_collection("1DAY")
 			collection_day = store.collection("1DAY",overwrite=True)
 
 		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
