@@ -12,6 +12,7 @@ from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
 import pandas as pd
 import threading
+import numba
 import pystore
 import multitasking
 import signal
