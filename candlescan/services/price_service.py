@@ -197,13 +197,13 @@ def backfill(days=0):
 				minute_bars = []
 				if bars :
 					for b in bars:
-						for a in bars[b]:
+						_bars = bars[b]
+						for a in _bars:
 							a['s'] = b
 							a['t'] = dt.utcfromtimestamp(a['t'])
-						minute_bars.extend(bars[b])
+						minute_bars.extend(_bars)
 						#candles = [to_candle(a,b) for a in candles]
-					if minute_bars:
-						insert_minute_bars(result,minute_bars)
+					insert_minute_bars(result,minute_bars)
 					print(len(minute_bars),"DONE - symbols:",i*chuck,"/" ,"start",beg)
 				else:
 					print("No data")
@@ -211,9 +211,9 @@ def backfill(days=0):
 			
 	except Exception as e:
 		print("backfill ERROR",e)
-	
-	print("---- Backfill DONE ------")
-	
+
+	print("--- backfill DONE ---")
+
 
 def backfill_daily(days=1000):
 	api = REST(raw_data=True)
@@ -259,21 +259,20 @@ def backfill_daily(days=1000):
 	except Exception as e:
 		print("backfill ERROR",e)
 
-	print("DONE")
+	print("backfill DONE")
 
 def chunks(l, n):
     n = max(1, n)
     return (l[i:i+n] for i in range(0, len(l), n))	
 
-# target: 0: both 	1: minute 	2:day
-def init_bars_db(target=0):
+def init_bars_db(target = 0):
 	print("init")
 	try:
 		#store = pystore.store('bars')
 		#collection = store.collection('1MIN')
 		#items = collection.list_items()
-		minute = target in [0,1]
 		day = target in [0,2]
+		minute = target in [0,1]
 		if minute:
 			collection = store.collection("1MIN",overwrite=True)
 		if day:
@@ -342,11 +341,11 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 def get_minute_bars(symbol,timeframe,start,end=None):
 	if not (symbol and start ):
 		return
-	start = dt.utcfromtimestamp(start)
+	start = dt.fromtimestamp(start)
 	if not end:
 		end = dt.utcnow()#.isoformat()
 	else:
-		end = dt.utcfromtimestamp(end)
+		end = dt.fromtimestamp(end)
 	try:
 		result = []
 		item = None
