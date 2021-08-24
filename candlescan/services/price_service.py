@@ -342,11 +342,11 @@ def insert_minute_bars(tickers,minuteBars,send_last=False):
 def get_minute_bars(symbol,timeframe,start,end=None):
 	if not (symbol and start ):
 		return
-	start = dt.fromtimestamp(start)
+	start = dt.utcfromtimestamp(start)
 	if not end:
 		end = dt.utcnow()#.isoformat()
 	else:
-		end = dt.fromtimestamp(end)
+		end = dt.utcfromtimestamp(end)
 	try:
 		result = []
 		item = None
