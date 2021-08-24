@@ -53,6 +53,7 @@ def start():
 
 
 def _start():
+	print("staring...")
 	connect()
 	api = REST(raw_data=True)
 	logging.basicConfig(level=logging.INFO)
@@ -342,11 +343,12 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 				print(ticker,"--- ValueError ---",ve)
 				collection.write(ticker, items,overwrite=True)
 
-			if last and send_last and  ticker in bar_symbols:
+			if last and send_last and  (ticker in bar_symbols):
 				print("queue",ticker)
 				ev  = "bars_%s"%  ticker.lower()
 				queue_data(ev,ev,last)
-
+		else:
+			print(ticker,"empty")
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
 		#input()
