@@ -185,10 +185,10 @@ def backfill(days=0,symbols=None):
 	TZ = 'America/New_York'
 	#redis = get_redis_server()
 	#empty_candle = get_empty_candle()
+	print("symbols",symbols)
+
 	if not symbols:
 		symbols  = get_active_symbols()
-	else:
-		print(symbols)
 	try:
 		for d in range(days+1):
 			start =  add_days(dt.now(),-1*d) #-1
