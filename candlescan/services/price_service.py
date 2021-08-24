@@ -174,8 +174,7 @@ def _start():
 
 
 	
-
-def backfill(days=0):
+def backfill(days=0,symbols=None):
 	api = REST(raw_data=True)
 	
 	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
@@ -186,6 +185,8 @@ def backfill(days=0):
 	TZ = 'America/New_York'
 	#redis = get_redis_server()
 	#empty_candle = get_empty_candle()
+	if not symbols:
+		symbols  = get_active_symbols()
 	try:
 		for d in range(days+1):
 			start =  add_days(dt.now(),-1*d) #-1
@@ -196,7 +197,7 @@ def backfill(days=0):
 			
 			print("start",beg)
 			i = 0
-			for result in chunks(get_active_symbols(),chuck):
+			for result in chunks(symbols),chuck):
 				i+=1
 				bars = api.get_barset(result,"minute",limit=limit,start=beg)					
 				#minute_bars = []
