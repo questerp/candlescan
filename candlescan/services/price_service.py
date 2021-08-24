@@ -40,7 +40,7 @@ def disconnect():
 	
 def start():
 	try:
-		update_bar_subs()
+		update_bar_subs(get_redis_server())
 		_start()
 	except Exception as e:
 		print(e)
@@ -299,8 +299,8 @@ def init_bars_db(target = 0):
 		print("init_bars_db",e)
 
 @multitasking.task 
-def update_bar_subs():
-	redis = get_redis_server()
+def update_bar_subs(redis):
+	#redis = get_redis_server()
 	while(1):
 		time.sleep(3)
 		symbols = redis.smembers("symbols")
