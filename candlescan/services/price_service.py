@@ -16,7 +16,7 @@ import pystore
 import multitasking
 
 	 
-
+bar_symbols = []
 sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 lock = threading.Lock()
 log = logging.getLogger(__name__)
@@ -40,6 +40,7 @@ def disconnect():
 	
 def start():
 	try:
+		update_bar_subs()
 		_start()
 	except Exception as e:
 		print(e)
@@ -84,7 +85,7 @@ def _start():
 		print("utcminute",utcminute)
 		snap = api.get_snapshots(symbols)
 		print("get_snapshots DONE",dt.now())
-		minuteBars = []
+		#minuteBars = []
 		for s in snap:
 			try:
 				data = snap[s]
@@ -107,10 +108,10 @@ def _start():
 					continue
 				vol = minuteBar.get("v") or 0
 				minuteBar['s'] = s
-				minuteBars.append(minuteBar)
-				if s == "BPTH":
-					print(minuteBar)
-								
+				#minuteBars.append(minuteBar)
+				
+				#if minuteBars:
+				insert_minute_bars(s,[minuteBar],True)				
 				price = latestTrade.get("p")
 				if price:
 					
@@ -162,9 +163,8 @@ def _start():
 				print("error",e)
 					
 		frappe.db.commit()
-		if minuteBars:
-			insert_minute_bars(symbols,minuteBars,True)
-		print("----> DONE",len(minuteBars),dt.now())
+		
+		print("----> DONE", dt.now())
 		
 		#minuteBars = []	
 		time.sleep(1)
@@ -196,17 +196,17 @@ def backfill(days=0):
 			for result in chunks(get_active_symbols(),chuck):
 				i+=1
 				bars = api.get_barset(result,"minute",limit=limit,start=beg)					
-				minute_bars = []
+				#minute_bars = []
 				if bars :
 					for b in bars:
 						_bars = bars[b]
 						for a in _bars:
 							a['s'] = b
 							a['t'] = dt.utcfromtimestamp(a['t'])
-						minute_bars.extend(_bars)
+						#minute_bars.extend(_bars)
 						#candles = [to_candle(a,b) for a in candles]
-					insert_minute_bars(result,minute_bars)
-					print(len(minute_bars),"DONE - symbols:",i*chuck,"/" ,"start",beg)
+						insert_minute_bars(b,_bars)
+					print(len(bars),"DONE - symbols:", "/" ,"start",beg)
 				else:
 					print("No data")
 					
@@ -215,7 +215,6 @@ def backfill(days=0):
 		print("backfill ERROR",e)
 
 	print("--- backfill DONE ---")
-
 
 def backfill_daily(days=1000):
 	api = REST(raw_data=True)
@@ -299,41 +298,51 @@ def init_bars_db(target = 0):
 	except Exception as e:
 		print("init_bars_db",e)
 
-	
-#@multitasking.task 
-def insert_minute_bars(tickers,minuteBars,send_last=False):
-	if not minuteBars:
-		return
-	symbols = []
-	if send_last:
-		redis = get_redis_server()
+@multitasking.task 
+def update_bar_subs():
+	redis = get_redis_server()
+	while(1):
+		time.sleep(3)
 		symbols = redis.smembers("symbols")
 		if symbols:
-			symbols = [cstr(a) for a in symbols]
+			bar_symbols = [cstr(a) for a in symbols]
+		print("update bar_symbols",len(bar_symbols))
+
+	
+#@multitasking.task 
+def insert_minute_bars(ticker,minuteBars,send_last=False):
+	if not minuteBars:
+		return
+	#symbols = []
+	#if send_last:
+	#	redis = get_redis_server()
+	#	symbols = redis.smembers("symbols")
+	#	if symbols:
+	#		symbols = [cstr(a) for a in symbols]
 
 	try:
 		_bars = [to_candle(a) for a in minuteBars ]
-		df = pd.DataFrame(_bars)
+		items = pd.DataFrame(_bars)
 		#print("tickers",len(tickers))
-		for ticker in tickers:
-			items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
-			last = None
-			
-			if not items.empty :
-				#print(" items not empty", len(items))
+		#for ticker in tickers:
+		#items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
+		last = None
+		
+		if not items.empty :
+			#print(" items not empty", len(items))
 
-				if send_last :
-					last = items.iloc[-1].to_dict()
-				items.set_index("time",inplace=True,drop=True)
-				try:
-					collection.append(ticker, items)
-				except ValueError as ve:
-					print(ticker,"--- ValueError ---",ve)
-					collection.write(ticker, items,overwrite=True)
+			if send_last :
+				last = _bars[-1]# items.iloc[-1].to_dict()
+			items.set_index("time",inplace=True,drop=True)
+			try:
+				collection.append(ticker, items)
+			except ValueError as ve:
+				print(ticker,"--- ValueError ---",ve)
+				collection.write(ticker, items,overwrite=True)
 
-				if last and send_last and  ticker in symbols:
-					ev  = "bars_%s"%  ticker.lower()
-					queue_data(ev,ev,last)
+			if last and send_last and  ticker in bar_symbols:
+				ev  = "bars_%s"%  ticker.lower()
+				queue_data(ev,ev,last)
 
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
