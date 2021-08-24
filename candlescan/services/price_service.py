@@ -197,7 +197,7 @@ def backfill(days=0,symbols=None):
 			
 			print("start",beg)
 			i = 0
-			for result in chunks(symbols),chuck):
+			for result in chunks(symbols,chuck):
 				i+=1
 				bars = api.get_barset(result,"minute",limit=limit,start=beg)					
 				#minute_bars = []
