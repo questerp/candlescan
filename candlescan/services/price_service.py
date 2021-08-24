@@ -316,6 +316,7 @@ def update_bar_subs(redis):
 #@multitasking.task 
 def insert_minute_bars(ticker,minuteBars,send_last=False):
 	if not minuteBars:
+		print(ticker,"not minuteBars")
 		return
 	#symbols = []
 	#if send_last:
