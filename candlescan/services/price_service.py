@@ -305,11 +305,12 @@ def init_bars_db(target = 0):
 def update_bar_subs(redis):
 	#redis = get_redis_server()
 	while(1):
-		time.sleep(60)
 		symbols = redis.smembers("symbols")
 		if symbols:
 			bar_symbols = [cstr(a) for a in symbols]
 		print("update bar_symbols",len(bar_symbols))
+
+		time.sleep(60)
 
 	
 #@multitasking.task 
