@@ -16,7 +16,7 @@ import pystore
 import multitasking
 import signal
 
-multitasking.set_max_threads(50)
+#multitasking.set_max_threads(50)
 signal.signal(signal.SIGINT, multitasking.killall)	 
 bar_symbols = []
 sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -327,6 +327,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 
 	try:
 		_bars = [to_candle(a) for a in minuteBars ]
+		print(len(_bars))
 		items = pd.DataFrame(_bars)
 		#print("tickers",len(tickers))
 		#for ticker in tickers:
