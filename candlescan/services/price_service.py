@@ -108,6 +108,8 @@ def _start():
 				vol = minuteBar.get("v") or 0
 				minuteBar['s'] = s
 				minuteBars.append(minuteBar)
+				if s == "BPTH":
+					print(minuteBar)
 								
 				price = latestTrade.get("p")
 				if price:
