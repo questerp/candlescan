@@ -202,7 +202,8 @@ def backfill(days=0):
 							a['t'] = dt.utcfromtimestamp(a['t'])
 						minute_bars.extend(bars[b])
 						#candles = [to_candle(a,b) for a in candles]
-					insert_minute_bars(result,minute_bars)
+					if minute_bars:
+						insert_minute_bars(result,minute_bars)
 					print(len(minute_bars),"DONE - symbols:",i*chuck,"/" ,"start",beg)
 				else:
 					print("No data")
