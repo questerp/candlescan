@@ -304,6 +304,7 @@ def init_bars_db(target = 0):
 @multitasking.task 
 def update_bar_subs(redis):
 	#redis = get_redis_server()
+	global bar_symbols
 	while(1):
 		symbols = redis.smembers("symbols")
 		if symbols:
@@ -315,6 +316,7 @@ def update_bar_subs(redis):
 	
 #@multitasking.task 
 def insert_minute_bars(ticker,minuteBars,send_last=False):
+	global bar_symbols
 	if not minuteBars:
 		print(ticker,"not minuteBars")
 		return
