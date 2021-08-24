@@ -210,7 +210,9 @@ def backfill(days=0):
 			
 	except Exception as e:
 		print("backfill ERROR",e)
-		
+	
+	print("---- Backfill DONE ------")
+	
 
 def backfill_daily(days=1000):
 	api = REST(raw_data=True)
@@ -262,14 +264,19 @@ def chunks(l, n):
     n = max(1, n)
     return (l[i:i+n] for i in range(0, len(l), n))	
 
-def init_bars_db():
+# target: 0: both 	1: minute 	2:day
+def init_bars_db(target=0):
 	print("init")
 	try:
 		#store = pystore.store('bars')
 		#collection = store.collection('1MIN')
 		#items = collection.list_items()
-		collection = store.collection("1MIN",overwrite=True)
-		collection_day = store.collection("1DAY",overwrite=True)
+		minute = target in [0,1]
+		day = target in [0,2]
+		if minute:
+			collection = store.collection("1MIN",overwrite=True)
+		if day:
+			collection_day = store.collection("1DAY",overwrite=True)
 
 		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
@@ -278,8 +285,10 @@ def init_bars_db():
 		
 		for s in symbols:
 			#if s not in items:
-			collection.write(s, df,overwrite=True)
-			collection_day.write(s, df,overwrite=True)
+			if minute:
+				collection.write(s, df,overwrite=True)
+			if day:
+				collection_day.write(s, df,overwrite=True)
 		print("DONE")
 		#print(collection.list_items())
 		#collection = store.collection("1DAY",overwrite=True)
