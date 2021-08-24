@@ -345,8 +345,9 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
 				collection.write(ticker, items,overwrite=True)
-			print(last,send_last,(ticker in bar_symbols))
-			input()
+			if ticker == "AAPL":
+				print(last,send_last,(ticker in bar_symbols))
+				input()
 			if last and send_last and  (ticker in bar_symbols):
 				print("queue",ticker)
 				ev  = "bars_%s"%  ticker.lower()
