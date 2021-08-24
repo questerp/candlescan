@@ -42,7 +42,7 @@ def disconnect():
 	
 def start():
 	try:
-		update_bar_subs(get_redis_server())
+		update_chart_subs(get_redis_server())
 		_start()
 	except Exception as e:
 		print(e)
@@ -302,11 +302,11 @@ def init_bars_db(target = 0):
 		print("init_bars_db",e)
 
 @multitasking.task 
-def update_bar_subs(redis):
+def update_chart_subs(redis):
 	#redis = get_redis_server()
 	global bar_symbols
 	while(1):
-		symbols = redis.smembers("symbols")
+		symbols = redis.smembers("chart")
 		if symbols:
 			bar_symbols = [cstr(a).upper() for a in symbols]
 		print("update bar_symbols",len(bar_symbols))
@@ -347,9 +347,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
 				collection.write(ticker, items,overwrite=True)
-			if ticker == "AAPL":
-				print(last,send_last,(ticker in bar_symbols),bar_symbols)
-				input()
+			
 			if last and send_last and  (ticker in bar_symbols):
 				print("queue",ticker)
 				ev  = "bars_%s"%  ticker.lower()
