@@ -318,27 +318,15 @@ def update_chart_subs(redis):
 def insert_minute_bars(ticker,minuteBars,send_last=False):
 	global bar_symbols
 	if not minuteBars:
-		print(ticker,"not minuteBars")
+		#♣print(ticker,"not minuteBars")
 		return
-	#symbols = []
-	#if send_last:
-	#	redis = get_redis_server()
-	#	symbols = redis.smembers("symbols")
-	#	if symbols:
-	#		symbols = [cstr(a) for a in symbols]
 
 	try:
 		_bars = [to_candle(a) for a in minuteBars ]
-		
 		items = pd.DataFrame(_bars)
-		#print("tickers",len(tickers))
-		#for ticker in tickers:
-		#items  = df.loc[df['ticker'].str.fullmatch(ticker, case=False )]
 		last = None
 		
 		if not items.empty :
-			#print(" items not empty", len(items))
-
 			if send_last :
 				last = _bars[-1]# items.iloc[-1].to_dict()
 			items.set_index("time",inplace=True,drop=True)
@@ -356,8 +344,6 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			print(ticker,"empty")
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
-		#input()
-	
 	
 def get_minute_bars(symbol,timeframe,start,end=None):
 	if not (symbol and start ):
