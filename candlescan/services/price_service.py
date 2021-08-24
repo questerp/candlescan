@@ -292,8 +292,8 @@ def init_bars_db(target = 0):
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
 		df = pd.DataFrame([{"ticker":"ticker","open":0.1,"close":0.1,"high":0.1,"low":0.1,"volume":0.0,"trades":0,"time":dt.now()}])
 		df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
-		df.ticker = df.ticker.apply(str)
-		df.ticker = df.ticker.astype(basestring)
+		#df.ticker = df.ticker.apply(str)
+		#df.ticker = df.ticker.astype(basestring)
 		
 		df.set_index("time",inplace=True,drop=True)
 		print(df.info())
