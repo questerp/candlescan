@@ -360,7 +360,7 @@ def get_minute_bars(symbol,timeframe,start,end=None):
 		if item != None:
 			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
 			print("data",data)
-			data['time'] = data.index
+			data['time'] = data.index.astype(str)
 			result = data.to_dict("records")
 		return result
 	except Exception as ex:
