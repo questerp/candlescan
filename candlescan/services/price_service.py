@@ -292,7 +292,7 @@ def init_bars_db(target = 0):
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
 		df = pd.DataFrame([{"ticker":"NaN","open":0.0,"close":0.0,"high":0.0,"low":0.0,"volume":0.0,"trades":0,"time":dt.now()}])
 		df.set_index("time",inplace=True,drop=True)
-
+		print(df.info())
 		for s in symbols:
 			#if s not in items:
 			if minute:
