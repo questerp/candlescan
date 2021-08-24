@@ -308,7 +308,7 @@ def update_bar_subs(redis):
 	while(1):
 		symbols = redis.smembers("symbols")
 		if symbols:
-			bar_symbols = [cstr(a) for a in symbols]
+			bar_symbols = [cstr(a).upper() for a in symbols]
 		print("update bar_symbols",len(bar_symbols))
 
 		time.sleep(60)
