@@ -14,8 +14,10 @@ import pandas as pd
 import threading
 import pystore
 import multitasking
+import signal
 
-	 
+multitasking.set_max_threads(50)
+signal.signal(signal.SIGINT, multitasking.killall)	 
 bar_symbols = []
 sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 lock = threading.Lock()
@@ -111,7 +113,7 @@ def _start():
 				#minuteBars.append(minuteBar)
 				
 				#if minuteBars:
-				insert_minute_bars(s,[minuteBar],True)				
+				insert_minute_bars(redis,s,[minuteBar],True)				
 				price = latestTrade.get("p")
 				if price:
 					
@@ -181,7 +183,7 @@ def backfill(days=0):
 	chuck = 200
 	limit = 1000
 	TZ = 'America/New_York'
-	
+	redis = get_redis_server()
 	#empty_candle = get_empty_candle()
 	try:
 		for d in range(days+1):
@@ -205,7 +207,7 @@ def backfill(days=0):
 							a['t'] = dt.utcfromtimestamp(a['t'])
 						#minute_bars.extend(_bars)
 						#candles = [to_candle(a,b) for a in candles]
-						insert_minute_bars(b,_bars)
+						insert_minute_bars(redis,b,_bars)
 					print(len(bars),"DONE - symbols:", "/" ,"start",beg)
 				else:
 					print("No data")
@@ -309,8 +311,8 @@ def update_bar_subs(redis):
 		#print("update bar_symbols",len(bar_symbols))
 
 	
-#@multitasking.task 
-def insert_minute_bars(ticker,minuteBars,send_last=False):
+@multitasking.task 
+def insert_minute_bars(redis,ticker,minuteBars,send_last=False):
 	if not minuteBars:
 		return
 	#symbols = []
@@ -342,7 +344,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 
 			if last and send_last and  ticker in bar_symbols:
 				ev  = "bars_%s"%  ticker.lower()
-				queue_data(ev,ev,last)
+				queue_data(ev,ev,last,redis)
 
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
