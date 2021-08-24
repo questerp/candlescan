@@ -17,7 +17,7 @@ import multitasking
 
 	 
 bar_symbols = []
-sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
+sio = socketio.Client(logger=True,json=json_encoder, engineio_logger=False,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 lock = threading.Lock()
 log = logging.getLogger(__name__)
 api = None
