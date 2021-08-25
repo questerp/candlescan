@@ -106,9 +106,9 @@ def _start():
 					#print("t",minuteBar['t'])
 				
 					
-				#if not minuteBar.get('t') or utcminute != minuteBar['t']:
-				#	continue
-				
+				if not minuteBar.get('t'):# or utcminute != minuteBar['t']:
+					continue
+
 				vol = minuteBar.get("v") or 0
 				minuteBar['s'] = s
 				#minuteBars.append(minuteBar)
