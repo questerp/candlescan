@@ -301,9 +301,10 @@ def init_bars_db(target = 0):
 		
 		df.set_index("time",inplace=True,drop=True)
 		print(df.info())
-		for s in symbols:
+		ct= len(symbols)
+		for idx,s in enumerate(symbols):
 			#if s not in items:
-			print(s)
+			print(idx,ct)
 			if minute:
 				collection.write(s, df,overwrite=True)
 			if day:
