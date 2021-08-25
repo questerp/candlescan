@@ -114,7 +114,7 @@ def _start():
 				#minuteBars.append(minuteBar)
 				
 				#if minuteBars:
-				insert_minute_bars(s,[minuteBar],True)				
+				insert_minute_bars(s,[minuteBar],True)		
 				price = latestTrade.get("p")
 				#if price:
 					
@@ -345,11 +345,11 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			if send_last :
 				last = _bars[-1]# items.iloc[-1].to_dict()
 			items.set_index("time",inplace=True,drop=True)
-			try:
-				collection.append(ticker, items)
-			except ValueError as ve:
-				print(ticker,"--- ValueError ---",ve)
-				collection.write(ticker, items,overwrite=True)
+			# try:
+			# 	collection.append(ticker, items)
+			# except ValueError as ve:
+			# 	print(ticker,"--- ValueError ---",ve)
+			# 	collection.write(ticker, items,overwrite=True)
 			
 			if last and send_last and  (ticker in bar_symbols):
 				print("queue",ticker)
