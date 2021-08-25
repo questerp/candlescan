@@ -303,6 +303,7 @@ def init_bars_db(target = 0):
 		print(df.info())
 		for s in symbols:
 			#if s not in items:
+			print(s)
 			if minute:
 				collection.write(s, df,overwrite=True)
 			if day:
