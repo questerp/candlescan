@@ -25,8 +25,8 @@ lock = threading.Lock()
 log = logging.getLogger(__name__)
 api = None
 store = pystore.store('bars',engine="pyarrow" )
-collection = store.collection('1MIN',engine="pyarrow")
-collection_day = store.collection("1DAY",engine="pyarrow")
+collection = store.collection('1MIN' )
+collection_day = store.collection("1DAY" )
 
 def connect():
 	try:
@@ -287,10 +287,10 @@ def init_bars_db(target = 0):
 		minute = target in [0,1]
 		if minute:
 			store.delete_collection("1MIN" )
-			collection = store.collection("1MIN",overwrite=True,engine="pyarrow")
+			collection = store.collection("1MIN",overwrite=True )
 		if day:
 			store.delete_collection("1DAY")
-			collection_day = store.collection("1DAY",overwrite=True,engine="pyarrow")
+			collection_day = store.collection("1DAY",overwrite=True)
 
 		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
