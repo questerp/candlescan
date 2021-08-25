@@ -180,6 +180,8 @@ def backfill(days=0,symbols=None):
 	
 	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	#all_symbols = get_active_symbols()# [a[0] for a in all_symbols] 
+	if(dt.now().hour < 4)
+		days = days + 1
 	print("backfill",dt.now())
 	chuck = 200
 	limit = 1000
