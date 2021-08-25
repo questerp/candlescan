@@ -24,7 +24,7 @@ sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reco
 lock = threading.Lock()
 log = logging.getLogger(__name__)
 api = None
-store = pystore.store('bars' )
+store = pystore.store('bars', engine='pyarrow')
 collection = store.collection('1MIN')
 collection_day = store.collection("1DAY")
 
