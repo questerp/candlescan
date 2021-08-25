@@ -24,9 +24,9 @@ sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reco
 lock = threading.Lock()
 log = logging.getLogger(__name__)
 api = None
-store = pystore.store('bars' )
-collection = store.collection('1MIN')
-collection_day = store.collection("1DAY")
+store = pystore.store('bars',engine="pyarrow" )
+collection = store.collection('1MIN',engine="pyarrow")
+collection_day = store.collection("1DAY",engine="pyarrow")
 
 def connect():
 	try:
@@ -115,52 +115,53 @@ def _start():
 				
 				#if minuteBars:
 				insert_minute_bars(s,[minuteBar],True)		
+				#print(s)
 				price = latestTrade.get("p")
-				#if price:
+				if price:
 					
-					# sql = """ update tabSymbol set 
-					# price=%s, 
-					# volume=%s, 
-					# 1m_volume=%s,
-					# today_high=%s, 
-					# today_low=%s ,
-					# today_open=%s ,
-					# today_close=%s ,
-					# today_trades=%s ,
-					# bid=%s , 
-					# ask=%s ,
-					# vwap=%s , 
-					# prev_day_open = %s ,
-					# prev_day_close = %s , 
-					# prev_day_high = %s ,
-					# prev_day_low = %s , 
-					# prev_day_vwap = %s ,
-					# prev_day_volume = %s ,
-					# prev_day_trades = %s 
-					# where name='%s' """ % (
-					# 			price or 0,
-					# 			dailyBar.get("v") or 0,
-					# 			vol,
-					# 			dailyBar.get("h") or 0,
-					# 			dailyBar.get("l") or 0,
-					# 			dailyBar.get("o") or 0,
-					# 			dailyBar.get("c") or 0,
-					# 			dailyBar.get("n") or 0,
-					# 			latestQuote.get("bp") or 0,
-					# 			latestQuote.get("ap") or 0,
-					# 			minuteBar.get("vw") or 0,
-					# 			prevDailyBar.get("o") or 0,
-					# 			prevDailyBar.get("c") or 0,
-					# 			prevDailyBar.get("h") or 0,
-					# 			prevDailyBar.get("l") or 0,
-					# 			prevDailyBar.get("vw") or 0,
-					# 			prevDailyBar.get("v") or 0,
-					# 			prevDailyBar.get("n") or 0,
-					# 			s )
-					# try:
-					# 	frappe.db.sql(sql)
-					# except Exception as e:
-					# 	print("error sql",e)
+					sql = """ update tabSymbol set 
+					price=%s, 
+					volume=%s, 
+					1m_volume=%s,
+					today_high=%s, 
+					today_low=%s ,
+					today_open=%s ,
+					today_close=%s ,
+					today_trades=%s ,
+					bid=%s , 
+					ask=%s ,
+					vwap=%s , 
+					prev_day_open = %s ,
+					prev_day_close = %s , 
+					prev_day_high = %s ,
+					prev_day_low = %s , 
+					prev_day_vwap = %s ,
+					prev_day_volume = %s ,
+					prev_day_trades = %s 
+					where name='%s' """ % (
+								price or 0,
+								dailyBar.get("v") or 0,
+								vol,
+								dailyBar.get("h") or 0,
+								dailyBar.get("l") or 0,
+								dailyBar.get("o") or 0,
+								dailyBar.get("c") or 0,
+								dailyBar.get("n") or 0,
+								latestQuote.get("bp") or 0,
+								latestQuote.get("ap") or 0,
+								minuteBar.get("vw") or 0,
+								prevDailyBar.get("o") or 0,
+								prevDailyBar.get("c") or 0,
+								prevDailyBar.get("h") or 0,
+								prevDailyBar.get("l") or 0,
+								prevDailyBar.get("vw") or 0,
+								prevDailyBar.get("v") or 0,
+								prevDailyBar.get("n") or 0,
+								s )
+					try:
+						frappe.db.sql(sql)
+					except Exception as e:
+						print("error sql",e)
 
 			except Exception as e:
 				print("error",e)
@@ -285,16 +286,16 @@ def init_bars_db(target = 0):
 		day = target in [0,2]
 		minute = target in [0,1]
 		if minute:
-			store.delete_collection("1MIN")
-			collection = store.collection("1MIN",overwrite=True)
+			store.delete_collection("1MIN" )
+			collection = store.collection("1MIN",overwrite=True,engine="pyarrow")
 		if day:
 			store.delete_collection("1DAY")
-			collection_day = store.collection("1DAY",overwrite=True)
+			collection_day = store.collection("1DAY",overwrite=True,engine="pyarrow")
 
 		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
-		df = pd.DataFrame([{"ticker":"ticker","open":0.1,"close":0.1,"high":0.1,"low":0.1,"volume":0.0,"trades":0,"time":dt.now()}])
-		df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
+		df = pd.DataFrame([{"ticker":"ticker","open":0.1,"close":0.1,"high":0.1,"low":0.1,"volume":0.1,"trades":0,"time":dt.now()}])
+		#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
 		#df.ticker = df.ticker.apply(str)
 		#df.ticker = df.ticker.astype(basestring)
 		
@@ -345,11 +346,11 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			if send_last :
 				last = _bars[-1]# items.iloc[-1].to_dict()
 			items.set_index("time",inplace=True,drop=True)
-			# try:
-			# 	collection.append(ticker, items)
-			# except ValueError as ve:
-			# 	print(ticker,"--- ValueError ---",ve)
-			# 	collection.write(ticker, items,overwrite=True)
+			try:
+				collection.append(ticker, items)
+			except ValueError as ve:
+				print(ticker,"--- ValueError ---",ve)
+				collection.write(ticker, items,overwrite=True)
 			
 			if last and send_last and  (ticker in bar_symbols):
 				print("queue",ticker)
