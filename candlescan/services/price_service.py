@@ -112,7 +112,6 @@ def get_snapshots(api,utcminute,symbols):
 	# from frappe.database import get_db
 	# db = get_db(db_name)
 	snap = api.get_snapshots(symbols)
-	print("get_snapshots DONE",dt.now(),len(snap))
 	#minuteBars = []
 	for s in snap:
 		try:
@@ -189,6 +188,7 @@ def get_snapshots(api,utcminute,symbols):
 
 		except Exception as e:
 			print("error",e)
+	print("get_snapshots DONE",dt.now(),len(snap))
 				
 	#db.commit()
 	
