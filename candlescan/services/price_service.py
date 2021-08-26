@@ -29,6 +29,7 @@ print("pd",pd.__version__)
 print("numpy",numpy.__version__)
 
 #multitasking.set_max_threads(10)
+multitasking.set_engine("process")
 signal.signal(signal.SIGINT, multitasking.killall)	 
 bar_symbols = []
 sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
