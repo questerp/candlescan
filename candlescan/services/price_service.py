@@ -221,7 +221,7 @@ def backfill(days=0,symbols=None):
 	#redis = get_redis_server()
 	#empty_candle = get_empty_candle()
 	print("symbols",symbols)
-	batch_done = True
+	threads = 0
 	if not symbols:
 		symbols  = get_active_symbols()
 
@@ -246,9 +246,9 @@ def backfill(days=0,symbols=None):
 						insert_minute_bars(b,_bars)
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
-				if i >= 50:
+				threads -=1
+				if threads == 0:
 					print("LAST ONE")
-					batch_done = True
 
 		except Exception as e:
 			print("_insert ERROR",e)	
@@ -260,17 +260,14 @@ def backfill(days=0,symbols=None):
 				continue
 			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
-			
-			while(not batch_done):
-				time.sleep(5)
-				
-			batch_done = False
-			i = 0
+			threads = 0
 			for result in chunks(symbols,chuck):
-				i+=1
-				if(result):
-					threading.Thread(target=_insert,args=(i,beg,result,)).start()	
-					
+				threads+=1
+				if result:
+					threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
+
+			while(threads>0):
+				time.sleep(5)	
 			
 	except Exception as e:
 		print("backfill ERROR",e)
