@@ -75,7 +75,7 @@ def _start():
 	#s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
-	conf = frappe.conf
+	conf = frappe.conf.copy()
 	print(conf)
 
 	while(1):
@@ -209,7 +209,9 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 
 		#except Exception as e:
 		#	print("error",e)
-
+	conn.close()
+	_cursor = None
+	conn = None
 	print("DONE",i,dt.now())
 				
 	
