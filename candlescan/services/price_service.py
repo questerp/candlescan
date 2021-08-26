@@ -102,9 +102,11 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
+		db = frappe.db
+		print(db)
 		for _symbols in chunks(symbols,1000):
 			i +=1
-			threading.Thread(target=get_snapshots,args=(frappe.db,i, api,utcminute,_symbols,)).start()	
+			threading.Thread(target=get_snapshots,args=(db,i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
 			# 2000 22sec process: 
