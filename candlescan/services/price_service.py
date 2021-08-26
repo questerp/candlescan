@@ -202,7 +202,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 							s )
 				#try:
 				sql = str(sql)
-				_cursor..execute(sql)
+				_cursor.execute(sql)
 				#except Exception as e:
 				#	print(s,"error sql",e,sql)
 
