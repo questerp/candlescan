@@ -75,7 +75,7 @@ def _start():
 	#s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
-	db = frappe.db
+	db = frappe.db.get_connection().cursor
 	print(db)
 
 	while(1):
@@ -188,7 +188,7 @@ def get_snapshots(db,i,api,utcminute,symbols):
 							prevDailyBar.get("n") or 0,
 							s )
 				try:
-					db.sql(sql)
+					db.execute(sql)
 				except Exception as e:
 					print("error sql",e)
 
