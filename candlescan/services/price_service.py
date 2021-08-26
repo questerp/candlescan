@@ -103,6 +103,8 @@ def _start():
 		for _symbols in chunks(symbols,2000):
 			i +=1
 			get_snapshots(i, api,utcminute,_symbols)
+			# 200 27sec
+			# 2000 
 
 		print("----> DONE", dt.now())
 		
