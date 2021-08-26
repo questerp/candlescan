@@ -100,7 +100,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		for _symbols in chunks(symbols,1000):
-			get_snapshots(api,utcminute,_symbols)
+			get_snapshots(frappe.conf.db_name,api,utcminute,_symbols)
 		
 		print("----> DONE", dt.now())
 		
@@ -108,9 +108,9 @@ def _start():
 		time.sleep(1)
 
 @multitasking.task 
-def get_snapshots(api,utcminute,symbols):
+def get_snapshots(db_name,api,utcminute,symbols):
 	from frappe.database import get_db
-	db = get_db(frappe.conf.db_name)
+	db = get_db(db_name)
 	snap = api.get_snapshots(symbols)
 	print("get_snapshots DONE",dt.now(),len(snap))
 	#minuteBars = []
