@@ -16,18 +16,7 @@ import numba
 import pystore
 import multitasking
 import signal
-import fastparquet
-import dask
-import numpy
 import threading
-
-print("pystore",pystore.__version__)
-print("numba",numba.__version__)
-print("multitasking",multitasking.__version__)
-print("fastparquet",fastparquet.__version__)
-print("dask",dask.__version__)
-print("pd",pd.__version__)
-print("numpy",numpy.__version__)
 
 multitasking.set_max_threads(30)
 #multitasking.set_engine("process")
@@ -129,7 +118,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	print("START",i,dt.now())
 	snap = api.get_snapshots(symbols)
 	conn = pymysql.connect(
-			user= 'frappe',
+			user= conf.db_name,
 			password= conf.db_password,
 			database=conf.db_name,
 			host='127.0.0.1',
