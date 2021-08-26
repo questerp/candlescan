@@ -75,7 +75,9 @@ def _start():
 	#s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
-	
+	db = frappe.db
+	print(db)
+
 	while(1):
 		nw  = dt.now()
 		if nw.hour < 4 or nw.hour > 20:
@@ -102,8 +104,6 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		db = frappe.db
-		print(db)
 		for _symbols in chunks(symbols,1000):
 			i +=1
 			threading.Thread(target=get_snapshots,args=(db,i, api,utcminute,_symbols,)).start()	
