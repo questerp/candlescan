@@ -28,8 +28,8 @@ print("dask",dask.__version__)
 print("pd",pd.__version__)
 print("numpy",numpy.__version__)
 
-#multitasking.set_max_threads(10)
-multitasking.set_engine("process")
+multitasking.set_max_threads(30)
+#multitasking.set_engine("process")
 signal.signal(signal.SIGINT, multitasking.killall)	 
 bar_symbols = []
 sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -87,7 +87,7 @@ def _start():
 				lapseh = 3
 			#time.sleep((lapseh*60*60)+(lapsem*60))
 			
-		if dt.now().second != 2:
+		if dt.now().second != 0:
 			time.sleep(1)
 			continue
 		frappe.db.sql("select 'KEEP_ALIVE'")
@@ -101,17 +101,63 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,2000):
+		for _symbols in chunks(symbols,500):
 			i +=1
 			get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
-			# 2000 22sec
+			# 2000 22sec process: 
 			# 1000 23 sec
+			# 500 
 
 		print("----> DONE", dt.now())
 		
 		#minuteBars = []	
 		time.sleep(1)
+		
+		# 	sql = """ update tabSymbol set 
+		# 	price=%s, 
+		# 	volume=%s, 
+		# 	1m_volume=%s,
+		# 	today_high=%s, 
+		# 	today_low=%s ,
+		# 	today_open=%s ,
+		# 	today_close=%s ,
+		# 	today_trades=%s ,
+		# 	bid=%s , 
+		# 	ask=%s ,
+		# 	vwap=%s , 
+		# 	prev_day_open = %s ,
+		# 	prev_day_close = %s , 
+		# 	prev_day_high = %s ,
+		# 	prev_day_low = %s , 
+		# 	prev_day_vwap = %s ,
+		# 	prev_day_volume = %s ,
+		# 	prev_day_trades = %s 
+		# 	where name='%s' """ % (
+		# 				price or 0,
+		# 				dailyBar.get("v") or 0,
+		# 				vol,
+		# 				dailyBar.get("h") or 0,
+		# 				dailyBar.get("l") or 0,
+		# 				dailyBar.get("o") or 0,
+		# 				dailyBar.get("c") or 0,
+		# 				dailyBar.get("n") or 0,
+		# 				latestQuote.get("bp") or 0,
+		# 				latestQuote.get("ap") or 0,
+		# 				minuteBar.get("vw") or 0,
+		# 				prevDailyBar.get("o") or 0,
+		# 				prevDailyBar.get("c") or 0,
+		# 				prevDailyBar.get("h") or 0,
+		# 				prevDailyBar.get("l") or 0,
+		# 				prevDailyBar.get("vw") or 0,
+		# 				prevDailyBar.get("v") or 0,
+		# 				prevDailyBar.get("n") or 0,
+		# 				s )
+		# 	try:
+		# 		db.sql(sql)
+		# 	except Exception as e:
+		# 		print("error sql",e)
+
 
 @multitasking.task 
 def get_snapshots(i,api,utcminute,symbols):
@@ -148,49 +194,6 @@ def get_snapshots(i,api,utcminute,symbols):
 			# price = latestTrade.get("p")
 			# if price:
 				
-			# 	sql = """ update tabSymbol set 
-			# 	price=%s, 
-			# 	volume=%s, 
-			# 	1m_volume=%s,
-			# 	today_high=%s, 
-			# 	today_low=%s ,
-			# 	today_open=%s ,
-			# 	today_close=%s ,
-			# 	today_trades=%s ,
-			# 	bid=%s , 
-			# 	ask=%s ,
-			# 	vwap=%s , 
-			# 	prev_day_open = %s ,
-			# 	prev_day_close = %s , 
-			# 	prev_day_high = %s ,
-			# 	prev_day_low = %s , 
-			# 	prev_day_vwap = %s ,
-			# 	prev_day_volume = %s ,
-			# 	prev_day_trades = %s 
-			# 	where name='%s' """ % (
-			# 				price or 0,
-			# 				dailyBar.get("v") or 0,
-			# 				vol,
-			# 				dailyBar.get("h") or 0,
-			# 				dailyBar.get("l") or 0,
-			# 				dailyBar.get("o") or 0,
-			# 				dailyBar.get("c") or 0,
-			# 				dailyBar.get("n") or 0,
-			# 				latestQuote.get("bp") or 0,
-			# 				latestQuote.get("ap") or 0,
-			# 				minuteBar.get("vw") or 0,
-			# 				prevDailyBar.get("o") or 0,
-			# 				prevDailyBar.get("c") or 0,
-			# 				prevDailyBar.get("h") or 0,
-			# 				prevDailyBar.get("l") or 0,
-			# 				prevDailyBar.get("vw") or 0,
-			# 				prevDailyBar.get("v") or 0,
-			# 				prevDailyBar.get("n") or 0,
-			# 				s )
-			# 	try:
-			# 		db.sql(sql)
-			# 	except Exception as e:
-			# 		print("error sql",e)
 
 		except Exception as e:
 			print("error",e)
