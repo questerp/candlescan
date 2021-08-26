@@ -384,8 +384,8 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 		print("insert_minute_bars ERROR",e)
 
 @multitasking.task 
-def add_to_queue(ev,ev,last):
-	queue_data(ev,ev,last)
+def add_to_queue(event,ev,last):
+	queue_data(event,ev,last)
 
 
 def get_minute_bars(symbol,timeframe,start,end=None):
