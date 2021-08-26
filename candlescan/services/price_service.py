@@ -262,7 +262,7 @@ def backfill(days=0,symbols=None):
 				if result:
 					threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
 			
-			time.sleep(5*chuck)
+			time.sleep(5*len(symbols))
 
 	except Exception as e:
 		print("backfill ERROR",e)
