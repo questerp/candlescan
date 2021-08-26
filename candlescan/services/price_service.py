@@ -227,6 +227,7 @@ def backfill(days=0,symbols=None):
 
 	def _insert(i,start,chunk_symbols):
 		try:
+			global threads
 			sleeptime = random.uniform(0, 20)
 			time.sleep(sleeptime)
 			print("start",i,start)
