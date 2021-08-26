@@ -125,7 +125,7 @@ def _start():
 				#minuteBars.append(minuteBar)
 				
 				#if minuteBars:
-				insert_minute_bars(s,[minuteBar],True)		
+				#insert_minute_bars(s,[minuteBar],True)		
 				#print(s)
 				price = latestTrade.get("p")
 				if price:
@@ -350,7 +350,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 
 	try:
 		_bars = [to_candle(a) for a in minuteBars ]
-		items = pd.DataFrame(_bars)
+		items = pd.DataFrame.from_dict(_bars)
 		last = None
 		
 		if not items.empty :
