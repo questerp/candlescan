@@ -377,12 +377,17 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			if last and send_last and  (ticker in bar_symbols):
 				print("queue",ticker)
 				ev  = "bars_%s"%  ticker.lower()
-				queue_data(ev,ev,last)
+				add_to_queue(ev,ev,last)
 		else:
 			print(ticker,"empty")
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
-	
+
+@multitasking.task 
+def add_to_queue(ev,ev,last):
+	queue_data(ev,ev,last)
+
+
 def get_minute_bars(symbol,timeframe,start,end=None):
 	if not (symbol and start ):
 		return
