@@ -128,7 +128,7 @@ def get_snapshots(db,i,api,utcminute,symbols):
 	snap = api.get_snapshots(symbols)
 	
 	for s in snap:
-		try:
+		#try:
 			data = snap[s]
 			if not data:
 				continue
@@ -187,13 +187,15 @@ def get_snapshots(db,i,api,utcminute,symbols):
 							prevDailyBar.get("v") or 0,
 							prevDailyBar.get("n") or 0,
 							s )
-				try:
+				#try:
+					sql = str(sql)
+					print(sql)
 					db.execute(sql)
-				except Exception as e:
-					print("error sql",e)
+				#except Exception as e:
+				#	print("error sql",e)
 
-		except Exception as e:
-			print("error",e)
+		#except Exception as e:
+		#	print("error",e)
 
 	print("DONE",i,dt.now())
 				
