@@ -262,7 +262,7 @@ def backfill(days=0,symbols=None):
 				if result:
 					threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
 			
-			time.sleep(180)
+			time.sleep(5*chuck)
 
 	except Exception as e:
 		print("backfill ERROR",e)
@@ -431,7 +431,7 @@ def get_minute_bars(symbol,timeframe,start,end=None):
 		if item != None:
 			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
 			#print("data",data)
-			data['time'] = data.index.astype(str)
+			#data['time'] = data.index.astype(str)
 			result = data.to_dict("records")
 		return result
 	except Exception as ex:
