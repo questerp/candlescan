@@ -225,11 +225,11 @@ def backfill(days=0,symbols=None):
 	if not symbols:
 		symbols  = get_active_symbols()
 
-	def _insert(start,symbols):
+	def _insert(i,start,symbols):
 		try:
 			sleeptime = random.uniform(0, 20)
 			time.sleep(sleeptime)
-			print("start",start)
+			print("start",i,start)
 			tcall = dt.now()
 			bars = api.get_barset(symbols,"minute",limit=1000,start=start)					
 			#minute_bars = []
@@ -246,7 +246,8 @@ def backfill(days=0,symbols=None):
 						insert_minute_bars(b,_bars)
 				tend = dt.now()
 				print(chuck*i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
-
+				if i >= 49:
+					print("LAST ONE")
 		except Exception as e:
 			print("_insert ERROR",e)	
 
@@ -262,7 +263,8 @@ def backfill(days=0,symbols=None):
 			i = 0
 			for result in chunks(symbols,chuck):
 				i+=1
-				threading.Thread(target=_insert,args=(beg,result,)).start()	
+				if(result):
+					threading.Thread(target=_insert,args=(i,beg,result,)).start()	
 					
 			
 	except Exception as e:
