@@ -73,7 +73,6 @@ def _start():
 	#s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
-	from frappe.database import get_db
 	
 	while(1):
 		nw  = dt.now()
@@ -110,6 +109,7 @@ def _start():
 
 @multitasking.task 
 def get_snapshots(api,utcminute,symbols):
+	from frappe.database import get_db
 	db = get_db(frappe.conf.db_name)
 	snap = api.get_snapshots(symbols)
 	print("get_snapshots DONE",dt.now(),len(snap))
