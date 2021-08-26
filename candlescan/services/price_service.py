@@ -100,17 +100,17 @@ def _start():
 		
 		print("utcminute",utcminute)
 		for _symbols in chunks(symbols,1000):
-			get_snapshots(frappe.conf.db_name,api,utcminute,_symbols)
-		
+			get_snapshots( api,utcminute,_symbols)
+
 		print("----> DONE", dt.now())
 		
 		#minuteBars = []	
 		time.sleep(1)
 
 @multitasking.task 
-def get_snapshots(db_name,api,utcminute,symbols):
-	from frappe.database import get_db
-	db = get_db(db_name)
+def get_snapshots(api,utcminute,symbols):
+	# from frappe.database import get_db
+	# db = get_db(db_name)
 	snap = api.get_snapshots(symbols)
 	print("get_snapshots DONE",dt.now(),len(snap))
 	#minuteBars = []
@@ -140,57 +140,57 @@ def get_snapshots(db_name,api,utcminute,symbols):
 			#if minuteBars:
 			insert_minute_bars(s,[minuteBar],True)		
 			#print(s)
-			price = latestTrade.get("p")
-			if price:
+			# price = latestTrade.get("p")
+			# if price:
 				
-				sql = """ update tabSymbol set 
-				price=%s, 
-				volume=%s, 
-				1m_volume=%s,
-				today_high=%s, 
-				today_low=%s ,
-				today_open=%s ,
-				today_close=%s ,
-				today_trades=%s ,
-				bid=%s , 
-				ask=%s ,
-				vwap=%s , 
-				prev_day_open = %s ,
-				prev_day_close = %s , 
-				prev_day_high = %s ,
-				prev_day_low = %s , 
-				prev_day_vwap = %s ,
-				prev_day_volume = %s ,
-				prev_day_trades = %s 
-				where name='%s' """ % (
-							price or 0,
-							dailyBar.get("v") or 0,
-							vol,
-							dailyBar.get("h") or 0,
-							dailyBar.get("l") or 0,
-							dailyBar.get("o") or 0,
-							dailyBar.get("c") or 0,
-							dailyBar.get("n") or 0,
-							latestQuote.get("bp") or 0,
-							latestQuote.get("ap") or 0,
-							minuteBar.get("vw") or 0,
-							prevDailyBar.get("o") or 0,
-							prevDailyBar.get("c") or 0,
-							prevDailyBar.get("h") or 0,
-							prevDailyBar.get("l") or 0,
-							prevDailyBar.get("vw") or 0,
-							prevDailyBar.get("v") or 0,
-							prevDailyBar.get("n") or 0,
-							s )
-				try:
-					db.sql(sql)
-				except Exception as e:
-					print("error sql",e)
+			# 	sql = """ update tabSymbol set 
+			# 	price=%s, 
+			# 	volume=%s, 
+			# 	1m_volume=%s,
+			# 	today_high=%s, 
+			# 	today_low=%s ,
+			# 	today_open=%s ,
+			# 	today_close=%s ,
+			# 	today_trades=%s ,
+			# 	bid=%s , 
+			# 	ask=%s ,
+			# 	vwap=%s , 
+			# 	prev_day_open = %s ,
+			# 	prev_day_close = %s , 
+			# 	prev_day_high = %s ,
+			# 	prev_day_low = %s , 
+			# 	prev_day_vwap = %s ,
+			# 	prev_day_volume = %s ,
+			# 	prev_day_trades = %s 
+			# 	where name='%s' """ % (
+			# 				price or 0,
+			# 				dailyBar.get("v") or 0,
+			# 				vol,
+			# 				dailyBar.get("h") or 0,
+			# 				dailyBar.get("l") or 0,
+			# 				dailyBar.get("o") or 0,
+			# 				dailyBar.get("c") or 0,
+			# 				dailyBar.get("n") or 0,
+			# 				latestQuote.get("bp") or 0,
+			# 				latestQuote.get("ap") or 0,
+			# 				minuteBar.get("vw") or 0,
+			# 				prevDailyBar.get("o") or 0,
+			# 				prevDailyBar.get("c") or 0,
+			# 				prevDailyBar.get("h") or 0,
+			# 				prevDailyBar.get("l") or 0,
+			# 				prevDailyBar.get("vw") or 0,
+			# 				prevDailyBar.get("v") or 0,
+			# 				prevDailyBar.get("n") or 0,
+			# 				s )
+			# 	try:
+			# 		db.sql(sql)
+			# 	except Exception as e:
+			# 		print("error sql",e)
 
 		except Exception as e:
 			print("error",e)
 				
-	db.commit()
+	#db.commit()
 	
 def backfill(days=0,symbols=None):
 	api = REST(raw_data=True)
