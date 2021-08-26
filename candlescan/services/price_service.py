@@ -205,7 +205,6 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	conn = None
 	print("DONE",i,dt.now())
 				
-	
 def backfill(days=0,symbols=None):
 	api = REST(raw_data=True)
 	
@@ -221,13 +220,11 @@ def backfill(days=0,symbols=None):
 	#redis = get_redis_server()
 	#empty_candle = get_empty_candle()
 	print("symbols",symbols)
-	threads = 0
 	if not symbols:
 		symbols  = get_active_symbols()
 
 	def _insert(i,start,chunk_symbols):
 		try:
-			global threads
 			sleeptime = random.uniform(0, 20)
 			time.sleep(sleeptime)
 			print("start",i,start)
@@ -247,9 +244,7 @@ def backfill(days=0,symbols=None):
 						insert_minute_bars(b,_bars)
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
-				threads -=1
-				if threads == 0:
-					print("LAST ONE")
+				
 
 		except Exception as e:
 			print("_insert ERROR",e)	
@@ -266,10 +261,9 @@ def backfill(days=0,symbols=None):
 				threads+=1
 				if result:
 					threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
-
-			while(threads>0):
-				time.sleep(5)	
 			
+			time.sleep(180)
+
 	except Exception as e:
 		print("backfill ERROR",e)
 
