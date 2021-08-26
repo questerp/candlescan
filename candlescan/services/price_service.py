@@ -99,7 +99,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		for _symbols in chunks(symbols,1000):
-			get_snapshots(api,utcminute,_symbols)
+			get_snapshots(frappe.db,api,utcminute,_symbols)
 		
 		print("----> DONE", dt.now())
 		
@@ -107,7 +107,7 @@ def _start():
 		time.sleep(1)
 
 @multitasking.task 
-def get_snapshots(api,utcminute,symbols):
+def get_snapshots(db,api,utcminute,symbols):
 	snap = api.get_snapshots(symbols)
 	print("get_snapshots DONE",dt.now(),len(snap))
 	#minuteBars = []
@@ -180,14 +180,14 @@ def get_snapshots(api,utcminute,symbols):
 							prevDailyBar.get("n") or 0,
 							s )
 				try:
-					frappe.db.sql(sql)
+					db.sql(sql)
 				except Exception as e:
 					print("error sql",e)
 
 		except Exception as e:
 			print("error",e)
 				
-	frappe.db.commit()
+	db.commit()
 	
 def backfill(days=0,symbols=None):
 	api = REST(raw_data=True)
