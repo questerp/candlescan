@@ -99,7 +99,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		for _symbols in chunks(symbols,1000):
-			get_snapshots(utcminute,_symbols)
+			get_snapshots(api,utcminute,_symbols)
 		
 		print("----> DONE", dt.now())
 		
@@ -107,7 +107,7 @@ def _start():
 		time.sleep(1)
 
 @multitasking.task 
-def get_snapshots(utcminute,symbols):
+def get_snapshots(api,utcminute,symbols):
 	snap = api.get_snapshots(symbols)
 	print("get_snapshots DONE",dt.now(),len(snap))
 	#minuteBars = []
