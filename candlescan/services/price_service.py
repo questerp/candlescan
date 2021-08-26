@@ -28,7 +28,7 @@ print("dask",dask.__version__)
 print("pd",pd.__version__)
 print("numpy",numpy.__version__)
 
-multitasking.set_max_threads(50)
+multitasking.set_max_threads(10)
 signal.signal(signal.SIGINT, multitasking.killall)	 
 bar_symbols = []
 sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -100,7 +100,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,200):
+		for _symbols in chunks(symbols,2000):
 			i +=1
 			get_snapshots(i, api,utcminute,_symbols)
 
