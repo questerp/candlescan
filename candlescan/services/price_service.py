@@ -75,7 +75,8 @@ def _start():
 	#s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
-	
+	conf = frappe.conf
+	print(conf)
 
 	while(1):
 		nw  = dt.now()
@@ -105,7 +106,7 @@ def _start():
 		i = 0
 		for _symbols in chunks(symbols,1000):
 			i +=1
-			threading.Thread(target=get_snapshots,args=(frappe.conf,i, api,utcminute,_symbols,)).start()	
+			threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
 			# 2000 22sec process: 
