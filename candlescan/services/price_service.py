@@ -100,7 +100,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,500):
+		for _symbols in chunks(symbols,200):
 			i +=1
 			get_snapshots(i, api,utcminute,_symbols)
 
