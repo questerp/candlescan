@@ -206,7 +206,7 @@ def backfill(days=0,symbols=None):
 		symbols  = get_active_symbols()
 	try:
 		for d in range(days+1):
-			start =  add_days(dt.now(),-1*d) #-1
+			start =  add_days(dt.now(),-1*d +1 ) #-1
 			if start.weekday() in [5,6]:
 				continue
 			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
@@ -216,6 +216,7 @@ def backfill(days=0,symbols=None):
 			i = 0
 			for result in chunks(symbols,chuck):
 				i+=1
+				tcall = dt.now()
 				bars = api.get_barset(result,"minute",limit=limit,start=beg)					
 				#minute_bars = []
 				tstart = dt.now()
@@ -230,7 +231,7 @@ def backfill(days=0,symbols=None):
 						if _bars:
 							insert_minute_bars(b,_bars)
 					tend = dt.now()
-					print(chuck*i,"DONE","time:" ,tend-tstart)
+					print(chuck*i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 				else:
 					print("No data")
 					
