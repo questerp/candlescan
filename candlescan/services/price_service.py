@@ -104,71 +104,27 @@ def _start():
 		i = 0
 		for _symbols in chunks(symbols,1000):
 			i +=1
-			threading.Thread(target=get_snapshots,args=(i, api,utcminute,_symbols,)).start()	
+			threading.Thread(target=get_snapshots,args=(frappe.db,i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
 			# 2000 22sec process: 
 			# 1000 23 sec
 			# 500  31 sec
 			# 3000 
-
+		frappe.db.commit()
 		print("----> DONE", dt.now())
 		
 		#minuteBars = []	
 		time.sleep(1)
 		
-		# 	sql = """ update tabSymbol set 
-		# 	price=%s, 
-		# 	volume=%s, 
-		# 	1m_volume=%s,
-		# 	today_high=%s, 
-		# 	today_low=%s ,
-		# 	today_open=%s ,
-		# 	today_close=%s ,
-		# 	today_trades=%s ,
-		# 	bid=%s , 
-		# 	ask=%s ,
-		# 	vwap=%s , 
-		# 	prev_day_open = %s ,
-		# 	prev_day_close = %s , 
-		# 	prev_day_high = %s ,
-		# 	prev_day_low = %s , 
-		# 	prev_day_vwap = %s ,
-		# 	prev_day_volume = %s ,
-		# 	prev_day_trades = %s 
-		# 	where name='%s' """ % (
-		# 				price or 0,
-		# 				dailyBar.get("v") or 0,
-		# 				vol,
-		# 				dailyBar.get("h") or 0,
-		# 				dailyBar.get("l") or 0,
-		# 				dailyBar.get("o") or 0,
-		# 				dailyBar.get("c") or 0,
-		# 				dailyBar.get("n") or 0,
-		# 				latestQuote.get("bp") or 0,
-		# 				latestQuote.get("ap") or 0,
-		# 				minuteBar.get("vw") or 0,
-		# 				prevDailyBar.get("o") or 0,
-		# 				prevDailyBar.get("c") or 0,
-		# 				prevDailyBar.get("h") or 0,
-		# 				prevDailyBar.get("l") or 0,
-		# 				prevDailyBar.get("vw") or 0,
-		# 				prevDailyBar.get("v") or 0,
-		# 				prevDailyBar.get("n") or 0,
-		# 				s )
-		# 	try:
-		# 		db.sql(sql)
-				#db.commit()
-
-		# 	except Exception as e:
-		# 		print("error sql",e)
+		
 
 
 #@multitasking.task 
-def get_snapshots(i,api,utcminute,symbols):
+def get_snapshots(db,i,api,utcminute,symbols):
 	print("START",i,dt.now())
 	snap = api.get_snapshots(symbols)
-
+	
 	for s in snap:
 		try:
 			data = snap[s]
@@ -188,6 +144,52 @@ def get_snapshots(i,api,utcminute,symbols):
 			vol = minuteBar.get("v") or 0
 			minuteBar['s'] = s
 			insert_minute_bars(s,[minuteBar],True)		
+			price = latestTrade.get("p") or 0
+			if price:
+				sql = """ update tabSymbol set 
+				price=%s, 
+				volume=%s, 
+				1m_volume=%s,
+				today_high=%s, 
+				today_low=%s ,
+				today_open=%s ,
+				today_close=%s ,
+				today_trades=%s ,
+				bid=%s , 
+				ask=%s ,
+				vwap=%s , 
+				prev_day_open = %s ,
+				prev_day_close = %s , 
+				prev_day_high = %s ,
+				prev_day_low = %s , 
+				prev_day_vwap = %s ,
+				prev_day_volume = %s ,
+				prev_day_trades = %s 
+				where name='%s' """ % (
+							price or 0,
+							dailyBar.get("v") or 0,
+							vol,
+							dailyBar.get("h") or 0,
+							dailyBar.get("l") or 0,
+							dailyBar.get("o") or 0,
+							dailyBar.get("c") or 0,
+							dailyBar.get("n") or 0,
+							latestQuote.get("bp") or 0,
+							latestQuote.get("ap") or 0,
+							minuteBar.get("vw") or 0,
+							prevDailyBar.get("o") or 0,
+							prevDailyBar.get("c") or 0,
+							prevDailyBar.get("h") or 0,
+							prevDailyBar.get("l") or 0,
+							prevDailyBar.get("vw") or 0,
+							prevDailyBar.get("v") or 0,
+							prevDailyBar.get("n") or 0,
+							s )
+				try:
+					db.sql(sql)
+				except Exception as e:
+					print("error sql",e)
+
 		except Exception as e:
 			print("error",e)
 
