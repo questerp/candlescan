@@ -87,7 +87,7 @@ def _start():
 				lapseh = 3
 			#time.sleep((lapseh*60*60)+(lapsem*60))
 			
-		if dt.now().second != 5:
+		if dt.now().second > 10:
 			time.sleep(1)
 			continue
 		frappe.db.sql("select 'KEEP_ALIVE'")
