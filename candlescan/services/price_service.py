@@ -221,17 +221,17 @@ def backfill(days=0,symbols=None):
 	#redis = get_redis_server()
 	#empty_candle = get_empty_candle()
 	print("symbols",symbols)
-
+	batch_done = True
 	if not symbols:
 		symbols  = get_active_symbols()
 
-	def _insert(i,start,symbols):
+	def _insert(i,start,chunk_symbols):
 		try:
 			sleeptime = random.uniform(0, 20)
 			time.sleep(sleeptime)
 			print("start",i,start)
 			tcall = dt.now()
-			bars = api.get_barset(symbols,"minute",limit=1000,start=start)					
+			bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)					
 			#minute_bars = []
 			tstart = dt.now()
 			if bars :
@@ -245,9 +245,11 @@ def backfill(days=0,symbols=None):
 					if _bars:
 						insert_minute_bars(b,_bars)
 				tend = dt.now()
-				print(chuck*i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
-				if i >= 49:
+				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
+				if i >= 50:
 					print("LAST ONE")
+					batch_done = True
+
 		except Exception as e:
 			print("_insert ERROR",e)	
 
@@ -259,7 +261,10 @@ def backfill(days=0,symbols=None):
 			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
 			
-			
+			while(not batch_done):
+				time.sleep(5)
+				
+			batch_done = False
 			i = 0
 			for result in chunks(symbols,chuck):
 				i+=1
