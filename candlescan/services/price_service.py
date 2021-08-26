@@ -164,8 +164,8 @@ def _start():
 
 @multitasking.task 
 def get_snapshots(i,api,utcminute,symbols):
-	snap = api.get_snapshots(symbols)
 	print("START",i,dt.now())
+	snap = api.get_snapshots(symbols)
 
 	for s in snap:
 		try:
