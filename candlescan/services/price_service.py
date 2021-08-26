@@ -16,6 +16,17 @@ import numba
 import pystore
 import multitasking
 import signal
+import fastparquet
+import dask
+import numpy
+
+print("pystore",pystore.__version__)
+print("numba",numba.__version__)
+print("multitasking",multitasking.__version__)
+print("fastparquet",fastparquet.__version__)
+print("dask",dask.__version__)
+print("pd",pd.__version__)
+print("numpy",numpy.__version__)
 
 #multitasking.set_max_threads(50)
 signal.signal(signal.SIGINT, multitasking.killall)	 
@@ -24,7 +35,7 @@ sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reco
 lock = threading.Lock()
 log = logging.getLogger(__name__)
 api = None
-store = pystore.store('bars',engine="pyarrow" )
+store = pystore.store('bars')
 collection = store.collection('1MIN' )
 collection_day = store.collection("1DAY" )
 
