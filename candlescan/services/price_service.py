@@ -28,7 +28,7 @@ print("dask",dask.__version__)
 print("pd",pd.__version__)
 print("numpy",numpy.__version__)
 
-multitasking.set_max_threads(30)
+#multitasking.set_max_threads(30)
 #multitasking.set_engine("process")
 signal.signal(signal.SIGINT, multitasking.killall)	 
 bar_symbols = []
@@ -101,13 +101,14 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,500):
+		for _symbols in chunks(symbols,3000):
 			i +=1
 			get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
 			# 2000 22sec process: 
 			# 1000 23 sec
-			# 500 
+			# 500  31 sec
+			# 3000 
 
 		print("----> DONE", dt.now())
 		
@@ -155,16 +156,15 @@ def _start():
 		# 				s )
 		# 	try:
 		# 		db.sql(sql)
+				#db.commit()
+
 		# 	except Exception as e:
 		# 		print("error sql",e)
 
 
 @multitasking.task 
 def get_snapshots(i,api,utcminute,symbols):
-	# from frappe.database import get_db
-	# db = get_db(db_name)
 	snap = api.get_snapshots(symbols)
-	#minuteBars = []
 	for s in snap:
 		try:
 			data = snap[s]
@@ -178,28 +178,17 @@ def get_snapshots(i,api,utcminute,symbols):
 			
 			if minuteBar.get('t'):
 				minuteBar['t'] = get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
-				#print("t",minuteBar['t'])
-			
-				
 			if not minuteBar.get('t') or utcminute != minuteBar['t']:
 				continue
 
 			vol = minuteBar.get("v") or 0
 			minuteBar['s'] = s
-			#minuteBars.append(minuteBar)
-			
-			#if minuteBars:
 			insert_minute_bars(s,[minuteBar],True)		
-			#print(s)
-			# price = latestTrade.get("p")
-			# if price:
-				
-
 		except Exception as e:
 			print("error",e)
+
 	print("DONE",i)
 				
-	#db.commit()
 	
 def backfill(days=0,symbols=None):
 	api = REST(raw_data=True)
