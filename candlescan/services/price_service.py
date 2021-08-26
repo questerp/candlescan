@@ -229,6 +229,7 @@ def backfill(days=0,symbols=None):
 		try:
 			sleeptime = random.uniform(0, 20)
 			time.sleep(sleeptime)
+			print("start",start)
 			tcall = dt.now()
 			bars = api.get_barset(symbols,"minute",limit=1000,start=start)					
 			#minute_bars = []
@@ -257,7 +258,7 @@ def backfill(days=0,symbols=None):
 			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
 			
-			print("start",beg)
+			
 			i = 0
 			for result in chunks(symbols,chuck):
 				i+=1
