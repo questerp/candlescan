@@ -17,6 +17,8 @@ import pystore
 import multitasking
 import signal
 import threading
+from numpy import random
+
 
 multitasking.set_max_threads(30)
 #multitasking.set_engine("process")
@@ -131,7 +133,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 		)
 	_cursor = conn.cursor()
 	for s in snap:
-		#try:
+		try:
 			data = snap[s]
 			if not data:
 				continue
@@ -190,14 +192,14 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 							prevDailyBar.get("v") or 0,
 							prevDailyBar.get("n") or 0,
 							s )
-				#try:
-				sql = str(sql)
-				_cursor.execute(sql)
-				#except Exception as e:
-				#	print(s,"error sql",e,sql)
+				try:
+					sql = str(sql)
+					_cursor.execute(sql)
+				except Exception as e:
+					print(s,"error sql",e,sql)
 
-		#except Exception as e:
-		#	print("error",e)
+		except Exception as e:
+			print("error",e)
 	conn.close()
 	_cursor = None
 	conn = None
@@ -222,6 +224,31 @@ def backfill(days=0,symbols=None):
 
 	if not symbols:
 		symbols  = get_active_symbols()
+
+	def _insert(start,symbols):
+		try:
+			sleeptime = random.uniform(0, 20)
+			time.sleep(sleeptime)
+			tcall = dt.now()
+			bars = api.get_barset(symbols,"minute",limit=1000,start=start)					
+			#minute_bars = []
+			tstart = dt.now()
+			if bars :
+				for b in bars:
+					_bars = bars[b]
+					for a in _bars:
+						a['s'] = b
+						a['t'] = dt.utcfromtimestamp(a['t'])
+					#minute_bars.extend(_bars)
+					#candles = [to_candle(a,b) for a in candles]
+					if _bars:
+						insert_minute_bars(b,_bars)
+				tend = dt.now()
+				print(chuck*i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
+
+		except Exception as e:
+			print("_insert ERROR",e)	
+			
 	try:
 		for d in range(days+1):
 			start =  add_days(dt.now(),-1*d) #-1*d
@@ -234,24 +261,7 @@ def backfill(days=0,symbols=None):
 			i = 0
 			for result in chunks(symbols,chuck):
 				i+=1
-				tcall = dt.now()
-				bars = api.get_barset(result,"minute",limit=limit,start=beg)					
-				#minute_bars = []
-				tstart = dt.now()
-				if bars :
-					for b in bars:
-						_bars = bars[b]
-						for a in _bars:
-							a['s'] = b
-							a['t'] = dt.utcfromtimestamp(a['t'])
-						#minute_bars.extend(_bars)
-						#candles = [to_candle(a,b) for a in candles]
-						if _bars:
-							insert_minute_bars(b,_bars)
-					tend = dt.now()
-					print(chuck*i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
-				else:
-					print("No data")
+				threading.Thread(target=_insert,args=(bege,result,)).start()	
 					
 			
 	except Exception as e:
