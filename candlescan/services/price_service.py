@@ -375,7 +375,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 				collection.write(ticker, items,overwrite=True)
 			
 			if last and send_last and  (ticker in bar_symbols):
-				print("queue",ticker)
+				
 				ev  = "bars_%s"%  ticker.lower()
 				add_to_queue(ev,ev,last)
 		else:
@@ -385,6 +385,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 
 @multitasking.task 
 def add_to_queue(event,ev,last):
+	print("queue",event)
 	queue_data(event,ev,last)
 
 
