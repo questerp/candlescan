@@ -99,8 +99,10 @@ def _start():
 		utcminute = utcminute.replace(second=0).replace(microsecond=0)
 		
 		print("utcminute",utcminute)
+		i = 0
 		for _symbols in chunks(symbols,1000):
-			get_snapshots( api,utcminute,_symbols)
+			i++
+			get_snapshots(i, api,utcminute,_symbols)
 
 		print("----> DONE", dt.now())
 		
@@ -108,7 +110,7 @@ def _start():
 		time.sleep(1)
 
 @multitasking.task 
-def get_snapshots(api,utcminute,symbols):
+def get_snapshots(i,api,utcminute,symbols):
 	# from frappe.database import get_db
 	# db = get_db(db_name)
 	snap = api.get_snapshots(symbols)
@@ -188,7 +190,7 @@ def get_snapshots(api,utcminute,symbols):
 
 		except Exception as e:
 			print("error",e)
-	print("get_snapshots DONE",dt.now(),len(snap))
+	print("DONE",i)
 				
 	#db.commit()
 	
