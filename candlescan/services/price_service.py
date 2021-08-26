@@ -165,6 +165,8 @@ def _start():
 @multitasking.task 
 def get_snapshots(i,api,utcminute,symbols):
 	snap = api.get_snapshots(symbols)
+	print("START",i,dt.now())
+
 	for s in snap:
 		try:
 			data = snap[s]
@@ -187,7 +189,7 @@ def get_snapshots(i,api,utcminute,symbols):
 		except Exception as e:
 			print("error",e)
 
-	print("DONE",i)
+	print("DONE",i,dt.now())
 				
 	
 def backfill(days=0,symbols=None):
