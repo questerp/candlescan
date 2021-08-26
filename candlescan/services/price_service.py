@@ -102,7 +102,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,500):
+		for _symbols in chunks(symbols,1000):
 			i +=1
 			threading.Thread(target=get_snapshots,args=(i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
