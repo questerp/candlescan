@@ -218,6 +218,7 @@ def backfill(days=0,symbols=None):
 				i+=1
 				bars = api.get_barset(result,"minute",limit=limit,start=beg)					
 				#minute_bars = []
+				tstart = dt.now()
 				if bars :
 					for b in bars:
 						_bars = bars[b]
@@ -228,7 +229,8 @@ def backfill(days=0,symbols=None):
 						#candles = [to_candle(a,b) for a in candles]
 						if _bars:
 							insert_minute_bars(b,_bars)
-					print(chuck*i,"DONE - symbols:", "/" ,"start",beg)
+					tend = dt.now()
+					print(chuck*i,"DONE","time:" ,tend-tstart)
 				else:
 					print("No data")
 					
