@@ -75,8 +75,7 @@ def _start():
 	#s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
-	db = frappe.db.get_connection().cursor()
-	print(db)
+	
 
 	while(1):
 		nw  = dt.now()
@@ -106,7 +105,7 @@ def _start():
 		i = 0
 		for _symbols in chunks(symbols,1000):
 			i +=1
-			threading.Thread(target=get_snapshots,args=(db,i, api,utcminute,_symbols,)).start()	
+			threading.Thread(target=get_snapshots,args=(frappe.conf,i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
 			# 2000 22sec process: 
@@ -121,12 +120,26 @@ def _start():
 		
 		
 
+import pymysql
+from pymysql.converters import conversions, escape_string
 
 #@multitasking.task 
-def get_snapshots(db,i,api,utcminute,symbols):
+def get_snapshots(conf,i,api,utcminute,symbols):
 	print("START",i,dt.now())
 	snap = api.get_snapshots(symbols)
-	
+	conn = pymysql.connect(
+			user= 'frappe',
+			password= conf.db_password,
+			database=conf.db_name,
+			host='127.0.0.1',
+			port='',
+			charset='utf8mb4',
+			use_unicode=True,
+			ssl=  None,
+			conv=conversions,
+			local_infile=conf.local_infile
+		)
+	_cursor = conn.cursor()
 	for s in snap:
 		#try:
 			data = snap[s]
@@ -189,7 +202,7 @@ def get_snapshots(db,i,api,utcminute,symbols):
 							s )
 				#try:
 				sql = str(sql)
-				db.execute(sql)
+				_cursor..execute(sql)
 				#except Exception as e:
 				#	print(s,"error sql",e,sql)
 
