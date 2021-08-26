@@ -125,7 +125,7 @@ def _start():
 				#minuteBars.append(minuteBar)
 				
 				#if minuteBars:
-				#insert_minute_bars(s,[minuteBar],True)		
+				insert_minute_bars(s,[minuteBar],True)		
 				#print(s)
 				price = latestTrade.get("p")
 				if price:
@@ -191,7 +191,7 @@ def backfill(days=0,symbols=None):
 	
 	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	#all_symbols = get_active_symbols()# [a[0] for a in all_symbols] 
-	if days == 0 and dt.now().hour < 4:
+	if days == 0 and dt.now().hour < 8:
 		days = days + 1
 		print("out of hours")
 	print("backfill",dt.now())
