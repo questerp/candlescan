@@ -74,7 +74,7 @@ def _start():
 	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
 	from frappe.database import get_db
-	db = get_db(frappe.conf.db_name)
+	
 	while(1):
 		nw  = dt.now()
 		if nw.hour < 4 or nw.hour > 20:
@@ -101,7 +101,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		for _symbols in chunks(symbols,1000):
-			get_snapshots(db,api,utcminute,_symbols)
+			get_snapshots(api,utcminute,_symbols)
 		
 		print("----> DONE", dt.now())
 		
@@ -109,7 +109,8 @@ def _start():
 		time.sleep(1)
 
 @multitasking.task 
-def get_snapshots(db,api,utcminute,symbols):
+def get_snapshots(api,utcminute,symbols):
+	db = get_db(frappe.conf.db_name)
 	snap = api.get_snapshots(symbols)
 	print("get_snapshots DONE",dt.now(),len(snap))
 	#minuteBars = []
