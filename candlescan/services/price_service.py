@@ -191,7 +191,7 @@ def get_snapshots(db,i,api,utcminute,symbols):
 					sql = str(sql)
 					db.execute(sql)
 				except Exception as e:
-					print(s,"error sql",e)
+					print(s,"error sql",e,sql)
 
 		except Exception as e:
 			print("error",e)
