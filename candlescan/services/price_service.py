@@ -188,9 +188,9 @@ def get_snapshots(db,i,api,utcminute,symbols):
 							prevDailyBar.get("n") or 0,
 							s )
 				#try:
-					sql = str(sql)
-					print(sql)
-					db.execute(sql)
+				sql = str(sql)
+				print(sql)
+				db.execute(sql)
 				#except Exception as e:
 				#	print("error sql",e)
 
