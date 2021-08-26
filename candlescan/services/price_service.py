@@ -19,6 +19,7 @@ import signal
 import fastparquet
 import dask
 import numpy
+import threading
 
 print("pystore",pystore.__version__)
 print("numba",numba.__version__)
@@ -103,7 +104,8 @@ def _start():
 		i = 0
 		for _symbols in chunks(symbols,1000):
 			i +=1
-			get_snapshots(i, api,utcminute,_symbols)
+			threading.Thread(target=get_snapshots,args=(i, api,utcminute,_symbols,)).start()	
+			#get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
 			# 2000 22sec process: 
 			# 1000 23 sec
@@ -162,7 +164,7 @@ def _start():
 		# 		print("error sql",e)
 
 
-@multitasking.task 
+#@multitasking.task 
 def get_snapshots(i,api,utcminute,symbols):
 	print("START",i,dt.now())
 	snap = api.get_snapshots(symbols)
