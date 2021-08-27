@@ -383,7 +383,7 @@ def update_chart_subs(redis):
 def insert_minute_bars(ticker,minuteBars,send_last=False):
 	global bar_symbols
 	if not minuteBars:
-		#♣print(ticker,"not minuteBars")
+		print(ticker,"not minuteBars")
 		return
 
 	try:
@@ -397,6 +397,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			#items["timestamp"] = items.time#.astype(str)
 			items.set_index("time",inplace=True,drop=True)
 			try:
+				print(ticker)
 				collection.append(ticker, items)
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
