@@ -225,7 +225,7 @@ def backfill(days=0,symbols=None):
 
 	def _insert(i,start,chunk_symbols):
 		try:
-			sleeptime = random.uniform(0, 20)
+			sleeptime = random.uniform(0, 500)
 			time.sleep(sleeptime)
 			print("start",i,start)
 			tcall = dt.now()
@@ -407,6 +407,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 				collection.append(ticker, items,npartitions=1)
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
+				print(items)
 				collection.write(ticker, items,overwrite=True)
 			
 			if last and send_last and  (ticker in bar_symbols):
