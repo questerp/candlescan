@@ -248,6 +248,7 @@ def backfill(days=0,symbols=None):
 
 		except Exception as e:
 			print("_insert ERROR",e)	
+		
 
 	try:
 		for d in range(days+1):
@@ -262,7 +263,7 @@ def backfill(days=0,symbols=None):
 				if result:
 					threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
 			
-			time.sleep(5*len(symbols))
+			time.sleep(5 )
 
 	except Exception as e:
 		print("backfill ERROR",e)
