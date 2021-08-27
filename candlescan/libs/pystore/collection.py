@@ -146,7 +146,7 @@ class Collection(object):
         dd.to_parquet(data, self._item_path(item, as_string=True),append=append,
                        overwrite = overwrite,
                        ignore_divisions = append,
-                       compute=False,
+                    #    compute=False,
                       compression="snappy", engine=self.engine, **kwargs)
 
         # utils.write_metadata(utils.make_path(
