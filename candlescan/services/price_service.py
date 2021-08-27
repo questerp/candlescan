@@ -426,11 +426,11 @@ def add_to_queue(event,ev,last):
 def get_minute_bars(symbol,timeframe,start,end=None):
 	if not (symbol and start ):
 		return
-	start = dt.fromtimestamp(start)
-	if not end:
-		end = dt.utcnow()#.isoformat()
-	else:
-		end = dt.utcfromtimestamp(end)
+	#♥start = dt.fromtimestamp(start)
+	#if not end:
+	#	end = time.time_ns() # dt.utcnow().timestamp()#.isoformat()
+	#else:
+	#	end = dt.utcfromtimestamp(end)
 	try:
 		result = []
 		item = None
@@ -442,7 +442,10 @@ def get_minute_bars(symbol,timeframe,start,end=None):
 		print("start",start)
 		print("end",end)
 		if item != None:
-			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
+			if end:
+				data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
+			else:
+				data = item.data.loc[(item.data.index>=start) ].compute()
 			#print("data",data)
 			data['timestamp'] = data.timestamp.astype(str)
 			result = data.to_dict("records")
