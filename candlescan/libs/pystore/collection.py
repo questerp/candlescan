@@ -137,8 +137,9 @@ class Collection(object):
         #             1 + memusage.compute() // config.PARTITION_SIZE)
         #         data.repartition(npartitions=npartitions)
         #     else:
-        memusage = data.memory_usage(deep=True).sum()
-        npartitions = int(1 + memusage // config.PARTITION_SIZE)
+        if npartitions is None:
+            memusage = data.memory_usage(deep=True).sum()
+            npartitions = int(1 + memusage // config.PARTITION_SIZE)
         data = dd.from_pandas(data, npartitions=npartitions)
 
         dd.to_parquet(data, self._item_path(item, as_string=True),append=(not overwrite),
