@@ -195,7 +195,7 @@ class Collection(object):
         # write data
         write = self.write_threaded if threaded else self.write
         write(item, data, npartitions=npartitions, chunksize=None,
-              metadata=current.metadata, overwrite=False,path = self._item_path(item) ,
+                overwrite=False,path = self._item_path(item) ,
               epochdate=epochdate, reload_items=reload_items, **kwargs)
 
     def create_snapshot(self, snapshot=None):
