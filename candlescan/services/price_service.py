@@ -13,7 +13,7 @@ from alpaca_trade_api.rest import REST
 import pandas as pd
 import threading
 import numba
-from libs import pystore
+from candlescan.libs import pystore
 import multitasking
 import signal
 import threading
