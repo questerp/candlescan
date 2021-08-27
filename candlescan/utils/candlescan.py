@@ -47,7 +47,7 @@ def to_candle(data,symbol=None):
         'close': data.get("c") or 0.0,
         'high': data.get("h") or 0.0,
         'low': data.get("l") or 0.0,
-        'volume': data.get("v") or 0.0,
+        'volume': data.get("v") or 0,
         'trades': data.get("n") or 0
     }
 
