@@ -353,6 +353,7 @@ def init_bars_db(target = 0):
 		
 		print(df.info())
 		ct= len(symbols)
+		input()
 		for idx,s in enumerate(symbols):
 			#if s not in items:
 			print(idx,ct)
