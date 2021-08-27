@@ -349,7 +349,7 @@ def init_bars_db(target = 0):
 		#df["timestamp"] = df.time.astype(str)
 
 		df.set_index("time",inplace=True,drop=True)
-		df.index = df.index.astype(np.int64)
+		df.index = df.index.values.astype(np.int64)
 		
 		print(df.info())
 		ct= len(symbols)
@@ -401,7 +401,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 				last = _bars[-1]# items.iloc[-1].to_dict()
 			#items["timestamp"] = items.time#.astype(str)
 			items.set_index("time",inplace=True,drop=True)
-			items.index = items.index.astype(np.int64)
+			items.index = items.index.values.astype(np.int64)
 			try:
 				#print(ticker)
 				collection.append(ticker, items,npartitions=1)
