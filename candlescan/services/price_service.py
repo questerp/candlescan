@@ -336,7 +336,7 @@ def init_bars_db(target = 0):
 
 		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
-		df = pd.DataFrame([{"ticker":"ticker","open":0.1,"close":0.1,"high":0.1,"low":0.1,"volume":0.1,"trades":0,"time":dt.now(),"timestamp":dt.now()}])
+		df = pd.DataFrame([{"ticker":"ticker","open":0.1,"close":0.1,"high":0.1,"low":0.1,"volume":0.1,"trades":0,"time":dt.min,"timestamp":dt.min}])
 		#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
 		#df.ticker = df.ticker.apply(str)
 		#df.ticker = df.ticker.astype(basestring)
@@ -431,7 +431,7 @@ def get_minute_bars(symbol,timeframe,start,end=None):
 		if item != None:
 			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
 			#print("data",data)
-			#data['time'] = data.time.astype(str)
+			data['timestamp'] = data.timestamp.astype(str)
 			result = data.to_dict("records")
 		return result
 	except Exception as ex:
