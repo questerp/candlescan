@@ -104,13 +104,17 @@ class Collection(object):
 
     def write(self, item, data, metadata={},
               npartitions=None, chunksize=None, overwrite=False,
-              epochdate=False, reload_items=False,
+              epochdate=False, reload_items=False,path=None,
               **kwargs):
 
-        if utils.path_exists(self._item_path(item)) and not overwrite:
-            raise ValueError("""
-                Item already exists. To overwrite, use `overwrite=True`.
-                Otherwise, use `<collection>.append()`""")
+        if not path:
+            path =  self._item_path(item) 
+
+        if not overwrite:
+            if  utils.path_exists(path) :
+                raise ValueError("""
+                    Item already exists. To overwrite, use `overwrite=True`.
+                    Otherwise, use `<collection>.append()`""")
 
         # if isinstance(data, Item):
         #     data = data.to_pandas()
@@ -140,8 +144,8 @@ class Collection(object):
         dd.to_parquet(data, self._item_path(item, as_string=True),append=(not overwrite),
                       compression="snappy", engine=self.engine, **kwargs)
 
-        utils.write_metadata(utils.make_path(
-            self.datastore, self.collection, item), metadata)
+        # utils.write_metadata(utils.make_path(
+        #     self.datastore, self.collection, item), metadata)
 
         # update items
         self.items.add(item)
@@ -189,7 +193,7 @@ class Collection(object):
         # write data
         write = self.write_threaded if threaded else self.write
         write(item, data, npartitions=npartitions, chunksize=None,
-              metadata=current.metadata, overwrite=False,
+              metadata=current.metadata, overwrite=False,path = self._item_path(item) ,
               epochdate=epochdate, reload_items=reload_items, **kwargs)
 
     def create_snapshot(self, snapshot=None):
