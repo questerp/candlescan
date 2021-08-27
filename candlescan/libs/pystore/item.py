@@ -57,6 +57,7 @@ class Item(object):
                     "Item `%s` doesn't exist in this snapshot" % item)
 
         self.metadata = utils.read_metadata(self._path)
+        print("self._path",self._path)
         self.data = dd.read_parquet(
             self._path, engine=self.engine, filters=filters, columns=columns)
 
