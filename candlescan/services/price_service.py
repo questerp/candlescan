@@ -398,7 +398,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			#items["timestamp"] = items.time#.astype(str)
 			items.set_index("time",inplace=True,drop=True)
 			try:
-				print(ticker)
+				#print(ticker)
 				collection.append(ticker, items)
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
