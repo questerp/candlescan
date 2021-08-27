@@ -230,7 +230,7 @@ def backfill(days=0,symbols=None):
 			print("start",i,start)
 			tcall = dt.now()
 			bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)	
-			print(i,"BARS",len(bars))
+			#print(i,"BARS",len(bars))
 
 			#minute_bars = []
 			tstart = dt.now()
@@ -263,9 +263,10 @@ def backfill(days=0,symbols=None):
 			for result in chunks(symbols,chuck):
 				threads+=1
 				if result:
-					threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
+					_insert(threads,beg,result)
+					#threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
 			
-			time.sleep(5 )
+			#time.sleep(5 )
 
 	except Exception as e:
 		print("backfill ERROR",e)
