@@ -229,7 +229,9 @@ def backfill(days=0,symbols=None):
 			time.sleep(sleeptime)
 			print("start",i,start)
 			tcall = dt.now()
-			bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)					
+			bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)	
+			print(i,"BARS",len(bars))
+
 			#minute_bars = []
 			tstart = dt.now()
 			if bars :
