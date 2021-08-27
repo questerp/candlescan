@@ -263,8 +263,8 @@ def backfill(days=0,symbols=None):
 			for result in chunks(symbols,chuck):
 				threads+=1
 				if result:
-					_insert(threads,beg,result)
-					#threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
+					#_insert(threads,beg,result)
+					threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
 			
 			#time.sleep(5 )
 
