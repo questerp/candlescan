@@ -150,9 +150,9 @@ class Collection(object):
         #     self.datastore, self.collection, item), metadata)
 
         # update items
-        self.items.add(item)
-        if reload_items:
-            self._list_items_threaded()
+        # self.items.add(item)
+        # if reload_items:
+        #     self._list_items_threaded()
 
     def append(self, item, data, npartitions=None, epochdate=False,
                threaded=False, reload_items=False, **kwargs):
