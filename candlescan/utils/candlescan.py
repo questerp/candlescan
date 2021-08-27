@@ -22,8 +22,9 @@ active_symbols = []
 def get_active_symbols():
     global active_symbols
     if not active_symbols:
-        s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
+        s = frappe.db.sql(""" select symbol from tabSymbol where active=1 order by 1m_volume desc""",as_list=True)
         active_symbols = [a[0] for a in s]
+        print("top 1m volume",active_symbols[0])
     return active_symbols
 
 def clear_active_symbols():
