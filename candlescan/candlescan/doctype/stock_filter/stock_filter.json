@@ -7,7 +7,10 @@
   "user",
   "title",
   "refresh",
+  "limit_results",
   "column_break_3",
+  "sound",
+  "notify_all",
   "sort_field",
   "sort_mode",
   "section_break_6",
@@ -82,9 +85,25 @@
    "fieldname": "filters",
    "fieldtype": "Long Text",
    "label": "Filters"
+  },
+  {
+   "fieldname": "sound",
+   "fieldtype": "Data",
+   "label": "Sound"
+  },
+  {
+   "default": "0",
+   "fieldname": "notify_all",
+   "fieldtype": "Check",
+   "label": "Notify all"
+  },
+  {
+   "fieldname": "limit_results",
+   "fieldtype": "Int",
+   "label": "Limit"
   }
  ],
- "modified": "2021-07-18 11:34:21.246573",
+ "modified": "2021-08-10 12:41:46.440068",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Stock Filter",

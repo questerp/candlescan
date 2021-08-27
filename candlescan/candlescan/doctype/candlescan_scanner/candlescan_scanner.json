@@ -4,25 +4,21 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "scanner",
   "title",
   "description",
   "scanner_id",
-  "method"
+  "section_break_6",
+  "default_config",
+  "config",
+  "signature"
  ],
  "fields": [
   {
-   "fieldname": "scanner",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Scanner",
-   "options": "DocType",
-   "reqd": 1
-  },
-  {
    "fieldname": "title",
    "fieldtype": "Data",
-   "label": "Title"
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
   },
   {
    "fieldname": "description",
@@ -30,22 +26,35 @@
    "label": "Description"
   },
   {
-   "fieldname": "method",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "method",
-   "reqd": 1
-  },
-  {
    "fieldname": "scanner_id",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Scanner id",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "default_config",
+   "fieldtype": "Long Text",
+   "label": "Default Config"
+  },
+  {
+   "fieldname": "config",
+   "fieldtype": "Long Text",
+   "label": "Config"
+  },
+  {
+   "fieldname": "signature",
+   "fieldtype": "Long Text",
+   "label": "Signature",
+   "reqd": 1
   }
  ],
  "istable": 1,
- "modified": "2021-07-11 08:23:55.700819",
+ "modified": "2021-07-27 07:09:30.490455",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Candlescan scanner",

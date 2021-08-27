@@ -1,50 +1,63 @@
 {
- "creation": "2021-07-02 07:02:30.888412",
+ "creation": "2021-08-02 06:46:35.951449",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "watchlist",
-  "user",
-  "symbols",
-  "section_break_4",
-  "columns"
+  "title",
+  "date",
+  "symbol",
+  "column_break_3",
+  "source",
+  "section_break_5",
+  "content"
  ],
  "fields": [
   {
-   "fieldname": "watchlist",
+   "fieldname": "date",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Watchlist",
+   "label": "Date",
    "reqd": 1
   },
   {
-   "fieldname": "user",
-   "fieldtype": "Link",
+   "fieldname": "symbol",
+   "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "User",
-   "options": "Customer",
+   "label": "Symbol",
    "reqd": 1
   },
   {
-   "fieldname": "symbols",
-   "fieldtype": "Long Text",
-   "label": "Symbols"
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_4",
+   "fieldname": "source",
+   "fieldtype": "Long Text",
+   "in_list_view": 1,
+   "label": "Source",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_5",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "columns",
+   "fieldname": "content",
    "fieldtype": "Long Text",
-   "label": "Columns"
+   "label": "Content"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Long Text",
+   "label": "Title",
+   "reqd": 1
   }
  ],
- "modified": "2021-07-31 16:57:26.340569",
+ "modified": "2021-08-02 08:14:09.267545",
  "modified_by": "Administrator",
  "module": "CandleScan",
- "name": "Watchlist",
+ "name": "News",
  "owner": "Administrator",
  "permissions": [
   {

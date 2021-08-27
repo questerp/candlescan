@@ -1,4 +1,5 @@
 {
+ "allow_rename": 1,
  "autoname": "field:symbol",
  "creation": "2021-07-01 19:40:23.318040",
  "doctype": "DocType",
@@ -6,9 +7,12 @@
  "engine": "InnoDB",
  "field_order": [
   "symbol",
+  "active",
   "company",
   "website",
   "exchange",
+  "cik",
+  "market_class",
   "column_break_4",
   "sector",
   "industry_type",
@@ -17,18 +21,42 @@
   "section_break_7",
   "floating_shares",
   "market_cap",
+  "today_open",
+  "today_close",
+  "today_high",
+  "today_low",
+  "today_trades",
+  "vwap",
   "column_break_10",
   "price",
   "52w_heigh",
+  "1m_volume",
   "volume",
-  "section_break_14",
   "volume_avg",
+  "ta_section",
+  "daily_change_per",
+  "daily_change_val",
+  "gap_per",
+  "gap_val",
+  "column_break_33",
+  "daily_close_change_per",
+  "daily_close_change_val",
   "section_break_16",
   "key_statistics_data",
   "key_price_data",
   "section_break_22",
   "key_summary_data",
-  "stock_summary_detail"
+  "stock_summary_detail",
+  "section_break_26",
+  "ask",
+  "bid",
+  "prev_day_open",
+  "prev_day_close",
+  "prev_day_high",
+  "prev_day_low",
+  "prev_day_vwap",
+  "prev_day_volume",
+  "prev_day_trades"
  ],
  "fields": [
   {
@@ -41,7 +69,7 @@
   },
   {
    "fieldname": "company",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "in_list_view": 1,
    "label": "Company",
    "reqd": 1
@@ -106,10 +134,6 @@
    "label": "Volume"
   },
   {
-   "fieldname": "section_break_14",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "volume_avg",
    "fieldtype": "Float",
    "label": "Avg Volume"
@@ -158,9 +182,152 @@
    "fieldname": "stock_summary_detail",
    "fieldtype": "Long Text",
    "label": "stock_summary_detail"
+  },
+  {
+   "fieldname": "cik",
+   "fieldtype": "Data",
+   "label": "CIK"
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "ask",
+   "fieldtype": "Float",
+   "label": "Ask"
+  },
+  {
+   "fieldname": "bid",
+   "fieldtype": "Float",
+   "label": "Bid"
+  },
+  {
+   "fieldname": "market_class",
+   "fieldtype": "Data",
+   "label": "Market Class"
+  },
+  {
+   "fieldname": "today_high",
+   "fieldtype": "Float",
+   "label": "Today high"
+  },
+  {
+   "fieldname": "today_low",
+   "fieldtype": "Float",
+   "label": "Today low"
+  },
+  {
+   "fieldname": "vwap",
+   "fieldtype": "Float",
+   "label": "VWAP"
+  },
+  {
+   "fieldname": "today_open",
+   "fieldtype": "Float",
+   "label": "Today open"
+  },
+  {
+   "fieldname": "today_close",
+   "fieldtype": "Float",
+   "label": "Today close"
+  },
+  {
+   "fieldname": "today_trades",
+   "fieldtype": "Float",
+   "label": "Today trades"
+  },
+  {
+   "fieldname": "prev_day_open",
+   "fieldtype": "Float",
+   "label": "Prev Day open"
+  },
+  {
+   "fieldname": "prev_day_close",
+   "fieldtype": "Float",
+   "label": "Prev Day close"
+  },
+  {
+   "fieldname": "prev_day_high",
+   "fieldtype": "Float",
+   "label": "Prev Day high"
+  },
+  {
+   "fieldname": "prev_day_low",
+   "fieldtype": "Float",
+   "label": "Prev Day low"
+  },
+  {
+   "fieldname": "prev_day_volume",
+   "fieldtype": "Float",
+   "label": "Prev Day volume"
+  },
+  {
+   "fieldname": "prev_day_trades",
+   "fieldtype": "Float",
+   "label": "Prev Day trades"
+  },
+  {
+   "default": "0",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Active",
+   "search_index": 1
+  },
+  {
+   "fieldname": "prev_day_vwap",
+   "fieldtype": "Float",
+   "label": "Prev Day vwap"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "ta_section",
+   "fieldtype": "Section Break",
+   "label": "TA"
+  },
+  {
+   "fieldname": "daily_change_per",
+   "fieldtype": "Float",
+   "label": "Daily change percent"
+  },
+  {
+   "fieldname": "daily_change_val",
+   "fieldtype": "Float",
+   "label": "Daily change value"
+  },
+  {
+   "fieldname": "gap_per",
+   "fieldtype": "Float",
+   "label": "GAP percent"
+  },
+  {
+   "fieldname": "gap_val",
+   "fieldtype": "Float",
+   "label": "GAP value"
+  },
+  {
+   "fieldname": "1m_volume",
+   "fieldtype": "Float",
+   "label": "1M Volume"
+  },
+  {
+   "fieldname": "column_break_33",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "daily_close_change_per",
+   "fieldtype": "Float",
+   "label": "Daily close change percent"
+  },
+  {
+   "fieldname": "daily_close_change_val",
+   "fieldtype": "Float",
+   "label": "Daily close change value"
   }
  ],
- "modified": "2021-07-15 11:08:09.890237",
+ "modified": "2021-08-10 14:34:53.246917",
  "modified_by": "Administrator",
  "module": "CandleScan",
  "name": "Symbol",
@@ -180,6 +347,8 @@
   }
  ],
  "quick_entry": 1,
+ "search_fields": "symbol",
+ "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC"
 }

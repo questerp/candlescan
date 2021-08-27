@@ -1,50 +1,45 @@
 {
- "creation": "2021-07-02 07:02:30.888412",
+ "creation": "2021-07-27 06:38:37.074239",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "watchlist",
-  "user",
-  "symbols",
-  "section_break_4",
-  "columns"
+  "scanner",
+  "date",
+  "section_break_3",
+  "state"
  ],
  "fields": [
   {
-   "fieldname": "watchlist",
+   "fieldname": "scanner",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Watchlist",
+   "label": "Scanner",
    "reqd": 1
   },
   {
-   "fieldname": "user",
-   "fieldtype": "Link",
+   "fieldname": "date",
+   "fieldtype": "Datetime",
    "in_list_view": 1,
-   "label": "User",
-   "options": "Customer",
+   "label": "Date",
    "reqd": 1
   },
   {
-   "fieldname": "symbols",
-   "fieldtype": "Long Text",
-   "label": "Symbols"
-  },
-  {
-   "fieldname": "section_break_4",
+   "fieldname": "section_break_3",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "columns",
+   "fieldname": "state",
    "fieldtype": "Long Text",
-   "label": "Columns"
+   "in_list_view": 1,
+   "label": "State",
+   "reqd": 1
   }
  ],
- "modified": "2021-07-31 16:57:26.340569",
+ "modified": "2021-07-27 06:38:37.074239",
  "modified_by": "Administrator",
  "module": "CandleScan",
- "name": "Watchlist",
+ "name": "Scanner Result",
  "owner": "Administrator",
  "permissions": [
   {
