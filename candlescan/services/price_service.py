@@ -400,6 +400,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 				last = _bars[-1]# items.iloc[-1].to_dict()
 			#items["timestamp"] = items.time#.astype(str)
 			items.set_index("time",inplace=True,drop=True)
+			items.index = items.index.astype(np.int64)
 			try:
 				#print(ticker)
 				collection.append(ticker, items,npartitions=1)
