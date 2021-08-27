@@ -143,6 +143,7 @@ class Collection(object):
         data = dd.from_pandas(data, npartitions=npartitions)
 
         dd.to_parquet(data, self._item_path(item, as_string=True),append=(not overwrite),
+                        overwrite = overwrite,
                       compression="snappy", engine=self.engine, **kwargs)
 
         # utils.write_metadata(utils.make_path(
