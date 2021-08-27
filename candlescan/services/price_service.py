@@ -336,12 +336,12 @@ def init_bars_db(target = 0):
 
 		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
-		df = pd.DataFrame([{"ticker":"ticker","open":0.1,"close":0.1,"high":0.1,"low":0.1,"volume":0.1,"trades":0,"time":dt.now()}])
+		df = pd.DataFrame([{"ticker":"ticker","open":0.1,"close":0.1,"high":0.1,"low":0.1,"volume":0.1,"trades":0,"time":dt.now(),"timestamp":dt.now()}])
 		#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
 		#df.ticker = df.ticker.apply(str)
 		#df.ticker = df.ticker.astype(basestring)
 		#df["timestamp"] = df.time.astype(str)
-		df.set_index("time",inplace=True,drop=False)
+		df.set_index("time",inplace=True,drop=True)
 		print(df.info())
 		ct= len(symbols)
 		for idx,s in enumerate(symbols):
@@ -388,7 +388,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			if send_last :
 				last = _bars[-1]# items.iloc[-1].to_dict()
 			#items["timestamp"] = items.time#.astype(str)
-			items.set_index("time",inplace=True,drop=False)
+			items.set_index("time",inplace=True,drop=True)
 			try:
 				collection.append(ticker, items)
 			except ValueError as ve:
@@ -431,7 +431,7 @@ def get_minute_bars(symbol,timeframe,start,end=None):
 		if item != None:
 			data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
 			#print("data",data)
-			data['time'] = data.time.astype(str)
+			#data['time'] = data.time.astype(str)
 			result = data.to_dict("records")
 		return result
 	except Exception as ex:

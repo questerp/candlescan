@@ -41,6 +41,7 @@ def to_candle(data,symbol=None):
     return {
         'ticker': cstr(data.get("s")) or symbol,
         'time': data.get("t"),
+        'timestamp': data.get("t"),
         'open': data.get("o") or 0,
         'close': data.get("c") or 0,
         'high': data.get("h") or 0,
