@@ -18,7 +18,7 @@ import multitasking
 import signal
 import threading
 from numpy import random
-
+import numpy as np
 
 multitasking.set_max_threads(30)
 #multitasking.set_engine("process")
@@ -347,7 +347,10 @@ def init_bars_db(target = 0):
 		#df.ticker = df.ticker.apply(str)
 		#df.ticker = df.ticker.astype(basestring)
 		#df["timestamp"] = df.time.astype(str)
+
 		df.set_index("time",inplace=True,drop=True)
+		df.index = df.index.astype(np.int64)
+		
 		print(df.info())
 		ct= len(symbols)
 		for idx,s in enumerate(symbols):

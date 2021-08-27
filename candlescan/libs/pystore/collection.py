@@ -112,32 +112,32 @@ class Collection(object):
                 Item already exists. To overwrite, use `overwrite=True`.
                 Otherwise, use `<collection>.append()`""")
 
-        if isinstance(data, Item):
-            data = data.to_pandas()
-        else:
-            # work on copy
-            data = data.copy()
+        # if isinstance(data, Item):
+        #     data = data.to_pandas()
+        # else:
+        #     # work on copy
+        #     data = data.copy()
 
-        if epochdate or "datetime" in str(data.index.dtype):
-            data = utils.datetime_to_int64(data)
-            if 1 in data.index.nanosecond and "times" not in kwargs:
-                kwargs["times"] = "int96"
+        # if epochdate or "datetime" in str(data.index.dtype):
+        #     data = utils.datetime_to_int64(data)
+        #     if 1 in data.index.nanosecond and "times" not in kwargs:
+        #         kwargs["times"] = "int96"
 
-        if data.index.name == "":
-            data.index.name = "index"
+        # if data.index.name == "":
+        #     data.index.name = "index"
 
-        if npartitions is None and chunksize is None:
-            memusage = data.memory_usage(deep=True).sum()
-            if isinstance(data, dd.DataFrame):
-                npartitions = int(
-                    1 + memusage.compute() // config.PARTITION_SIZE)
-                data.repartition(npartitions=npartitions)
-            else:
-                npartitions = int(
-                    1 + memusage // config.PARTITION_SIZE)
-                data = dd.from_pandas(data, npartitions=npartitions)
+        # if npartitions is None and chunksize is None:
+        #     memusage = data.memory_usage(deep=True).sum()
+        #     if isinstance(data, dd.DataFrame):
+        #         npartitions = int(
+        #             1 + memusage.compute() // config.PARTITION_SIZE)
+        #         data.repartition(npartitions=npartitions)
+        #     else:
+        memusage = data.memory_usage(deep=True).sum()
+        npartitions = int(1 + memusage // config.PARTITION_SIZE)
+        data = dd.from_pandas(data, npartitions=npartitions)
 
-        dd.to_parquet(data, self._item_path(item, as_string=True),
+        dd.to_parquet(data, self._item_path(item, as_string=True),append=(not overwrite),
                       compression="snappy", engine=self.engine, **kwargs)
 
         utils.write_metadata(utils.make_path(
@@ -151,45 +151,45 @@ class Collection(object):
     def append(self, item, data, npartitions=None, epochdate=False,
                threaded=False, reload_items=False, **kwargs):
 
-        if not utils.path_exists(self._item_path(item)):
-            raise ValueError(
-                """Item do not exists. Use `<collection>.write(...)`""")
+        # if not utils.path_exists(self._item_path(item)):
+        #     raise ValueError(
+        #         """Item do not exists. Use `<collection>.write(...)`""")
 
         # work on copy
-        data = data.copy()
+        #data = data.copy()
 
-        try:
-            if epochdate or ("datetime" in str(data.index.dtype) and
-                             any(data.index.nanosecond) > 0):
-                data = utils.datetime_to_int64(data)
-            old_index = dd.read_parquet(self._item_path(item, as_string=True),
-                                        columns=[], engine=self.engine
-                                        ).index.compute()
-            data = data[~data.index.isin(old_index)]
-        except Exception:
-            return
+        # try:
+        #     if epochdate or ("datetime" in str(data.index.dtype) and
+        #                      any(data.index.nanosecond) > 0):
+        #         data = utils.datetime_to_int64(data)
+        #     old_index = dd.read_parquet(self._item_path(item, as_string=True),
+        #                                 columns=[], engine=self.engine
+        #                                 ).index.compute()
+        #     data = data[~data.index.isin(old_index)]
+        # except Exception:
+        #     return
 
         if data.empty:
             return
 
-        if data.index.name == "":
-            data.index.name = "index"
+        # if data.index.name == "":
+        #     data.index.name = "index"
 
         # combine old dataframe with new
-        current = self.item(item)
-        new = dd.from_pandas(data, npartitions=1)
-        combined = dd.concat([current.data, new]).drop_duplicates(keep="last")
+        # current = self.item(item)
+        # new = dd.from_pandas(data, npartitions=1)
+        # combined = dd.concat([current.data, new]).drop_duplicates(keep="last")
 
-        if npartitions is None:
-            memusage = combined.memory_usage(deep=True).sum()
-            if isinstance(combined, dd.DataFrame):
-                memusage = memusage.compute()
-            npartitions = int(1 + memusage // config.PARTITION_SIZE)
+        # if npartitions is None:
+        #     memusage = combined.memory_usage(deep=True).sum()
+        #     if isinstance(combined, dd.DataFrame):
+        #         memusage = memusage.compute()
+        #     npartitions = int(1 + memusage // config.PARTITION_SIZE)
 
         # write data
         write = self.write_threaded if threaded else self.write
-        write(item, combined, npartitions=npartitions, chunksize=None,
-              metadata=current.metadata, overwrite=True,
+        write(item, data, npartitions=npartitions, chunksize=None,
+              metadata=current.metadata, overwrite=False,
               epochdate=epochdate, reload_items=reload_items, **kwargs)
 
     def create_snapshot(self, snapshot=None):
