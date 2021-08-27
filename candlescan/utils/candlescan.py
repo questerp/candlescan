@@ -43,10 +43,10 @@ def to_candle(data,symbol=None):
         'ticker': cstr(data.get("s")) or symbol,
         'time': data.get("t"),
         'timestamp': data.get("t"),
-        'open': data.get("o") or 0.0,
-        'close': data.get("c") or 0.0,
-        'high': data.get("h") or 0.0,
-        'low': data.get("l") or 0.0,
+        'open': float(data.get("o") or 0),
+        'close': float(data.get("c") or 0),
+        'high': float(data.get("h") or 0),
+        'low': float(data.get("l") or 0),
         'volume': data.get("v") or 0,
         'trades': data.get("n") or 0
     }
