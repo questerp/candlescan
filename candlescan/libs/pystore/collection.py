@@ -109,7 +109,7 @@ class Collection(object):
               **kwargs):
 
         if not path:
-            path =  self._item_path(item) 
+            path =  self._item_path(item,True) 
         print(path)
         if not (overwrite or append):
             if  utils.path_exists(path) :
@@ -148,7 +148,7 @@ class Collection(object):
                        ignore_divisions = append,
                        write_metadata_file=False,
                     #    compute=False,
-                      compression=None, engine=self.engine, **kwargs)
+                      compression="snappy", engine=self.engine, **kwargs)
 
         # utils.write_metadata(utils.make_path(
         #     self.datastore, self.collection, item), metadata)
@@ -199,7 +199,7 @@ class Collection(object):
         # write data
         write = self.write_threaded if threaded else self.write
         write(item, data, npartitions=npartitions, chunksize=None,
-                overwrite=False,append=True,path = self._item_path(item) ,
+                overwrite=False,append=True,path = self._item_path(item,True) ,
               epochdate=epochdate, reload_items=reload_items, **kwargs)
 
     def create_snapshot(self, snapshot=None):
