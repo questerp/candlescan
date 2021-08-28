@@ -150,7 +150,7 @@ class Collection(object):
             #overwrite = overwrite,
             ignore_divisions = append,
             #write_metadata_file=False,
-            compression="snappy", 
+            #compression="snappy", 
             engine=self.engine, 
             **kwargs)
 
