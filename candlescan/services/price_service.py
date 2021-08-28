@@ -145,7 +145,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			
 			if minuteBar.get('t'):
 				minuteBar['t'] = get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
-			if not minuteBar.get('t') or utcminute != minuteBar['t']:
+			if not minuteBar.get('t'):# or utcminute != minuteBar['t']:
 				continue
 
 			vol = minuteBar.get("v") or 0
