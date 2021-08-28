@@ -444,12 +444,14 @@ def get_minute_bars(symbol,timeframe,start=None,end=None,limit=None):
 		print("start",start)
 		print("end",end)
 		if item != None:
-			if end:
+			if start and end:
 				data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
+			elif start:
+				data = item.data.loc[(item.data.index>=start) ].compute()
 			elif limit:
 				data = item.data.tail(limit)
 			else:
-				data = item.data.loc[(item.data.index>=start) ].compute()
+				data = item.data.tail(100)
 			if not data.empty:
 			#print("data",data)
 				#data.drop_duplicates(subset="index",inplace=True)
