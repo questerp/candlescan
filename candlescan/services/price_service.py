@@ -152,7 +152,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				continue
 
 			#vol = minuteBar.get("v") or 0
-			minuteBar['s'] = s
+			#minuteBar['s'] = s
 			insert_minute_bars(s,[minuteBar],False)		
 			#price = latestTrade.get("p") or 0
 			# if price:
@@ -241,7 +241,7 @@ def backfill(days=0,symbols=None):
 				for b in bars:
 					_bars = bars[b]
 					for a in _bars:
-						a['s'] = b
+						#a['s'] = b
 						a['t'] = dt.utcfromtimestamp(a['t'])
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
@@ -345,7 +345,7 @@ def init_bars_db(target = 0):
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
 		date = dt.now().replace(year=1990)
 		print(date)
-		df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0 ,"timestamp":date}])
+		df = pd.DataFrame([{ "o":float(0),"c":float(0),"h":float(0),"l":float(0),"v":0,"n":0 ,"t":date}])
 		#df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0,"time":date,"timestamp":date}])
 		#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
 		#df.ticker = df.ticker.apply(str)
@@ -396,7 +396,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 		return
 
 	try:
-		_bars = [to_candle(a) for a in minuteBars ]
+		_bars = minuteBars #[to_candle(a) for a in minuteBars ]
 		items = pd.DataFrame.from_dict(_bars)
 		last = None
 		
