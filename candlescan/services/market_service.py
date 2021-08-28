@@ -23,7 +23,7 @@ from alpaca_trade_api.rest import REST, TimeFrame
 from frappe.utils import cstr, today, add_days, getdate, add_months
 from frappe.realtime import get_redis_server
 from alpaca_trade_api.common import URL
-from candlescan.services.price_service import get_minute_bars
+from candlescan.services.price_service import get_minute_bars,init_bars_db
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 api = None
@@ -140,6 +140,7 @@ def process_tickers():
 	api = REST(raw_data=True)
 	assets = api.list_assets()
 	cik = False
+	new_ones = []
 	for ticker in assets:
 		#ticker['symbol'] = ticker['symbol'].replace('^','p')
 		#ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
@@ -148,6 +149,7 @@ def process_tickers():
 		
 		if not exist:
 			cik = True
+			new_ones.append(ticker['symbol'])
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
 				'active': ticker["status"] == 'active',
@@ -160,4 +162,9 @@ def process_tickers():
 	if cik:
 		print("Processing CIK")
 		process_cik()
+
+	# setup parquet
+	if new_ones:
+		init_bars_db(target = 0,symbols=new_ones,delete=False)
+
 	clear_active_symbols()
