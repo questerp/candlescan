@@ -119,6 +119,8 @@ from pymysql.converters import conversions, escape_string
 def get_snapshots(conf,i,api,utcminute,symbols):
 	print("START",i,dt.now())
 	snap = api.get_snapshots(symbols)
+	print("get snapshots",i,dt.now())
+
 	# conn = pymysql.connect(
 	# 		user= conf.db_name,
 	# 		password= conf.db_password,
