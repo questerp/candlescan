@@ -43,7 +43,7 @@ class Item(object):
                 "Create it using collection.write(`%s`, data, ...)" % (
                     item, item))
 
-        self.data = pq.read_pandas(self._path,filters=filters,columns=columns)
+        return pq.read_pandas(self._path,filters=filters,columns=columns)
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)
         # print("self._path",self._path)
@@ -51,9 +51,4 @@ class Item(object):
         #     self._path, engine=self.engine, filters=filters, columns=columns)
 
   
-
-    def head(self, n=5):
-        return self.data.head(n)
-
-    def tail(self, n=5):
-        return self.data.tail(n)
+ 
