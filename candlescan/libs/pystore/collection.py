@@ -54,11 +54,11 @@ class Collection(object):
         if path is None:
             path =  self._item_path(item,True) 
         #print(path)
-        if not (overwrite or append):
-            if  utils.path_exists(path) :
-                raise ValueError("""
-                    Item already exists. To overwrite, use `overwrite=True`.
-                    Otherwise, use `<collection>.append()`""")
+        # if   append :
+        #     if  utils.path_exists(path) :
+        #         raise ValueError("""
+        #             Item already exists. To overwrite, use `overwrite=True`.
+        #             Otherwise, use `<collection>.append()`""")
 
         if data.empty:
             return
