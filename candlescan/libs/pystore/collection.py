@@ -67,7 +67,7 @@ class Collection(object):
         if append:
             pq.ParquetWriter(path, table.schema).write_table(table)            
         else:
-            pq.write_table(table, 'example.parquet')
+            pq.write_table(table, path)
 
 
     def append(self, item, data):
