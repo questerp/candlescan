@@ -45,7 +45,10 @@ class Item(object):
                 "Create it using collection.write(`%s`, data, ...)" % (
                     item, item))
     def data(self):
-        return pq.read_pandas(self._path,filters=self.filters,columns=self.columns).to_pandas( self_destruct =True)
+        table = pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
+        data = table.to_pandas( self_destruct =True)
+        del table
+        return data
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)
         # print("self._path",self._path)
