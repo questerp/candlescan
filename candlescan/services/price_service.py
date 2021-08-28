@@ -368,7 +368,7 @@ def init_bars_db(target = 0,symbols=None,delete=True):
 	
 	df = get_parquet_schema()
 	for idx,s in enumerate(symbols):
-		print(idx,ct)
+		print(idx )
 		if minute:
 			collection.write(s, df)
 		if day:
