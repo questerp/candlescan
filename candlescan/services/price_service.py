@@ -378,9 +378,9 @@ def init_bars_db(target = 0):
 		#if s not in items:
 		print(idx,ct)
 		if minute:
-			collection.write(s, df,overwrite=True,npartitions=1 )
+			collection.write(s, df)
 		if day:
-			collection_day.write(s, df,overwrite=True,npartitions=1 )
+			collection_day.write(s, df)
 	print("DONE")
 	#print(collection.list_items())
 	#collection = store.collection("1DAY",overwrite=True)
