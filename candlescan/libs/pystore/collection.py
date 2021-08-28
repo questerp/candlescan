@@ -143,7 +143,7 @@ class Collection(object):
             npartitions = int(1 + memusage // config.PARTITION_SIZE)
         data = dd.from_pandas(data, npartitions=npartitions)
 
-        dd.to_parquet(data, self._item_path(item, as_string=True),append=append,
+        dd.to_parquet(data, path,append=append,
                        overwrite = overwrite,
                        ignore_divisions = append,
                     #    compute=False,
