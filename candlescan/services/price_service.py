@@ -363,6 +363,7 @@ def init_bars_db(target = 0):
 			"vw":"float64",
 		})
 	df.set_index("t",inplace=True)
+	df.index.name = "t"
 	#df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0,"time":date,"timestamp":date}])
 	#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
 	#df.ticker = df.ticker.apply(str)
@@ -432,6 +433,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 				last = _bars[-1]# items.iloc[-1].to_dict()
 			#items["timestamp"] = items.time#.astype(str)
 			items.set_index("t",inplace=True,drop=True)
+			items.index.name = "t"
 			#items.index = items.index.values.astype(np.int64)
 			try:
 				#print(ticker)
