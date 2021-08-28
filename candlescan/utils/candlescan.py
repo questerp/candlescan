@@ -33,15 +33,15 @@ def clear_active_symbols():
 
 
 def to_candle(data,symbol=None):
-    if not symbol and not data.get("s"):
-        frappe.throw("Symbol is required")
+    # if not symbol and not data.get("s"):
+    #     frappe.throw("Symbol is required")
 
-    if not data.get('t'):
-        frappe.throw("Time is required")
+    # if not data.get('t'):
+    #     frappe.throw("Time is required")
 
     return {
-        'ticker': cstr(data.get("s")) or symbol,
-        'time': data.get("t"),
+        'ticker':  data.get("s")  or symbol,
+       # 'time': data.get("t"),
         'timestamp': data.get("t"),
         'open': float(data.get("o") or 0),
         'close': float(data.get("c") or 0),

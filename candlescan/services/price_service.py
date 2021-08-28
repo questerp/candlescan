@@ -115,7 +115,7 @@ def _start():
 
 import pymysql
 from pymysql.converters import conversions, escape_string
-
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 #@multitasking.task 
 def get_snapshots(conf,i,api,utcminute,symbols):
 	print("START",i,dt.now())
@@ -147,7 +147,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			# prevDailyBar = data.get("prevDailyBar")  or {}
 			
 			if minuteBar.get('t'):
-				minuteBar['t'] = get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
+				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT) #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 			if not minuteBar.get('t'):# or utcminute != minuteBar['t']:
 				continue
 
@@ -345,14 +345,15 @@ def init_bars_db(target = 0):
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
 		date = dt.now().replace(year=1990)
 		print(date)
-		df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0,"time":date,"timestamp":date}])
+		df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0 ,"timestamp":date}])
+		#df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0,"time":date,"timestamp":date}])
 		#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
 		#df.ticker = df.ticker.apply(str)
 		#df.ticker = df.ticker.astype(basestring)
 		#df["timestamp"] = df.time.astype(str)
 
-		df.set_index("time",inplace=True,drop=True)
-		df.index = df.index.values.astype(np.int64)
+		#df.set_index("time",inplace=True,drop=True)
+		#df.index = df.index.values.astype(np.int64)
 		
 		print(df.info())
 		ct= len(symbols)
@@ -403,8 +404,8 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			if send_last :
 				last = _bars[-1]# items.iloc[-1].to_dict()
 			#items["timestamp"] = items.time#.astype(str)
-			items.set_index("time",inplace=True,drop=True)
-			items.index = items.index.values.astype(np.int64)
+			#items.set_index("time",inplace=True,drop=True)
+			#items.index = items.index.values.astype(np.int64)
 			try:
 				#print(ticker)
 				collection.append(ticker, items,npartitions=1)
@@ -431,11 +432,10 @@ def add_to_queue(event,ev,last):
 def get_minute_bars(symbol,timeframe,start=None,end=None,limit=None):
 	if not (symbol and (start or limit)):
 		return
-	#♥start = dt.fromtimestamp(start)
-	#if not end:
-	#	end = time.time_ns() # dt.utcnow().timestamp()#.isoformat()
-	#else:
-	#	end = dt.utcfromtimestamp(end)
+	if start:
+		start = dt.utcfromtimestamp(start)
+	if end:
+		end = dt.utcfromtimestamp(end)
 	try:
 		result = []
 		item = None
@@ -448,9 +448,9 @@ def get_minute_bars(symbol,timeframe,start=None,end=None,limit=None):
 		print("end",end)
 		if item != None:
 			if start and end:
-				data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
+				data = item.data.loc[(item.data.timestamp>=start) & (item.data.timestamp <=end)].compute()
 			elif start:
-				data = item.data.loc[(item.data.index>=start) ].compute()
+				data = item.data.loc[(item.data.timestamp>=start) ].compute()
 			elif limit:
 				data = item.data.tail(limit)
 			else:
@@ -458,7 +458,7 @@ def get_minute_bars(symbol,timeframe,start=None,end=None,limit=None):
 			if not data.empty:
 			#print("data",data)
 				#data.drop_duplicates(subset="index",inplace=True)
-				data = data[~data.index.duplicated(keep='first')]
+				data = data[~data.timestamp.duplicated(keep='first')]
 				data['timestamp'] = data.timestamp.astype(str)
 				result = data.to_dict("records")
 		return result
