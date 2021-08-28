@@ -434,11 +434,11 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			#items.index = items.index.values.astype(np.int64)
 			try:
 				#print(ticker)
-				collection.append(ticker, items,npartitions=1)
-			except ValueError as ve:
+				collection.append(ticker, items)
+			except Exception as ve:
 				print(ticker,"--- ValueError ---",ve)
-				print(items)
-				collection.write(ticker, items,overwrite=True)
+				#print(items)
+				collection.write(ticker, items)
 			
 			if last and send_last and  (ticker in bar_symbols):
 				
