@@ -119,19 +119,19 @@ from pymysql.converters import conversions, escape_string
 def get_snapshots(conf,i,api,utcminute,symbols):
 	print("START",i,dt.now())
 	snap = api.get_snapshots(symbols)
-	conn = pymysql.connect(
-			user= conf.db_name,
-			password= conf.db_password,
-			database=conf.db_name,
-			host='127.0.0.1',
-			port='',
-			charset='utf8mb4',
-			use_unicode=True,
-			ssl=  None,
-			conv=conversions,
-			local_infile=conf.local_infile
-		)
-	_cursor = conn.cursor()
+	# conn = pymysql.connect(
+	# 		user= conf.db_name,
+	# 		password= conf.db_password,
+	# 		database=conf.db_name,
+	# 		host='127.0.0.1',
+	# 		port='',
+	# 		charset='utf8mb4',
+	# 		use_unicode=True,
+	# 		ssl=  None,
+	# 		conv=conversions,
+	# 		local_infile=conf.local_infile
+	# 	)
+	# _cursor = conn.cursor()
 	for s in snap:
 		try:
 			data = snap[s]
@@ -200,9 +200,9 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 
 		except Exception as e:
 			print("error",e)
-	conn.close()
-	_cursor = None
-	conn = None
+	# conn.close()
+	# _cursor = None
+	# conn = None
 	print("DONE",i,dt.now())
 				
 def backfill(days=0,symbols=None):
