@@ -253,13 +253,13 @@ def backfill(days=0,symbols=None):
 		
 
 	try:
+		threads = 0
 		for d in range(days+1):
 			start =  add_days(dt.now(),-1*d) #-1*d
 			if start.weekday() in [5,6]:
 				continue
 			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
-			threads = 0
 			for result in chunks(symbols,chuck):
 				threads+=1
 				if result:
@@ -448,9 +448,11 @@ def get_minute_bars(symbol,timeframe,start,end=None):
 				data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
 			else:
 				data = item.data.loc[(item.data.index>=start) ].compute()
+			if not data.empty:
 			#print("data",data)
-			data['timestamp'] = data.timestamp.astype(str)
-			result = data.to_dict("records")
+				data.drop_duplicates(subset="index",inplace=True)
+				data['timestamp'] = data.timestamp.astype(str)
+				result = data.to_dict("records")
 		return result
 	except Exception as ex:
 		print("ERROR get_minute_bars",ex)
