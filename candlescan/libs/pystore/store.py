@@ -29,7 +29,7 @@ class store(object):
     def __repr__(self):
         return "PyStore.datastore <%s>" % self.datastore
 
-    def __init__(self, datastore, engine="fastparquet"):
+    def __init__(self, datastore ):
 
         datastore_path = utils.get_path()
         if not utils.path_exists(datastore_path):
@@ -38,17 +38,7 @@ class store(object):
         self.datastore = utils.make_path(datastore_path, datastore)
         if not utils.path_exists(self.datastore):
             os.makedirs(self.datastore)
-            utils.write_metadata(self.datastore, {"engine": engine})
-            self.engine = engine
-        else:
-            metadata = utils.read_metadata(self.datastore)
-            if metadata:
-                self.engine = metadata["engine"]
-            else:
-                # default / backward compatibility
-                self.engine = "fastparquet"
-                utils.write_metadata(self.datastore, {"engine": self.engine})
-
+       
         self.collections = self.list_collections()
 
     def _create_collection(self, collection, overwrite=False):
@@ -84,11 +74,11 @@ class store(object):
 
     def collection(self, collection, overwrite=False):
         if collection in self.collections and not overwrite:
-            return Collection(collection, self.datastore, self.engine)
+            return Collection(collection, self.datastore )
 
         # create it
         self._create_collection(collection, overwrite)
-        return Collection(collection, self.datastore, self.engine)
+        return Collection(collection, self.datastore )
 
     def item(self, collection, item):
         # bypasses collection
