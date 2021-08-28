@@ -35,6 +35,8 @@ class Item(object):
         self.datastore = datastore
         self.collection = collection
         self.item = item
+        self.filters = filters
+        self.columns = columns
 
         self._path = utils.make_path(datastore, collection, item)
         if not self._path.exists():
@@ -42,8 +44,8 @@ class Item(object):
                 "Item `%s` doesn't exist. "
                 "Create it using collection.write(`%s`, data, ...)" % (
                     item, item))
-
-        return pq.read_pandas(self._path,filters=filters,columns=columns)
+    def data():
+        return pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)
         # print("self._path",self._path)
