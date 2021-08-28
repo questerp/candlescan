@@ -460,9 +460,9 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 	if not (symbol and start):
 		return
 	
-	start = dt.utcfromtimestamp(start)
-	if end:
-		end = dt.utcfromtimestamp(end)
+	#start = dt.utcfromtimestamp(start)
+	#if end:
+	#	end = dt.utcfromtimestamp(end)
 	try:
 		result = []
 		print("start",start)
@@ -480,9 +480,9 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 			filters = [('t','>=',start) ]
 			data = item.data.tail(limit)
 		
-		data = _collection.item(symbol,filters=filters).to_pandas(zero_copy_only =True,self_destruct =True)
+		data = _collection.item(symbol,filters=filters).to_pandas( self_destruct =True)
 		if not data.empty:
-			data = data[~data.t.duplicated(keep='first')]
+			#data = data[~data.t.duplicated(keep='first')]
 			result = data.to_dict("records")
 		return result
 	except Exception as ex:
