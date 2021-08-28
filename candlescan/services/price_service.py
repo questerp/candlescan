@@ -95,7 +95,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,5000):
+		for _symbols in chunks(symbols,2000):
 			i +=1
 			threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
@@ -152,7 +152,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 
 			#vol = minuteBar.get("v") or 0
 			minuteBar['s'] = s
-			insert_minute_bars(s,[minuteBar],True)		
+			insert_minute_bars(s,[minuteBar],False)		
 			#price = latestTrade.get("p") or 0
 			# if price:
 			# 	sql = """ update tabSymbol set 
