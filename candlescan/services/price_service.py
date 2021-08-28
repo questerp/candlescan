@@ -229,7 +229,7 @@ def backfill(days=0,symbols=None):
 	def _insert(i,start,chunk_symbols):
 		try:
 			#sleeptime = random.uniform(0, i)
-			time.sleep(2*i)
+			time.sleep(i)
 			print("start",i,start)
 			tcall = dt.now()
 			bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)	
