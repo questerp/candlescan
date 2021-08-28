@@ -413,7 +413,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 				collection.append(ticker, items,npartitions=1)
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
-				#print(items)
+				print(items)
 				collection.write(ticker, items,overwrite=True)
 			
 			if last and send_last and  (ticker in bar_symbols):
