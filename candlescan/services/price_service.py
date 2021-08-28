@@ -476,9 +476,9 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 		filters = []
 		if start and end:
 			filters = [('t','>=',start), ('t','<=',end)]
-		elif start:
+		else:
 			filters = [('t','>=',start) ]
-			data = item.data.tail(limit)
+			
 		
 		data = _collection.item(symbol,filters=filters).to_pandas( self_destruct =True)
 		if not data.empty:
