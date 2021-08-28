@@ -331,45 +331,45 @@ def chunks(l, n):
 def init_bars_db(target = 0):
 	print("init")
 	#try:
-		#store = pystore.store('bars')
-		#collection = store.collection('1MIN')
-		#items = collection.list_items()
-		day = target in [0,2]
-		minute = target in [0,1]
+	#store = pystore.store('bars')
+	#collection = store.collection('1MIN')
+	#items = collection.list_items()
+	day = target in [0,2]
+	minute = target in [0,1]
+	if minute:
+		store.delete_collection("1MIN" )
+		collection = store.collection("1MIN",overwrite=True)
+	if day:
+		store.delete_collection("1DAY")
+		collection_day = store.collection("1DAY",overwrite=True)
+
+	#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
+	symbols =  get_active_symbols()#[a[0] for a in symbols]
+	date = dt.now().replace(year=1990)
+	print(date)
+	df = pd.DataFrame([{ "vw":float(0),"o":float(0),"c":float(0),"h":float(0),"l":float(0),"v":0,"n":0 ,"t":date}])
+	#df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0,"time":date,"timestamp":date}])
+	#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
+	#df.ticker = df.ticker.apply(str)
+	#df.ticker = df.ticker.astype(basestring)
+	#df["timestamp"] = df.time.astype(str)
+
+	#df.set_index("time",inplace=True,drop=True)
+	#df.index = df.index.values.astype(np.int64)
+	
+	print(df.info())
+	ct= len(symbols)
+	input()
+	for idx,s in enumerate(symbols):
+		#if s not in items:
+		print(idx,ct)
 		if minute:
-			store.delete_collection("1MIN" )
-			collection = store.collection("1MIN",overwrite=True)
+			collection.write(s, df,overwrite=True,npartitions=1 )
 		if day:
-			store.delete_collection("1DAY")
-			collection_day = store.collection("1DAY",overwrite=True)
-
-		#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
-		symbols =  get_active_symbols()#[a[0] for a in symbols]
-		date = dt.now().replace(year=1990)
-		print(date)
-		df = pd.DataFrame([{ "vw":float(0),"o":float(0),"c":float(0),"h":float(0),"l":float(0),"v":0,"n":0 ,"t":date}])
-		#df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0,"time":date,"timestamp":date}])
-		#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
-		#df.ticker = df.ticker.apply(str)
-		#df.ticker = df.ticker.astype(basestring)
-		#df["timestamp"] = df.time.astype(str)
-
-		#df.set_index("time",inplace=True,drop=True)
-		#df.index = df.index.values.astype(np.int64)
-		
-		print(df.info())
-		ct= len(symbols)
-		input()
-		for idx,s in enumerate(symbols):
-			#if s not in items:
-			print(idx,ct)
-			if minute:
-				collection.write(s, df,overwrite=True,npartitions=1 )
-			if day:
-				collection_day.write(s, df,overwrite=True,npartitions=1 )
-		print("DONE")
-		#print(collection.list_items())
-		#collection = store.collection("1DAY",overwrite=True)
+			collection_day.write(s, df,overwrite=True,npartitions=1 )
+	print("DONE")
+	#print(collection.list_items())
+	#collection = store.collection("1DAY",overwrite=True)
 
 		
 	#except Exception as e:
