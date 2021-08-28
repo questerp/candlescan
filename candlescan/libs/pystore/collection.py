@@ -148,7 +148,7 @@ class Collection(object):
                        ignore_divisions = append,
                        write_metadata_file=False,
                     #    compute=False,
-                      compression="snappy", engine=self.engine, **kwargs)
+                      compression=None, engine=self.engine, **kwargs)
 
         # utils.write_metadata(utils.make_path(
         #     self.datastore, self.collection, item), metadata)
