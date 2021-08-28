@@ -373,7 +373,7 @@ def init_bars_db(target = 0):
 	#df.set_index("time",inplace=True,drop=True)
 	#df.index = df.index.values.astype(np.int64)
 	
-	print(df.index.info())
+	print(df.index.name)
 	print(df.info())
 	ct= len(symbols)
 	input()
