@@ -464,9 +464,9 @@ def get_minute_bars(symbol,timeframe,start=None,end=None,limit=None):
 		print("end",end)
 		if item != None:
 			if start and end:
-				data = item.data.loc[(item.data.timestamp>=start) & (item.data.timestamp <=end)].compute()
+				data = item.data.loc[(item.data.t>=start) & (item.data.t <=end)].compute()
 			elif start:
-				data = item.data.loc[(item.data.timestamp>=start) ].compute()
+				data = item.data.loc[(item.data.t>=start) ].compute()
 			elif limit:
 				data = item.data.tail(limit)
 			else:
@@ -474,8 +474,8 @@ def get_minute_bars(symbol,timeframe,start=None,end=None,limit=None):
 			if not data.empty:
 			#print("data",data)
 				#data.drop_duplicates(subset="index",inplace=True)
-				data = data[~data.timestamp.duplicated(keep='first')]
-				data['timestamp'] = data.timestamp.astype(str)
+				data = data[~data.t.duplicated(keep='first')]
+				#data['t'] = data.t.astype(str)
 				result = data.to_dict("records")
 		return result
 	except Exception as ex:
