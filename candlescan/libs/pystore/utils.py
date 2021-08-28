@@ -6,8 +6,7 @@ import json
 import shutil
 import pandas as pd
 import numpy as np
-# from dask import dataframe as dd
-from dask.distributed import Client
+# from dask.distributed import Client
 
 
 try:
@@ -137,23 +136,23 @@ def delete_stores():
     return True
 
 
-def set_client(scheduler=None):
-    if scheduler != config._SCHEDULER and config._CLIENT is not None:
-        try:
-            config._CLIENT.shutdown()
-            config._CLIENT = None
-        except Exception:
-            pass
+# def set_client(scheduler=None):
+#     if scheduler != config._SCHEDULER and config._CLIENT is not None:
+#         try:
+#             config._CLIENT.shutdown()
+#             config._CLIENT = None
+#         except Exception:
+#             pass
 
-    config._SCHEDULER = scheduler
-    if scheduler is not None:
-        config._CLIENT = Client(scheduler)
+#     config._SCHEDULER = scheduler
+#     if scheduler is not None:
+#         config._CLIENT = Client(scheduler)
 
-    return config._CLIENT
+#     return config._CLIENT
 
 
-def get_client():
-    return config._CLIENT
+# def get_client():
+#     return config._CLIENT
 
 
 def set_partition_size(size=None):
