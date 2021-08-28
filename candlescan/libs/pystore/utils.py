@@ -1,22 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-#
-# PyStore: Flat-file datastore for timeseries data
-# https://github.com/ranaroussi/pystore
-#
-# Copyright 2018-2020 Ran Aroussi
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+
 
 import os
 from datetime import datetime
@@ -24,7 +6,7 @@ import json
 import shutil
 import pandas as pd
 import numpy as np
-from dask import dataframe as dd
+# from dask import dataframe as dd
 from dask.distributed import Client
 
 
@@ -37,46 +19,46 @@ except (ImportError, AttributeError):
 from . import config
 
 
-def read_csv(urlpath, *args, **kwargs):
-    def rename_dask_index(df, name):
-        df.index.name = name
-        return df
+# def read_csv(urlpath, *args, **kwargs):
+#     def rename_dask_index(df, name):
+#         df.index.name = name
+#         return df
 
-    index_col = index_name = None
+#     index_col = index_name = None
 
-    if "index" in kwargs:
-        del kwargs["index"]
-    if "index_col" in kwargs:
-        index_col = kwargs["index_col"]
-        if isinstance(index_col, list):
-            index_col = index_col[0]
-        del kwargs["index_col"]
-    if "index_name" in kwargs:
-        index_name = kwargs["index_name"]
-        del kwargs["index_name"]
+#     if "index" in kwargs:
+#         del kwargs["index"]
+#     if "index_col" in kwargs:
+#         index_col = kwargs["index_col"]
+#         if isinstance(index_col, list):
+#             index_col = index_col[0]
+#         del kwargs["index_col"]
+#     if "index_name" in kwargs:
+#         index_name = kwargs["index_name"]
+#         del kwargs["index_name"]
 
-    df = dd.read_csv(urlpath, *args, **kwargs)
+#     df = dd.read_csv(urlpath, *args, **kwargs)
 
-    if index_col is not None:
-        df = df.set_index(index_col)
+#     if index_col is not None:
+#         df = df.set_index(index_col)
 
-    if index_name is not None:
-        df = df.map_partitions(rename_dask_index, index_name)
+#     if index_name is not None:
+#         df = df.map_partitions(rename_dask_index, index_name)
 
-    return df
+#     return df
 
 
-def datetime_to_int64(df):
-    """ convert datetime index to epoch int
-    allows for cross language/platform portability
-    """
+# def datetime_to_int64(df):
+#     """ convert datetime index to epoch int
+#     allows for cross language/platform portability
+#     """
 
-    if isinstance(df.index, dd.Index) and (
-            isinstance(df.index, pd.DatetimeIndex) and
-            any(df.index.nanosecond) > 0):
-        df.index = df.index.astype(np.int64)  # / 1e9
+#     if isinstance(df.index, dd.Index) and (
+#             isinstance(df.index, pd.DatetimeIndex) and
+#             any(df.index.nanosecond) > 0):
+#         df.index = df.index.astype(np.int64)  # / 1e9
 
-    return df
+#     return df
 
 
 def subdirs(d):
