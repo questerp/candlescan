@@ -347,7 +347,7 @@ def init_bars_db(target = 0):
 		symbols =  get_active_symbols()#[a[0] for a in symbols]
 		date = dt.now().replace(year=1990)
 		print(date)
-		df = pd.DataFrame([{ "vw":float(0),"o":float(0),"c":float(0),"h":float(0),"l":float(0),"v":0,"n":0 ,"t":date}])
+		df = pd.DataFrame([{ "vw":float(0),"o":float(0),"c":float(0),"h":float(0),"l":float(0),"v":0,"n":0 ,"t":0}])
 		#df = pd.DataFrame([{"ticker":"ticker","open":float(0),"close":float(0),"high":float(0),"low":float(0),"volume":0,"trades":0,"time":date,"timestamp":date}])
 		#df  = df.astype({"ticker":'str',"open":"float64","close":"float64","high":"float64","low":"float64","volume":"float64","trades":"int32","time":"datetime64[ns]"})
 		#df.ticker = df.ticker.apply(str)
