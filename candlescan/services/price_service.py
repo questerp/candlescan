@@ -455,38 +455,34 @@ def add_to_queue(event,ev,last):
 	queue_data(event,ev,last)
 
 
-def get_minute_bars(symbol,timeframe,start=None,end=None,limit=None):
-	if not (symbol and (start or limit)):
+def get_minute_bars(symbol,timeframe,start,end=None ):
+	if not (symbol and start):
 		return
-	if start:
-		start = dt.utcfromtimestamp(start)
+	
+	start = dt.utcfromtimestamp(start)
 	if end:
 		end = dt.utcfromtimestamp(end)
 	try:
 		result = []
-		item = None
-		if timeframe == "m":
-			item = collection.item(symbol)
-		else:
-			item = collection_day.item(symbol)
-
 		print("start",start)
 		print("end",end)
-		if item != None:
-			if start and end:
-				data = item.data.loc[(item.data.t>=start) & (item.data.t <=end)].compute()
-			elif start:
-				data = item.data.loc[(item.data.t>=start) ].compute()
-			elif limit:
-				data = item.data.tail(limit)
-			else:
-				data = item.data.tail(100)
-			if not data.empty:
-			#print("data",data)
-				#data.drop_duplicates(subset="index",inplace=True)
-				data = data[~data.t.duplicated(keep='first')]
-				#data['t'] = data.t.astype(str)
-				result = data.to_dict("records")
+		_collection = None
+		if timeframe == "m":
+			_collection = collection#.item(symbol,filters=[('t','')])
+		else:
+			_collection = collection_day#.item(symbol)
+		
+		filters = []
+		if start and end:
+			filters = [('t','>=',start), ('t','<=',end)]
+		elif start:
+			filters = [('t','>=',start) ]
+			data = item.data.tail(limit)
+		
+		data = _collection.item(symbol,filters=filters).to_pandas()
+		if not data.empty:
+			data = data[~data.t.duplicated(keep='first')]
+			result = data.to_dict("records")
 		return result
 	except Exception as ex:
 		print("ERROR get_minute_bars",ex)
