@@ -85,7 +85,6 @@ def _start():
 			time.sleep(1)
 			continue
 		frappe.db.sql("select 'KEEP_ALIVE'")
-		nw =  dt.now()
 		print("------------")
 		#print(nw)
 		utc =  dt.utcnow()
@@ -95,7 +94,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,2000):
+		for _symbols in chunks(symbols,500):
 			i +=1
 			#get_snapshots(conf,i, api,utcminute,_symbols)
 			threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
@@ -146,8 +145,11 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			
 			if minuteBar.get('t'):
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT) #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
-			if not minuteBar.get('t'):# or utcminute != minuteBar['t']:
+			else:
 				continue
+
+			# if  utcminute != minuteBar['t']:
+			# 	continue
 
 			#vol = minuteBar.get("v") or 0
 			#minuteBar['s'] = s
