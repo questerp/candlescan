@@ -242,6 +242,8 @@ def backfill(days=0,symbols=None):
 					_bars = bars[b]
 					for a in _bars:
 						#a['s'] = b
+						a['n'] = 0
+						a['vw'] = 0
 						a['t'] = dt.utcfromtimestamp(a['t'])
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
