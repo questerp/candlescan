@@ -451,6 +451,7 @@ def get_minute_bars(symbol,timeframe,start,end=None):
 			if not data.empty:
 			#print("data",data)
 				data.drop_duplicates(subset="index",inplace=True)
+				data = data[~data.index.duplicated(keep='first')]
 				data['timestamp'] = data.timestamp.astype(str)
 				result = data.to_dict("records")
 		return result
