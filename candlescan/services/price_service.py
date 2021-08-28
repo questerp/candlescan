@@ -95,7 +95,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,1000):
+		for _symbols in chunks(symbols,5000):
 			i +=1
 			threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
@@ -140,20 +140,20 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			if not data:
 				continue
 			minuteBar = data.get("minuteBar") or {}
-			latestTrade = data.get("latestTrade") or {}
-			latestQuote = data.get("latestQuote") or {}
-			dailyBar = data.get("dailyBar") or {}
-			prevDailyBar = data.get("prevDailyBar")  or {}
+			# latestTrade = data.get("latestTrade") or {}
+			# latestQuote = data.get("latestQuote") or {}
+			# dailyBar = data.get("dailyBar") or {}
+			# prevDailyBar = data.get("prevDailyBar")  or {}
 			
 			if minuteBar.get('t'):
 				minuteBar['t'] = get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 			if not minuteBar.get('t'):# or utcminute != minuteBar['t']:
 				continue
 
-			vol = minuteBar.get("v") or 0
+			#vol = minuteBar.get("v") or 0
 			minuteBar['s'] = s
 			insert_minute_bars(s,[minuteBar],True)		
-			price = latestTrade.get("p") or 0
+			#price = latestTrade.get("p") or 0
 			# if price:
 			# 	sql = """ update tabSymbol set 
 			# 	price=%s, 
