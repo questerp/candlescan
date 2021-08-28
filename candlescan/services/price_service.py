@@ -28,7 +28,7 @@ sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reco
 lock = threading.Lock()
 log = logging.getLogger(__name__)
 api = None
-store = pystore.store('bars',engine="pyarrow")
+store = pystore.store('bars' )
 collection = store.collection('1MIN' )
 collection_day = store.collection("1DAY" )
 
@@ -97,7 +97,8 @@ def _start():
 		i = 0
 		for _symbols in chunks(symbols,2000):
 			i +=1
-			threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
+			get_snapshots(conf,i, api,utcminute,_symbols)
+			#threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
 			# 2000 22sec process: 
@@ -405,7 +406,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			items.set_index("time",inplace=True,drop=True)
 			items.index = items.index.values.astype(np.int64)
 			try:
-				print(ticker)
+				#print(ticker)
 				collection.append(ticker, items,npartitions=1)
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
