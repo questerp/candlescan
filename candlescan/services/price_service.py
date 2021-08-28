@@ -243,7 +243,7 @@ def backfill(days=0,symbols=None):
 					for a in _bars:
 						#a['s'] = b
 						a['n'] = 0
-						a['vw'] = 0
+						a['vw'] = 0.0
 						a['t'] = dt.utcfromtimestamp(a['t'])
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
@@ -413,7 +413,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 				collection.append(ticker, items,npartitions=1)
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
-				print(items)
+				#print(items)
 				collection.write(ticker, items,overwrite=True)
 			
 			if last and send_last and  (ticker in bar_symbols):
