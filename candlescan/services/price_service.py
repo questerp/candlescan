@@ -242,8 +242,12 @@ def backfill(days=0,symbols=None):
 					_bars = bars[b]
 					for a in _bars:
 						#a['s'] = b
-						a['n'] = 0
-						a['vw'] = 0.0
+						# a['o'] = float(a['o'])
+						# a['c'] = float(a['c'])
+						# a['h'] =  float(a['h'])
+						# a['l'] =  float(a['l'])
+						# a['n'] = 0
+						# a['vw'] = 0.0
 						a['t'] = dt.utcfromtimestamp(a['t'])
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
@@ -400,6 +404,16 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 	try:
 		_bars = minuteBars #[to_candle(a) for a in minuteBars ]
 		items = pd.DataFrame.from_dict(_bars)
+		items = items.astype(dtype= {
+			"t":"int64", 
+			"o":"float64",
+			"c":"float64",
+			"h":"float64",
+			"l":"float64",
+			"n":"int64",
+			"v":"int64",
+			"vw":"float64",
+			})
 		last = None
 		
 		if not items.empty :
