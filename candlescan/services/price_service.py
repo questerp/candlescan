@@ -225,7 +225,7 @@ def backfill(days=0,symbols=None):
 
 	def _insert(i,start,chunk_symbols):
 		try:
-			sleeptime = random.uniform(0, 500)
+			sleeptime = random.uniform(0, i*10)
 			time.sleep(sleeptime)
 			print("start",i,start)
 			tcall = dt.now()
