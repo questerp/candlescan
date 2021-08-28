@@ -44,7 +44,7 @@ class Item(object):
                 "Item `%s` doesn't exist. "
                 "Create it using collection.write(`%s`, data, ...)" % (
                     item, item))
-    def data():
+    def data(self):
         return pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)
