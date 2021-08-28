@@ -96,8 +96,8 @@ def _start():
 		i = 0
 		for _symbols in chunks(symbols,1000):
 			i +=1
-			#get_snapshots(conf,i, api,utcminute,_symbols)
-			threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
+			get_snapshots(conf,i, api,utcminute,_symbols)
+			#threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
 			#get_snapshots(i, api,utcminute,_symbols)
 			# 200 27sec
 			# 2000 22sec process: 
