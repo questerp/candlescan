@@ -425,8 +425,8 @@ def add_to_queue(event,ev,last):
 	queue_data(event,ev,last)
 
 
-def get_minute_bars(symbol,timeframe,start,end=None):
-	if not (symbol and start ):
+def get_minute_bars(symbol,timeframe,start=None,end=None,limit=None):
+	if not (symbol and (start or limit)):
 		return
 	#♥start = dt.fromtimestamp(start)
 	#if not end:
@@ -446,6 +446,8 @@ def get_minute_bars(symbol,timeframe,start,end=None):
 		if item != None:
 			if end:
 				data = item.data.loc[(item.data.index>=start) & (item.data.index <=end)].compute()
+			elif limit:
+				data = item.data.tail(limit)
 			else:
 				data = item.data.loc[(item.data.index>=start) ].compute()
 			if not data.empty:
