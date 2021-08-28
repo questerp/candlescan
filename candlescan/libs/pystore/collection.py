@@ -110,7 +110,7 @@ class Collection(object):
 
         if not path:
             path =  self._item_path(item) 
-
+        print(path)
         if not (overwrite or append):
             if  utils.path_exists(path) :
                 raise ValueError("""
