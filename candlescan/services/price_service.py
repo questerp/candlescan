@@ -246,8 +246,8 @@ def backfill(days=0,symbols=None):
 						# a['c'] = float(a['c'])
 						# a['h'] =  float(a['h'])
 						# a['l'] =  float(a['l'])
-						# a['n'] = 0
-						# a['vw'] = 0.0
+						a['n'] = 0
+						a['vw'] = 0.0
 						a['t'] = dt.utcfromtimestamp(a['t'])
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
