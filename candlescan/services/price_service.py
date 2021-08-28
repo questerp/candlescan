@@ -480,7 +480,7 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 			filters = [('t','>=',start) ]
 			
 		
-		data = _collection.item(symbol,filters=filters).to_pandas( self_destruct =True)
+		data = _collection.item(symbol,filters=filters).data()
 		if not data.empty:
 			#data = data[~data.t.duplicated(keep='first')]
 			result = data.to_dict("records")
