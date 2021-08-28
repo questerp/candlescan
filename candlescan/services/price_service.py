@@ -405,7 +405,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			items.set_index("time",inplace=True,drop=True)
 			items.index = items.index.values.astype(np.int64)
 			try:
-				#print(ticker)
+				print(ticker)
 				collection.append(ticker, items,npartitions=1)
 			except ValueError as ve:
 				print(ticker,"--- ValueError ---",ve)
