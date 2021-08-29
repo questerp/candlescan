@@ -76,6 +76,7 @@ class Collection(object):
                 min_itemsize=min_itemsize,
                 append=True,
                 complib="zlib",
+                complevel= 6,
                 data_columns = True,
                 format="table"
             )
