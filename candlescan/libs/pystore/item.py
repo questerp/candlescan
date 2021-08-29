@@ -48,7 +48,7 @@ class Item(object):
     def data(self):
         with pd.HDFStore(self._path) as store:
             ticker = self.item
-            filters = 's == ticker' + (self.filters or '')
+            filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
             data = store.select('table',where= filters, auto_close=True,columns=self.columns)
         # wheres = [" 't==%s'"%self.item] + (self.filters or [])
         # print(wheres)
