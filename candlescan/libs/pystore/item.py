@@ -52,15 +52,15 @@ class Item(object):
         ticker = self.item
         df = pd.DataFrame()
         for path in self._paths:
-            if os.path.exists(path):
-                with lock:
-                    with pd.HDFStore(path) as store:
-                        try:
-                            filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
-                            data = store.select('table',where= filters, auto_close=True,columns=self.columns)
-                            df = pd.concat([df, data], ignore_index=True) 
-                        except Exception as e:
-                            print("error item",e)
+            # if os.path.exists(path):
+            with lock:
+                with pd.HDFStore(path) as store:
+                    try:
+                        filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
+                        data = store.select('table',where= filters, auto_close=True,columns=self.columns)
+                        df = pd.concat([df, data], ignore_index=True) 
+                    except Exception as e:
+                        print("error item",e)
             
         # wheres = [" 't==%s'"%self.item] + (self.filters or [])
         # print(wheres)
