@@ -75,6 +75,7 @@ class Collection(object):
             "table",
             #complevel=3,
             append=True,
+            complib="zlib",
             data_columns = True,
             format="table"
         )
