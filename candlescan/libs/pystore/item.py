@@ -46,9 +46,13 @@ class Item(object):
                 "Create it using collection.write(`%s`, data, ...)" % (
                     item, item))
     def data(self):
-        wheres = ["""'t=="%s"'"""%self.item] + (self.filters or [])
-        print(wheres)
-        data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
+        with pd.HDFStore(self._path) as store:
+            ticker = self.item
+            filters = 's == ticker' + (self.filters or '')
+            data = store.select('table', filters, auto_close=True,columns=self.columns)
+        # wheres = [" 't==%s'"%self.item] + (self.filters or [])
+        # print(wheres)
+        # data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
         return data
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)
