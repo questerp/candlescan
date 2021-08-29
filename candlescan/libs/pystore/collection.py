@@ -68,7 +68,7 @@ class Collection(object):
         if data.empty:
             return
 
-        table = pa.Table.from_pandas(data,preserve_index=True)
+        table = pa.Table.from_pandas(data,preserve_index=False)
         pq.ParquetWriter(path, table.schema).write_table(table)            
 
         # if append:
