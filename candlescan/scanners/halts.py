@@ -37,6 +37,7 @@ def start():
 		#	break;
 		data = feedparser.parse(URL)
 		if not data:
+			print("no data")
 			time.sleep(10)
 		entries = data.entries
 		resultdata = []
@@ -62,6 +63,7 @@ def start():
 			resultdata.append(halt)
 		if resultdata:
 			save_scanner_state("halts",resultdata)
+		print("resultdata",len(resultdata))
 		sio.emit("transfer",build_response("halts","halts",resultdata))
 		time.sleep(interval)
 			#broadcast("Scanner Halts",scanner_id,interval,resultdata)
