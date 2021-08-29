@@ -75,7 +75,6 @@ class Collection(object):
                 "table",
                 min_itemsize=min_itemsize,
                 append=True,
-                chunksize=10000,
                 complib="zlib",
                 data_columns = True,
                 format="table"
