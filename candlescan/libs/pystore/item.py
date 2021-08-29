@@ -29,7 +29,7 @@ class Item(object):
     def __repr__(self):
         return "PyStore.item <%s/%s>" % (self.collection, self.item)
 
-    def __init__(self, item, datastore, collection, filters=None, columns=None,):
+    def __init__(self, item, datastore, collection,day, filters=None, columns=None,):
                  
         # self.engine = engine
         self.datastore = datastore
@@ -38,7 +38,8 @@ class Item(object):
         self.filters = filters
         self.columns = columns
 
-        self._path = utils.make_path(datastore, collection, item)
+        self._path = utils.make_path(datastore, collection, day)
+        print("self._path",self._path)
         if not self._path.exists():
             raise ValueError(
                 "Item `%s` doesn't exist. "
