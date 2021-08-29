@@ -49,7 +49,7 @@ class Item(object):
         with pd.HDFStore(self._path) as store:
             ticker = self.item
             filters = 's == ticker' + (self.filters or '')
-            data = store.select('table', filters, auto_close=True,columns=self.columns)
+            data = store.select('table',where= filters, auto_close=True,columns=self.columns)
         # wheres = [" 't==%s'"%self.item] + (self.filters or [])
         # print(wheres)
         # data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)

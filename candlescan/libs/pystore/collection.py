@@ -75,6 +75,7 @@ class Collection(object):
             "table",
             complevel=3,
             append=True,
+            data_columns = True,
             format="table"
         )
         # wr.s3.to_parquet(
