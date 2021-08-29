@@ -11,7 +11,7 @@ from . import config
 import pandas as pd
 # import pyarrow as pa
 # import pyarrow.parquet as pq
-import awswrangler as wr
+# import awswrangler as wr
 
 from datetime import datetime as dt 
 
@@ -31,7 +31,7 @@ class Collection(object):
         item = item.strftime(self.ITEM_FORMAT)
         p = utils.make_path(self.datastore, self.collection, item)
         # if as_string:
-        return "s3:/"+str(p)
+        return  str(p)
         # return p 
 
     @multitasking.task
@@ -69,14 +69,22 @@ class Collection(object):
 
         if data.empty:
             return
-        wr.s3.to_parquet(
-                        df=data,
-                        path=path,
-                        dataset=True,
-                        mode ="append",
-                        partition_cols =["s"],
-                        index=False,
-                    )
+
+        data.to_hdf(
+            path,
+            "df",
+            complevel=3,
+            append=True,
+            format="table"
+        )
+        # wr.s3.to_parquet(
+        #                 df=data,
+        #                 path=path,
+        #                 dataset=True,
+        #                 mode ="append",
+        #                 partition_cols =["s"],
+        #                 index=False,
+        #             )
                     
         # table = pa.Table.from_pandas(data,preserve_index=False)
         # pq.ParquetWriter(path, table.schema).write_table(table)            
