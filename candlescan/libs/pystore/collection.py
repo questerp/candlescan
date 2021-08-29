@@ -42,8 +42,8 @@ class Collection(object):
         dirs = utils.subdirs(utils.make_path(self.datastore, self.collection))
         return set(dirs)
 
-    def item(self, item,day,  filters=None, columns=None):
-        return Item(item, self.datastore, self.collection,day, filters, columns )
+    def item(self, item,files,  filters=None, columns=None):
+        return Item(item, self.datastore, self.collection,files, filters, columns )
 
     def index(self, item, last=False):
         return 0
@@ -75,6 +75,7 @@ class Collection(object):
                 "table",
                 min_itemsize=min_itemsize,
                 append=True,
+                chunksize=10000,
                 complib="zlib",
                 data_columns = True,
                 format="table"

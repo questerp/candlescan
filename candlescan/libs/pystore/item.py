@@ -29,7 +29,7 @@ class Item(object):
     def __repr__(self):
         return "PyStore.item <%s/%s>" % (self.collection, self.item)
 
-    def __init__(self, item, datastore, collection,day, filters=None, columns=None,):
+    def __init__(self, item, datastore, collection,files, filters=None, columns=None,):
                  
         # self.engine = engine
         self.datastore = datastore
@@ -37,23 +37,29 @@ class Item(object):
         self.item = item
         self.filters = filters
         self.columns = columns
+        if isinstance(files,str):
+            files = [files]
+        self.files = files
 
-        self._path = utils.make_path(datastore, collection, day)
-        print("self._path",self._path)
-        if not self._path.exists():
-            raise ValueError(
-                "Item `%s` doesn't exist. "
-                "Create it using collection.write(`%s`, data, ...)" % (
-                    item, item))
+        self._paths = [str(utils.make_path(datastore, collection, file)) for file in files]
+        # print("self._path",self._path)
+        # if not self._path.exists():
+        #     raise ValueError(
+        #         "Item `%s` doesn't exist. "
+        #         "Create it using collection.write(`%s`, data, ...)" % (
+        #             item, item))
     def data(self):
-        with pd.HDFStore(self._path) as store:
-            ticker = self.item
-            filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
-            data = store.select('table',where= filters, auto_close=True,columns=self.columns)
+        ticker = self.item
+        df = pd.DataFrame()
+        for path in self._paths:
+             with pd.HDFStore(path) as store:
+                filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
+                data = store.select('table',where= filters, auto_close=True,columns=self.columns)
+                df = pd.concat([df, data], ignore_index=True) 
         # wheres = [" 't==%s'"%self.item] + (self.filters or [])
         # print(wheres)
         # data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
-        return data
+        return df
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)
         # print("self._path",self._path)
