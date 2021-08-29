@@ -32,7 +32,7 @@ class Collection(object):
         p = utils.make_path(self.datastore, self.collection, item)
         if as_string:
             return str(p)
-        return "s3://"+p+".parquet"
+        return "s3://"+p 
 
     @multitasking.task
     def _list_items_threaded(self):
