@@ -31,7 +31,7 @@ class Collection(object):
         item = item.strftime(self.ITEM_FORMAT)
         p = utils.make_path(self.datastore, self.collection, item)
         # if as_string:
-        return "s3://"+str(p)
+        return "s3:/"+str(p)
         # return p 
 
     @multitasking.task
