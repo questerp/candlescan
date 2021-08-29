@@ -293,7 +293,7 @@ def backfill(days=0,symbols=None,daily=False):
 							a['t'] = dt.utcfromtimestamp(a['t'])
 							minute_bars.append(a)
 					if minute_bars:
-						insert_minute_bars(startdt,minute_bars,col="d")
+						insert_minute_bars("daily",minute_bars,col="d")
 		else:
 			threads = 0
 			for d in range(days+1):
