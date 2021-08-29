@@ -390,7 +390,7 @@ def add_to_queue(event,ev,last):
 
 
 def get_minute_bars(symbol,timeframe,days ):
-	if not (symbol and start):
+	if not (symbol and days):
 		return
 	
 	#start = dt.utcfromtimestamp(start)
