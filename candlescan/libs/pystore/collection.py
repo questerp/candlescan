@@ -15,7 +15,7 @@ from datetime import datetime as dt
 
 class Collection(object):
 
-    self.ITEM_FORMAT = "%Y%m%d"
+    ITEM_FORMAT = "%Y%m%d"
 
     def __repr__(self):
         return "PyStore.collection <%s>" % self.collection
