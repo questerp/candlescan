@@ -62,7 +62,7 @@ def start():
 			resultdata.append(halt)
 		if resultdata:
 			save_scanner_state("halts",resultdata)
-			sio.emit("transfer",build_response("halts","halts",resultdata))
+		sio.emit("transfer",build_response("halts","halts",resultdata))
 		time.sleep(interval)
 			#broadcast("Scanner Halts",scanner_id,interval,resultdata)
 			#redis.publish("candlescan_all",frappe.as_json({"scanner_id":scanner_id,"data":resultdata}))
