@@ -57,7 +57,7 @@ class Collection(object):
         return True
 
 
-    def write(self,item,data,path=None):
+    def write(self,item,data,path=None,min_itemsize=None):
         if path is None:
             path =  self.get_item_path(item) 
         #print(path)
@@ -73,7 +73,7 @@ class Collection(object):
         data.to_hdf(
             path,
             "table",
-            #complevel=3,
+            min_itemsize=min_itemsize,
             append=True,
             complib="zlib",
             data_columns = True,

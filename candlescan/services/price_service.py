@@ -401,7 +401,7 @@ def insert_minute_bars(day,minuteBars,send_last=False):
 			#items.index = items.index.values.astype(np.int64)
 			try:
 				#print(ticker)
-				collection.write(day, items,path=path)
+				collection.write(day, items,path=path,min_itemsize={"s":20})
 			except Exception as ve:
 				print(day,"--- ValueError ---",ve)
 				#input()
