@@ -375,8 +375,9 @@ def insert_minute_bars(day,minuteBars,send_last=False,col="m"):
 			
 			if send_last  :
 				for ticker in minuteBars:
-					if ticker.get("s") in bar_symbols:
-						ev  = "bars_%s"%  ticker.lower()
+					s = ticker.get("s")
+					if s in bar_symbols:
+						ev  = "bars_%s"%  s.lower()
 						add_to_queue(ev,ev,last)
 		else:
 			print(ticker,"empty")
