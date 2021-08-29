@@ -294,6 +294,8 @@ def backfill(days=0,symbols=None,daily=False):
 							minute_bars.append(a)
 					if minute_bars:
 						insert_minute_bars("daily",minute_bars,col="d")
+				print( "DONE" )
+				
 		else:
 			threads = 0
 			for d in range(days+1):
