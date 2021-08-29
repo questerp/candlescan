@@ -407,14 +407,14 @@ def get_minute_bars(symbol,timeframe,days ):
 		else:
 			_collection = collection_day#.item(symbol)
 		
-		filters = []
-		if start and end:
-			filters =  't >= start & t <=end'
-		else:
-			filters = 't >= start '
+		# filters = []
+		# if start and end:
+		# 	filters =  't >= start & t <=end'
+		# else:
+		# 	filters = 't >= start '
 			
 		
-		data = _collection.item(symbol,days,filters=filters ).data()
+		data = _collection.item(symbol,days ).data()
 		if not data.empty:
 			#data = data[~data.t.duplicated(keep='first')]
 			result = data.to_dict("records")
