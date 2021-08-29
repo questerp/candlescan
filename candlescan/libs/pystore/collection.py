@@ -29,10 +29,10 @@ class Collection(object):
 
     def get_item_path(self, item, as_string=True):
         item = item.strftime(self.ITEM_FORMAT)
-        p = utils.make_path(self.datastore, self.collection, item)
+        p = "s3://"+utils.make_path(self.datastore, self.collection, item)
         if as_string:
             return str(p)
-        return "s3://"+p 
+        return p 
 
     @multitasking.task
     def _list_items_threaded(self):
