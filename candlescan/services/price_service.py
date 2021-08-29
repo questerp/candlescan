@@ -13,7 +13,7 @@ from alpaca_trade_api.rest import REST
 import pandas as pd
 import threading
 import numba
-from candlescan.libs import pystore,get_item_path
+from candlescan.libs import pystore
 import multitasking
 import signal
 import threading
@@ -415,7 +415,7 @@ def insert_minute_bars(day,minuteBars,send_last=False):
 	if not minuteBars:
 		print(day,"not minuteBars")
 		return
-	path = get_item_path(day)
+	path = collection.get_item_path(day)
 	print("path",path)
 	try:
 		#_bars = minuteBars #[to_candle(a) for a in minuteBars ]
