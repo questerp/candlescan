@@ -144,6 +144,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				minuteBar['s'] = s
 				bars.append(minuteBar)
 		if bars:
+			print("bars",len(bars))
 			insert_minute_bars(utcminute,bars,True)
 	except Exception as e:
 			print("error",e)
@@ -437,8 +438,8 @@ def insert_minute_bars(day,minuteBars,send_last=False):
 			# if send_last :
 			# 	last = _bars[-1]# items.iloc[-1].to_dict()
 			#items["timestamp"] = items.time#.astype(str)
-			items.set_index("t",inplace=True,drop=True)
-			items.index.name = "t"
+			#items.set_index("t",inplace=True,drop=True)
+			#items.index.name = "t"
 			#items.index = items.index.values.astype(np.int64)
 			try:
 				#print(ticker)
