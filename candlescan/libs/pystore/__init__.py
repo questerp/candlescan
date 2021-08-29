@@ -23,7 +23,7 @@ try:
     import numba as _
 except ImportError:
     pass
-from .collection import get_item_path
+
 from .store import store
 from .utils import (
      set_path, get_path,
