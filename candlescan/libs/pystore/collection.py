@@ -15,7 +15,7 @@ from datetime import datetime as dt
 
 class Collection(object):
 
-    ITEM_FORMAT = "%Y%m%d"
+    self.ITEM_FORMAT = "%Y%m%d"
 
     def __repr__(self):
         return "PyStore.collection <%s>" % self.collection
@@ -26,7 +26,7 @@ class Collection(object):
         self.items = self.list_items()
 
     def get_item_path(self, item, as_string=False):
-        item = item.strftime(ITEM_FORMAT)
+        item = item.strftime(self.ITEM_FORMAT)
         p = utils.make_path(self.datastore, self.collection, item)
         if as_string:
             return str(p)
