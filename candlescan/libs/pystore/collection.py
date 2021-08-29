@@ -27,12 +27,12 @@ class Collection(object):
         self.collection = collection
         self.items = self.list_items()
 
-    def get_item_path(self, item, as_string=True):
+    def get_item_path(self, item ):
         item = item.strftime(self.ITEM_FORMAT)
-        p = "s3://"+utils.make_path(self.datastore, self.collection, item)
-        if as_string:
-            return str(p)
-        return p 
+        p = utils.make_path(self.datastore, self.collection, item)
+        # if as_string:
+        return "s3://"+str(p)
+        # return p 
 
     @multitasking.task
     def _list_items_threaded(self):
@@ -59,7 +59,7 @@ class Collection(object):
 
     def write(self,item,data,path=None):
         if path is None:
-            path =  self.get_item_path(item,True) 
+            path =  self.get_item_path(item) 
         #print(path)
         # if   append :
         #     if  utils.path_exists(path) :
