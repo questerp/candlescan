@@ -65,7 +65,7 @@ class Item(object):
         # wheres = [" 't==%s'"%self.item] + (self.filters or [])
         # print(wheres)
         # data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
-        return df.drop_duplicates(df.t)
+        return df.drop_duplicates("t")
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)
         # print("self._path",self._path)
