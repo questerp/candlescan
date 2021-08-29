@@ -20,7 +20,7 @@
 
 # import dask.dataframe as dd
 import pandas as pd
-import pyarrow.parquet as pq
+# import pyarrow.parquet as pq
 
 from . import utils
 
@@ -45,9 +45,8 @@ class Item(object):
                 "Create it using collection.write(`%s`, data, ...)" % (
                     item, item))
     def data(self):
-        table = pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
-        data = table.to_pandas( self_destruct =True)
-        del table
+        wheres = ["t==%s"%self.item] + (self.filters or [])
+        data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
         return data
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)

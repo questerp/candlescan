@@ -72,7 +72,7 @@ class Collection(object):
 
         data.to_hdf(
             path,
-            "df",
+            "table",
             complevel=3,
             append=True,
             format="table"
