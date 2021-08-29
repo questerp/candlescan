@@ -27,7 +27,8 @@ class Collection(object):
         self.items = self.list_items()
 
     def get_item_path(self, item ):
-        item = item.strftime(self.ITEM_FORMAT)
+        if not isinstance(item , str):
+            item = item.strftime(self.ITEM_FORMAT)
         p = utils.make_path(self.datastore, self.collection, item)
         # if as_string:
         return  str(p)
