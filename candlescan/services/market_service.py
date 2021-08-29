@@ -23,7 +23,7 @@ from alpaca_trade_api.rest import REST, TimeFrame
 from frappe.utils import cstr, today, add_days, getdate, add_months
 from frappe.realtime import get_redis_server
 from alpaca_trade_api.common import URL
-from candlescan.services.price_service import get_minute_bars,init_bars_db
+from candlescan.services.price_service import get_minute_bars
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 api = None
@@ -163,7 +163,6 @@ def process_tickers():
 		process_cik()
 
 	# setup parquet
-	if new_ones:
-		init_bars_db(target = 0,symbols=new_ones,delete=False)
+	
 
 	clear_active_symbols()
