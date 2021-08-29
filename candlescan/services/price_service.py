@@ -94,7 +94,7 @@ def _start():
 		
 		print("utcminute",utcminute)
 		i = 0
-		for _symbols in chunks(symbols,1000):
+		for _symbols in chunks(symbols,2000):
 			i +=1
 			#get_snapshots(conf,i, api,utcminute,_symbols)
 			threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
@@ -144,7 +144,6 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				minuteBar['s'] = s
 				bars.append(minuteBar)
 		if bars:
-			print("bars",len(bars))
 			insert_minute_bars(utcminute,bars,True)
 	except Exception as e:
 			print("error",e)
