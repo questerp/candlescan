@@ -172,7 +172,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 					where name='%s' """ % (
 								price or 0,
 								dailyBar.get("v") or 0,
-								vol,
+								minuteBar.get("v") or 0,
 								dailyBar.get("h") or 0,
 								dailyBar.get("l") or 0,
 								dailyBar.get("o") or 0,
