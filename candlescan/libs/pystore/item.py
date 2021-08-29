@@ -46,7 +46,7 @@ class Item(object):
                 "Create it using collection.write(`%s`, data, ...)" % (
                     item, item))
     def data(self):
-        wheres = ["t==%s"%self.item] + (self.filters or [])
+        wheres = ["t=='%s'"%self.item] + (self.filters or [])
         data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
         return data
         #df = dataset.to_table(columns=columns).to_pandas()
