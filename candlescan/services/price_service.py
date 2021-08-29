@@ -13,7 +13,7 @@ from alpaca_trade_api.rest import REST
 import pandas as pd
 import threading
 import numba
-from candlescan.libs import pystore
+from candlescan.libs import pystore,get_item_path
 import multitasking
 import signal
 import threading
@@ -132,77 +132,95 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	# 		local_infile=conf.local_infile
 	# 	)
 	# _cursor = conn.cursor()
-	for s in snap:
-		try:
+	bars = [ ]
+	try:
+		for s in snap:
 			data = snap[s]
 			if not data:
 				continue
-			minuteBar = data.get("minuteBar") or {}
-			# latestTrade = data.get("latestTrade") or {}
-			# latestQuote = data.get("latestQuote") or {}
-			# dailyBar = data.get("dailyBar") or {}
-			# prevDailyBar = data.get("prevDailyBar")  or {}
-			
-			if minuteBar.get('t'):
+			minuteBar = data.get("minuteBar") 
+			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT) #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
-			else:
-				continue
-
-			# if  utcminute != minuteBar['t']:
-			# 	continue
-
-			#vol = minuteBar.get("v") or 0
-			#minuteBar['s'] = s
-			insert_minute_bars(s,[minuteBar],False)		
-			#price = latestTrade.get("p") or 0
-			# if price:
-			# 	sql = """ update tabSymbol set 
-			# 	price=%s, 
-			# 	volume=%s, 
-			# 	1m_volume=%s,
-			# 	today_high=%s, 
-			# 	today_low=%s ,
-			# 	today_open=%s ,
-			# 	today_close=%s ,
-			# 	today_trades=%s ,
-			# 	bid=%s , 
-			# 	ask=%s ,
-			# 	vwap=%s , 
-			# 	prev_day_open = %s ,
-			# 	prev_day_close = %s , 
-			# 	prev_day_high = %s ,
-			# 	prev_day_low = %s , 
-			# 	prev_day_vwap = %s ,
-			# 	prev_day_volume = %s ,
-			# 	prev_day_trades = %s 
-			# 	where name='%s' """ % (
-			# 				price or 0,
-			# 				dailyBar.get("v") or 0,
-			# 				vol,
-			# 				dailyBar.get("h") or 0,
-			# 				dailyBar.get("l") or 0,
-			# 				dailyBar.get("o") or 0,
-			# 				dailyBar.get("c") or 0,
-			# 				dailyBar.get("n") or 0,
-			# 				latestQuote.get("bp") or 0,
-			# 				latestQuote.get("ap") or 0,
-			# 				minuteBar.get("vw") or 0,
-			# 				prevDailyBar.get("o") or 0,
-			# 				prevDailyBar.get("c") or 0,
-			# 				prevDailyBar.get("h") or 0,
-			# 				prevDailyBar.get("l") or 0,
-			# 				prevDailyBar.get("vw") or 0,
-			# 				prevDailyBar.get("v") or 0,
-			# 				prevDailyBar.get("n") or 0,
-			# 				s )
-			# 	try:
-			# 		sql = str(sql)
-			# 		_cursor.execute(sql)
-			# 	except Exception as e:
-			# 		print(s,"error sql",e)
-
-		except Exception as e:
+				minuteBar['s'] = s
+				bars.append(minuteBar)
+		if bars:
+			insert_minute_bars(utcminute,bars,True)
+	except Exception as e:
 			print("error",e)
+
+
+	# for s in snap:
+	# 	try:
+	# 		data = snap[s]
+	# 		if not data:
+	# 			continue
+	# 		minuteBar = data.get("minuteBar") or {}
+	# 		# latestTrade = data.get("latestTrade") or {}
+	# 		# latestQuote = data.get("latestQuote") or {}
+	# 		# dailyBar = data.get("dailyBar") or {}
+	# 		# prevDailyBar = data.get("prevDailyBar")  or {}
+			
+	# 		if minuteBar.get('t'):
+	# 			minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT) #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
+	# 		else:
+	# 			continue
+
+	# 		# if  utcminute != minuteBar['t']:
+	# 		# 	continue
+
+	# 		minuteBar["s"] = s
+	# 		#vol = minuteBar.get("v") or 0
+	# 		#minuteBar['s'] = s
+	# 		insert_minute_bars(s,[minuteBar],False)
+	# 		#price = latestTrade.get("p") or 0
+	# 		# if price:
+	# 		# 	sql = """ update tabSymbol set 
+	# 		# 	price=%s, 
+	# 		# 	volume=%s, 
+	# 		# 	1m_volume=%s,
+	# 		# 	today_high=%s, 
+	# 		# 	today_low=%s ,
+	# 		# 	today_open=%s ,
+	# 		# 	today_close=%s ,
+	# 		# 	today_trades=%s ,
+	# 		# 	bid=%s , 
+	# 		# 	ask=%s ,
+	# 		# 	vwap=%s , 
+	# 		# 	prev_day_open = %s ,
+	# 		# 	prev_day_close = %s , 
+	# 		# 	prev_day_high = %s ,
+	# 		# 	prev_day_low = %s , 
+	# 		# 	prev_day_vwap = %s ,
+	# 		# 	prev_day_volume = %s ,
+	# 		# 	prev_day_trades = %s 
+	# 		# 	where name='%s' """ % (
+	# 		# 				price or 0,
+	# 		# 				dailyBar.get("v") or 0,
+	# 		# 				vol,
+	# 		# 				dailyBar.get("h") or 0,
+	# 		# 				dailyBar.get("l") or 0,
+	# 		# 				dailyBar.get("o") or 0,
+	# 		# 				dailyBar.get("c") or 0,
+	# 		# 				dailyBar.get("n") or 0,
+	# 		# 				latestQuote.get("bp") or 0,
+	# 		# 				latestQuote.get("ap") or 0,
+	# 		# 				minuteBar.get("vw") or 0,
+	# 		# 				prevDailyBar.get("o") or 0,
+	# 		# 				prevDailyBar.get("c") or 0,
+	# 		# 				prevDailyBar.get("h") or 0,
+	# 		# 				prevDailyBar.get("l") or 0,
+	# 		# 				prevDailyBar.get("vw") or 0,
+	# 		# 				prevDailyBar.get("v") or 0,
+	# 		# 				prevDailyBar.get("n") or 0,
+	# 		# 				s )
+	# 		# 	try:
+	# 		# 		sql = str(sql)
+	# 		# 		_cursor.execute(sql)
+	# 		# 	except Exception as e:
+	# 		# 		print(s,"error sql",e)
+
+	# 	except Exception as e:
+	# 		print("error",e)
 	# conn.close()
 	# _cursor = None
 	# conn = None
@@ -389,18 +407,21 @@ def update_chart_subs(redis):
 		if dt.now().minute % 5 == 0:
 			clear_active_symbols()
 
+
 	
 #@multitasking.task 
-def insert_minute_bars(ticker,minuteBars,send_last=False):
+def insert_minute_bars(day,minuteBars,send_last=False):
 	global bar_symbols
 	if not minuteBars:
-		print(ticker,"not minuteBars")
+		print(day,"not minuteBars")
 		return
-
+	path = get_item_path(day)
+	print("path",path)
 	try:
-		_bars = minuteBars #[to_candle(a) for a in minuteBars ]
-		items = pd.DataFrame.from_dict(_bars)
+		#_bars = minuteBars #[to_candle(a) for a in minuteBars ]
+		items = pd.DataFrame.from_dict(minuteBars)
 		items = items.astype(dtype= {
+			"s":"str",
 			"t":"int64", 
 			"o":"float64",
 			"c":"float64",
@@ -410,27 +431,29 @@ def insert_minute_bars(ticker,minuteBars,send_last=False):
 			"v":"int64",
 			"vw":"float64",
 			})
-		last = None
+		#last = None
 		
 		if not items.empty :
-			if send_last :
-				last = _bars[-1]# items.iloc[-1].to_dict()
+			# if send_last :
+			# 	last = _bars[-1]# items.iloc[-1].to_dict()
 			#items["timestamp"] = items.time#.astype(str)
 			items.set_index("t",inplace=True,drop=True)
 			items.index.name = "t"
 			#items.index = items.index.values.astype(np.int64)
 			try:
 				#print(ticker)
-				collection.append(ticker, items)
+				collection.write(day, items,path=path)
 			except Exception as ve:
 				print(ticker,"--- ValueError ---",ve)
+				input()
 				#print(items)
-				collection.write(ticker, items)
+				#collection.write(ticker, items)
 			
-			if last and send_last and  (ticker in bar_symbols):
-				
-				ev  = "bars_%s"%  ticker.lower()
-				add_to_queue(ev,ev,last)
+			if send_last  :
+				for ticker in minuteBars:
+					if ticker.get("s") in bar_symbols:
+						ev  = "bars_%s"%  ticker.lower()
+						add_to_queue(ev,ev,last)
 		else:
 			print(ticker,"empty")
 	except Exception as e:

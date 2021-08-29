@@ -11,8 +11,12 @@ from . import config
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
+from datetime import datetime as dt 
 
 class Collection(object):
+
+    ITEM_FORMAT = "%Y%m%d"
+
     def __repr__(self):
         return "PyStore.collection <%s>" % self.collection
 
@@ -21,7 +25,8 @@ class Collection(object):
         self.collection = collection
         self.items = self.list_items()
 
-    def _item_path(self, item, as_string=False):
+    def get_item_path(self, item, as_string=False):
+        item = item.strftime(ITEM_FORMAT)
         p = utils.make_path(self.datastore, self.collection, item)
         if as_string:
             return str(p)
@@ -43,16 +48,16 @@ class Collection(object):
       
 
     def delete_item(self, item, reload_items=False):
-        shutil.rmtree(self._item_path(item))
+        shutil.rmtree(self.get_item_path(item))
         self.items.remove(item)
         if reload_items:
             self.items = self._list_items_threaded()
         return True
 
 
-    def write(self,item,data,append = False,path=None):
+    def write(self,item,data,path=None):
         if path is None:
-            path =  self._item_path(item,True) 
+            path =  self.get_item_path(item,True) 
         #print(path)
         # if   append :
         #     if  utils.path_exists(path) :
@@ -64,19 +69,20 @@ class Collection(object):
             return
 
         table = pa.Table.from_pandas(data,preserve_index=True)
+        pq.ParquetWriter(path, table.schema).write_table(table)            
 
-        if append:
-            pq.ParquetWriter(path, table.schema).write_table(table)            
-        else:
-            pq.write_table(table, path)
+        # if append:
+        #     pq.ParquetWriter(path, table.schema).write_table(table)            
+        # else:
+        #     pq.write_table(table, path)
 
 
-    def append(self, item, data):
-        self.write(
-            item,
-            data, 
-            append=True,
-            path = self._item_path(item,True) )
+    # def append(self, item, data):
+    #     self.write(
+    #         item,
+    #         data, 
+    #         append=True,
+    #         path = self._item_path(item,True) )
 
 
   
