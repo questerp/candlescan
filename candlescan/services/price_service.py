@@ -375,7 +375,7 @@ def insert_minute_bars(day,minuteBars,send_last=False):
 		print(day,"not minuteBars")
 		return
 	path = collection.get_item_path(day)
-	print("path",path)
+	# print("path",path)
 	try:
 		#_bars = minuteBars #[to_candle(a) for a in minuteBars ]
 		items = pd.DataFrame.from_dict(minuteBars)
@@ -404,7 +404,7 @@ def insert_minute_bars(day,minuteBars,send_last=False):
 				collection.write(day, items,path=path)
 			except Exception as ve:
 				print(day,"--- ValueError ---",ve)
-				input()
+				#input()
 				#print(items)
 				#collection.write(ticker, items)
 			
