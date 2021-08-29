@@ -139,10 +139,10 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			if not data:
 				continue
 			minuteBar = data.get("minuteBar") 
-			latestTrade = data.get("latestTrade") 
-			dailyBar = data.get("dailyBar") 
-			prevDailyBar = data.get("prevDailyBar") 
-			latestQuote = data.get("latestQuote") 
+			latestTrade = data.get("latestTrade") or {}
+			dailyBar = data.get("dailyBar") or {}
+			prevDailyBar = data.get("prevDailyBar") or {}
+			latestQuote = data.get("latestQuote") or {}
 			
 			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT) #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
