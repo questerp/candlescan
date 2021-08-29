@@ -9,9 +9,8 @@ from . import utils
 from .item import Item
 from . import config
 import pandas as pd
-# import pyarrow as pa
-# import pyarrow.parquet as pq
-# import awswrangler as wr
+import threading
+lock = threading.Lock()
 
 from datetime import datetime as dt 
 
@@ -69,16 +68,16 @@ class Collection(object):
 
         if data.empty:
             return
-
-        data.to_hdf(
-            path,
-            "table",
-            min_itemsize=min_itemsize,
-            append=True,
-            complib="zlib",
-            data_columns = True,
-            format="table"
-        )
+        with lock:
+            data.to_hdf(
+                path,
+                "table",
+                min_itemsize=min_itemsize,
+                append=True,
+                complib="zlib",
+                data_columns = True,
+                format="table"
+            )
         # wr.s3.to_parquet(
         #                 df=data,
         #                 path=path,
