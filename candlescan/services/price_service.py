@@ -408,9 +408,9 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 		
 		filters = []
 		if start and end:
-			filters = [('t','>=',start), ('t','<=',end)]
+			filters =  't >= start & t <=end'
 		else:
-			filters = [('t','>=',start) ]
+			filters = 't >= start '
 			
 		
 		data = _collection.item(symbol,filters=filters).data()
