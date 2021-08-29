@@ -23,7 +23,8 @@ import pandas as pd
 # import pyarrow.parquet as pq
 import os
 from . import utils
-
+import threading
+lock = threading.Lock()
 
 class Item(object):
     def __repr__(self):
