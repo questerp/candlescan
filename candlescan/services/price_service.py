@@ -279,20 +279,21 @@ def backfill(days=0,symbols=None,daily=False):
 
 	try:
 		if daily:
-			bars = api.get_barset(chunk_symbols,"day",limit=1000 )	
-			tstart = dt.now()
-			minute_bars = []
-			if bars :
-				for b in bars:
-					_bars = bars[b]
-					for a in _bars:
-						a['s'] = b
-						a['n'] = 0
-						a['vw'] = 0.0
-						a['t'] = dt.utcfromtimestamp(a['t'])
-						minute_bars.append(a)
-				if minute_bars:
-					insert_minute_bars(startdt,minute_bars,col="d")
+			for result in chunks(symbols,chuck):
+				bars = api.get_barset(result,"day",limit=1000 )	
+				tstart = dt.now()
+				minute_bars = []
+				if bars :
+					for b in bars:
+						_bars = bars[b]
+						for a in _bars:
+							a['s'] = b
+							a['n'] = 0
+							a['vw'] = 0.0
+							a['t'] = dt.utcfromtimestamp(a['t'])
+							minute_bars.append(a)
+					if minute_bars:
+						insert_minute_bars(startdt,minute_bars,col="d")
 		else:
 			threads = 0
 			for d in range(days+1):
