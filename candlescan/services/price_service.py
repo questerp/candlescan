@@ -445,7 +445,7 @@ def insert_minute_bars(day,minuteBars,send_last=False):
 				#print(ticker)
 				collection.write(day, items,path=path)
 			except Exception as ve:
-				print(ticker,"--- ValueError ---",ve)
+				print(day,"--- ValueError ---",ve)
 				input()
 				#print(items)
 				#collection.write(ticker, items)
