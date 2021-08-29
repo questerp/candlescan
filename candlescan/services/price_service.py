@@ -227,7 +227,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	# conn = None
 	print("DONE",i,dt.now())
 				
-def backfill(days=0,symbols=None):
+def backfill(days=0,symbols=None,daily=False):
 	api = REST(raw_data=True)
 	
 	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
@@ -261,10 +261,6 @@ def backfill(days=0,symbols=None):
 					_bars = bars[b]
 					for a in _bars:
 						a['s'] = b
-						# a['o'] = float(a['o'])
-						# a['c'] = float(a['c'])
-						# a['h'] =  float(a['h'])
-						# a['l'] =  float(a['l'])
 						a['n'] = 0
 						a['vw'] = 0.0
 						a['t'] = dt.utcfromtimestamp(a['t'])
@@ -282,18 +278,34 @@ def backfill(days=0,symbols=None):
 		
 
 	try:
-		threads = 0
-		for d in range(days+1):
-			start =  add_days(dt.now(),-1*d) #-1*d
-			if start.weekday() in [5,6]:
-				continue
-			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
-			beg = pd.Timestamp(start, tz=TZ).isoformat()
-			for result in chunks(symbols,chuck):
-				threads+=1
-				if result:
-					#_insert(threads,beg,result,start)
-					threading.Thread(target=_insert,args=(threads,beg,result,start,)).start()	
+		if daily:
+			bars = api.get_barset(chunk_symbols,"day",limit=1000 )	
+			tstart = dt.now()
+			minute_bars = []
+			if bars :
+				for b in bars:
+					_bars = bars[b]
+					for a in _bars:
+						a['s'] = b
+						a['n'] = 0
+						a['vw'] = 0.0
+						a['t'] = dt.utcfromtimestamp(a['t'])
+						minute_bars.append(a)
+				if minute_bars:
+					insert_minute_bars(startdt,minute_bars,col="d")
+		else:
+			threads = 0
+			for d in range(days+1):
+				start =  add_days(dt.now(),-1*d) #-1*d
+				if start.weekday() in [5,6]:
+					continue
+				start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
+				beg = pd.Timestamp(start, tz=TZ).isoformat()
+				for result in chunks(symbols,chuck):
+					threads+=1
+					if result:
+						#_insert(threads,beg,result,start)
+						threading.Thread(target=_insert,args=(threads,beg,result,start,)).start()	
 			
 			#time.sleep(5 )
 
@@ -301,52 +313,7 @@ def backfill(days=0,symbols=None):
 		print("backfill ERROR",e)
 
 	print("--- backfill DONE ---")
-
-def backfill_daily(days=1000):
-	api = REST(raw_data=True)
-	
-	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
-	#all_symbols = get_active_symbols()# [a[0] for a in all_symbols] 
-	print("backfill_daily",dt.now())
-	chuck = 200
-	TZ = 'America/New_York'
-	collection_day = store.collection("1DAY",overwrite=True)
-	i = 0
-	#empty_candle = get_empty_candle()
-	try:
-		for result in chunks(get_active_symbols(),chuck):
-			i+=1
-			bars = api.get_barset(result,"day",limit=days)
-			if bars :
-				for b in bars:
-					try:
-						day_bars = []
-						for a in bars[b]:
-							a['t'] = dt.fromtimestamp(a['t'])
-							day_bars.append(to_candle(a,b))
-						
-						df = pd.DataFrame(day_bars)
-						df.set_index("time",inplace=True,drop=True)
-
-						if not df.empty :
-							try:
-								collection_day.append(b, df)
-							except ValueError as ve:
-								#print(ticker,"--- ValueError ---",ve)
-								collection_day.write(b, df,overwrite=True)
-						print(len(day_bars),"DONE - symbols:",i*chuck)
-
-					except Exception as e:
-						print("backfill ERROR",e)
-
-			else:
-				print("No data")
-					
-			
-	except Exception as e:
-		print("backfill ERROR",e)
-
-	print("backfill DONE")
+ 
 
 def chunks(l, n):
     n = max(1, n)
@@ -370,12 +337,11 @@ def update_chart_subs(redis):
 
 	
 #@multitasking.task 
-def insert_minute_bars(day,minuteBars,send_last=False):
+def insert_minute_bars(day,minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print(day,"not minuteBars")
 		return
-	path = collection.get_item_path(day)
 	# print("path",path)
 	try:
 		#_bars = minuteBars #[to_candle(a) for a in minuteBars ]
@@ -391,23 +357,18 @@ def insert_minute_bars(day,minuteBars,send_last=False):
 			"v":"int64",
 			"vw":"float64",
 			})
-		#last = None
 		
 		if not items.empty :
-			# if send_last :
-			# 	last = _bars[-1]# items.iloc[-1].to_dict()
-			#items["timestamp"] = items.time#.astype(str)
-			#items.set_index("t",inplace=True,drop=True)
-			#items.index.name = "t"
-			#items.index = items.index.values.astype(np.int64)
 			try:
-				#print(ticker)
-				collection.write(day, items,path=path,min_itemsize={"s":20})
+				if col=="m":
+					path = collection.get_item_path(day)
+					collection.write(day, items,path=path,min_itemsize={"s":20})
+				else:
+					path = collection_day.get_item_path(day)
+					collection_day.write(day, items,path=path,min_itemsize={"s":20})
+
 			except Exception as ve:
 				print(day,"--- ValueError ---",ve)
-				#input()
-				#print(items)
-				#collection.write(ticker, items)
 			
 			if send_last  :
 				for ticker in minuteBars:
