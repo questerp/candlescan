@@ -9,8 +9,10 @@ from . import utils
 from .item import Item
 from . import config
 import pandas as pd
-import pyarrow as pa
-import pyarrow.parquet as pq
+# import pyarrow as pa
+# import pyarrow.parquet as pq
+import awswrangler as wr
+
 from datetime import datetime as dt 
 
 class Collection(object):
@@ -67,9 +69,17 @@ class Collection(object):
 
         if data.empty:
             return
-
-        table = pa.Table.from_pandas(data,preserve_index=False)
-        pq.ParquetWriter(path, table.schema).write_table(table)            
+        wr.s3.to_parquet(
+                        df=data,
+                        path=path,
+                        dataset=True,
+                        mode ="append",
+                        partition_cols =["s"],
+                        index=False,
+                    )
+                    
+        # table = pa.Table.from_pandas(data,preserve_index=False)
+        # pq.ParquetWriter(path, table.schema).write_table(table)            
 
         # if append:
         #     pq.ParquetWriter(path, table.schema).write_table(table)            
