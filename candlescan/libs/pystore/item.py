@@ -21,7 +21,7 @@
 # import dask.dataframe as dd
 import pandas as pd
 # import pyarrow.parquet as pq
-
+import os
 from . import utils
 
 
@@ -52,10 +52,15 @@ class Item(object):
         ticker = self.item
         df = pd.DataFrame()
         for path in self._paths:
-             with pd.HDFStore(path) as store:
-                filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
-                data = store.select('table',where= filters, auto_close=True,columns=self.columns)
-                df = pd.concat([df, data], ignore_index=True) 
+            if os.path.exists(path):
+                with pd.HDFStore(path) as store:
+                    try:
+                        filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
+                        data = store.select('table',where= filters, auto_close=True,columns=self.columns)
+                        df = pd.concat([df, data], ignore_index=True) 
+                    except Exception as e:
+                        print("error item",e)
+            
         # wheres = [" 't==%s'"%self.item] + (self.filters or [])
         # print(wheres)
         # data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
