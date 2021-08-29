@@ -245,7 +245,7 @@ def backfill(days=0,symbols=None):
 	if not symbols:
 		symbols  = get_active_symbols()
 
-	def _insert(i,start,chunk_symbols):
+	def _insert(i,start,chunk_symbols,startdt):
 		try:
 			#sleeptime = random.uniform(0, i)
 			time.sleep(i)
@@ -260,7 +260,7 @@ def backfill(days=0,symbols=None):
 				for b in bars:
 					_bars = bars[b]
 					for a in _bars:
-						#a['s'] = b
+						a['s'] = b
 						# a['o'] = float(a['o'])
 						# a['c'] = float(a['c'])
 						# a['h'] =  float(a['h'])
@@ -271,7 +271,7 @@ def backfill(days=0,symbols=None):
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
 					if _bars:
-						insert_minute_bars(b,_bars)
+						insert_minute_bars(startdt,_bars)
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 				
@@ -292,7 +292,7 @@ def backfill(days=0,symbols=None):
 				threads+=1
 				if result:
 					#_insert(threads,beg,result)
-					threading.Thread(target=_insert,args=(threads,beg,result,)).start()	
+					threading.Thread(target=_insert,args=(threads,beg,result,start,)).start()	
 			
 			#time.sleep(5 )
 
@@ -350,49 +350,7 @@ def backfill_daily(days=1000):
 def chunks(l, n):
     n = max(1, n)
     return (l[i:i+n] for i in range(0, len(l), n))	
-
-
-def get_parquet_schema():
-	date = dt.now().replace(year=1990)
-	df = pd.DataFrame([{ "vw":float(0),"o":float(0),"c":float(0),"h":float(0),"l":float(0),"v":0,"n":0 ,"t":date}])
-	df = df.astype(dtype= {
-			"t":"int64", 
-			"o":"float64",
-			"c":"float64",
-			"h":"float64",
-			"l":"float64",
-			"n":"int64",
-			"v":"int64",
-			"vw":"float64",
-		})
-	df.set_index("t",inplace=True)
-	df.index.name = "t"
-	return df
-
-def init_bars_db(target = 0,symbols=None,delete=True):
-	print("init")
-	day = target in [0,2]
-	minute = target in [0,1]
-	if minute:
-		if delete:
-			store.delete_collection("1MIN" )
-			collection = store.collection("1MIN",overwrite=True)
-	if day:
-		if delete:
-			store.delete_collection("1DAY")
-			collection_day = store.collection("1DAY",overwrite=True)
-
-	if symbols is None:
-		symbols =  get_active_symbols()#[a[0] for a in symbols]
-	
-	df = get_parquet_schema()
-	for idx,s in enumerate(symbols):
-		print(idx )
-		if minute:
-			collection.write(s, df)
-		if day:
-			collection_day.write(s, df)
-	print("DONE")
+ 
 
 @multitasking.task 
 def update_chart_subs(redis):
