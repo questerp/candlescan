@@ -10,6 +10,7 @@ from datetime import timedelta,datetime as dt
 from frappe.utils import cstr,add_days, get_datetime
 import pandas as pd
 import talib as ta
+from candlescan.utils.candlescan import get_active_symbols 
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -24,13 +25,22 @@ async def run():
 			if dt.now().second != 30:
 				time.sleep(1)
 				continue
-			frappe.db.sql("""update tabSymbol set daily_change_per=ROUND(100*((price - today_open)/today_open),2), daily_change_val=ROUND((price - today_open),2) where today_open>0 and price > 0""")
+			frappe.db.sql("""update tabSymbol set 
+			daily_change_per=ROUND(100*((price - today_open)/today_open),2), 
+			daily_change_val=ROUND((price - today_open),2) 
+			where today_open>0 and price > 0""")
 			frappe.db.commit()
 			time.sleep(1)
-			frappe.db.sql("""update tabSymbol set daily_close_change_per=ROUND(100*((price - prev_day_close)/prev_day_close),2), daily_close_change_val=ROUND((price - prev_day_close),2) where prev_day_close>0 and price > 0""")
+			frappe.db.sql("""update tabSymbol set 
+			daily_close_change_per=ROUND(100*((price - prev_day_close)/prev_day_close),2), 
+			daily_close_change_val=ROUND((price - prev_day_close),2) 
+			where prev_day_close>0 and price > 0""")
 			frappe.db.commit()
 			time.sleep(1)
-			frappe.db.sql("""update tabSymbol set gap_per=ROUND(100*((price - prev_day_close)/prev_day_close),2), gap_val=ROUND((price - prev_day_close),2) where prev_day_close>0 and price > 0""")
+			frappe.db.sql("""update tabSymbol set 
+			gap_per=ROUND(100*((price - prev_day_close)/prev_day_close),2), 
+			gap_val=ROUND((price - prev_day_close),2) 
+			where prev_day_close>0 and price > 0""")
 			frappe.db.commit()
 			time.sleep(1)
 			

@@ -192,6 +192,8 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 					try:
 						sql = str(sql)
 						_cursor.execute(sql)
+						_cursor.execute("commit")
+
 					except Exception as e:
 						print(s,"error sql",e)
 		if bars:
