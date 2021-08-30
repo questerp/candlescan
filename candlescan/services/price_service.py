@@ -238,7 +238,7 @@ def backfill(days=0,symbols=None ):
 		symbols  = get_active_symbols()
 
 	def _insert(i,start,chunk_symbols,startdt):
-		#try:
+		try:
 			#sleeptime = random.uniform(0, i)
 			#time.sleep(i)
 			print("start",i,start)
@@ -263,8 +263,8 @@ def backfill(days=0,symbols=None ):
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 
-		# except Exception as e:
-		# 	print("_insert ERROR",e)	
+		except Exception as e:
+			print("_insert ERROR",e)	
 		
 
 	try:
@@ -377,7 +377,6 @@ def insert_minute_bars(minuteBars,send_last=False,col="m"):
 			_col.write(minuteBars )
 
 		except Exception as ve:
-			raise(ve)
 			print("--- ValueError ---",ve)
 		
 		if send_last  :
@@ -392,8 +391,6 @@ def insert_minute_bars(minuteBars,send_last=False,col="m"):
 		# 	print(ticker,"empty")
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
-		raise(e)
-
 
 @multitasking.task 
 def add_to_queue(event,ev,last):
