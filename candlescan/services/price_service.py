@@ -375,7 +375,7 @@ def init_bars_db(target = 0):
 def insert_minute_bars(minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
-		print(day,"not minuteBars")
+		print("not minuteBars")
 		return
 	# print("path",path)
 	try:
@@ -395,12 +395,15 @@ def insert_minute_bars(minuteBars,send_last=False,col="m"):
 		
 		#if not items.empty :
 		try:
+			_col = None
+
 			if col=="m":
-				path = collection.get_item_path(day)
-				collection.write(day, items,path=path,min_itemsize={"s":20})
+				_col = collection
 			else:
-				path = collection_day.get_item_path(day)
-				collection_day.write(day, items,path=path,min_itemsize={"s":20})
+				_col = collection_day
+				
+			for item in minuteBars:
+				_col.write(item['s'],item )
 
 		except Exception as ve:
 			print(day,"--- ValueError ---",ve)

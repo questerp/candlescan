@@ -69,7 +69,7 @@ class Collection(object):
         return True
 
 
-    def write(self,item,data,path=None,min_itemsize=None):
+    def write(self,item,data,path=None ):
         if path is None:
             path =  self.get_item_path(item) 
         #print(path)
@@ -82,12 +82,15 @@ class Collection(object):
         if not data:
             return
 
+        if not isinstance(data,list):
+            data = [data]
+
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
-        conn=  apsw.Connection(path)
+        conn = apsw.Connection(path)
         with conn:
             cur = conn.cursor() 
-            cur.executemany("INERT INTO bars(t INTEGER NOT NULL PRIMARY KEY,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
-        
+            cur.executemany("INERT or IGNORE INTO bars(t INTEGER NOT NULL PRIMARY KEY,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
+
         # with lock:
         #     data.to_hdf(
         #         path,
