@@ -121,19 +121,19 @@ DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 def get_snapshots(conf,i,api,utcminute,symbols):
 	print("START",i,dt.now())
 	snap = api.get_snapshots(symbols)
-	conn = pymysql.connect(
-			user= conf.db_name,
-			password= conf.db_password,
-			database=conf.db_name,
-			host='127.0.0.1',
-			port='',
-			charset='utf8mb4',
-			use_unicode=True,
-			ssl=  None,
-			conv=conversions,
-			local_infile=conf.local_infile
-		)
-	_cursor = conn.cursor()
+	# conn = pymysql.connect(
+	# 		user= conf.db_name,
+	# 		password= conf.db_password,
+	# 		database=conf.db_name,
+	# 		host='127.0.0.1',
+	# 		port='',
+	# 		charset='utf8mb4',
+	# 		use_unicode=True,
+	# 		ssl=  None,
+	# 		conv=conversions,
+	# 		local_infile=conf.local_infile
+	# 	)
+	# _cursor = conn.cursor()
 	bars = [ ]
 	try:
 		for s in snap:
@@ -141,65 +141,65 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			if not data:
 				continue
 			minuteBar = data.get("minuteBar") 
-			latestTrade = data.get("latestTrade") or {}
-			dailyBar = data.get("dailyBar") or {}
-			prevDailyBar = data.get("prevDailyBar") or {}
-			latestQuote = data.get("latestQuote") or {}
+			# latestTrade = data.get("latestTrade") or {}
+			# dailyBar = data.get("dailyBar") or {}
+			# prevDailyBar = data.get("prevDailyBar") or {}
+			# latestQuote = data.get("latestQuote") or {}
 			
 			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT) #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 				minuteBar['s'] = s
 				bars.append(minuteBar)
-				price = latestTrade.get("p") or 0
-				if price:
-					sql = """ update tabSymbol set 
-					price=%s, 
-					volume=%s, 
-					1m_volume=%s,
-					today_high=%s, 
-					today_low=%s ,
-					today_open=%s ,
-					today_close=%s ,
-					today_trades=%s ,
-					bid=%s , 
-					ask=%s ,
-					vwap=%s , 
-					prev_day_open = %s ,
-					prev_day_close = %s , 
-					prev_day_high = %s ,
-					prev_day_low = %s , 
-					prev_day_vwap = %s ,
-					prev_day_volume = %s ,
-					prev_day_trades = %s 
-					where name='%s' """ % (
-								price or 0,
-								dailyBar.get("v") or 0,
-								minuteBar.get("v") or 0,
-								dailyBar.get("h") or 0,
-								dailyBar.get("l") or 0,
-								dailyBar.get("o") or 0,
-								dailyBar.get("c") or 0,
-								dailyBar.get("n") or 0,
-								latestQuote.get("bp") or 0,
-								latestQuote.get("ap") or 0,
-								minuteBar.get("vw") or 0,
-								prevDailyBar.get("o") or 0,
-								prevDailyBar.get("c") or 0,
-								prevDailyBar.get("h") or 0,
-								prevDailyBar.get("l") or 0,
-								prevDailyBar.get("vw") or 0,
-								prevDailyBar.get("v") or 0,
-								prevDailyBar.get("n") or 0,
-								s )
-					try:
-						sql = str(sql)
-						_cursor.execute(sql)
-						_cursor.execute("commit")
+				# price = latestTrade.get("p") or 0
+				# if price:
+				# 	sql = """ update tabSymbol set 
+				# 	price=%s, 
+				# 	volume=%s, 
+				# 	1m_volume=%s,
+				# 	today_high=%s, 
+				# 	today_low=%s ,
+				# 	today_open=%s ,
+				# 	today_close=%s ,
+				# 	today_trades=%s ,
+				# 	bid=%s , 
+				# 	ask=%s ,
+				# 	vwap=%s , 
+				# 	prev_day_open = %s ,
+				# 	prev_day_close = %s , 
+				# 	prev_day_high = %s ,
+				# 	prev_day_low = %s , 
+				# 	prev_day_vwap = %s ,
+				# 	prev_day_volume = %s ,
+				# 	prev_day_trades = %s 
+				# 	where name='%s' """ % (
+				# 				price or 0,
+				# 				dailyBar.get("v") or 0,
+				# 				minuteBar.get("v") or 0,
+				# 				dailyBar.get("h") or 0,
+				# 				dailyBar.get("l") or 0,
+				# 				dailyBar.get("o") or 0,
+				# 				dailyBar.get("c") or 0,
+				# 				dailyBar.get("n") or 0,
+				# 				latestQuote.get("bp") or 0,
+				# 				latestQuote.get("ap") or 0,
+				# 				minuteBar.get("vw") or 0,
+				# 				prevDailyBar.get("o") or 0,
+				# 				prevDailyBar.get("c") or 0,
+				# 				prevDailyBar.get("h") or 0,
+				# 				prevDailyBar.get("l") or 0,
+				# 				prevDailyBar.get("vw") or 0,
+				# 				prevDailyBar.get("v") or 0,
+				# 				prevDailyBar.get("n") or 0,
+				# 				s )
+				# 	try:
+				# 		sql = str(sql)
+				# 		_cursor.execute(sql)
+				# 		_cursor.execute("commit")
 
-					except Exception as e:
-						print(s,"error sql",e)
+				# 	except Exception as e:
+				# 		print(s,"error sql",e)
 		if bars:
-			insert_minute_bars(utcminute,bars,True)
+			insert_minute_bars(bars,True)
 	except Exception as e:
 			print("error",e)
 
@@ -263,62 +263,41 @@ def backfill(days=0,symbols=None,daily=False):
 			bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)	
 			#print(i,"BARS",len(bars))
 
-			minute_bars = []
 			tstart = dt.now()
 			if bars :
 				for b in bars:
 					_bars = bars[b]
 					for a in _bars:
 						a['s'] = b
-						a['n'] = 0
-						a['vw'] = 0.0
+						# a['n'] = 0
+						# a['vw'] = 0.0
 						a['t'] = dt.utcfromtimestamp(a['t'])
-						minute_bars.append(a)
+						#minute_bars.append(a)
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
-				if minute_bars:
-					insert_minute_bars(startdt,minute_bars)
+					if minute_bars:
+						insert_minute_bars(b,_bars)
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
-				
 
 		except Exception as e:
 			print("_insert ERROR",e)	
 		
 
 	try:
-		if daily:
+		threads = 0
+		for d in range(days+1):
+			start =  add_days(dt.now(),-1*d) #-1*d
+			if start.weekday() in [5,6]:
+				continue
+			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
+			beg = pd.Timestamp(start, tz=TZ).isoformat()
 			for result in chunks(symbols,chuck):
-				bars = api.get_barset(result,"day",limit=1000 )	
-				tstart = dt.now()
-				minute_bars = []
-				if bars :
-					for b in bars:
-						_bars = bars[b]
-						for a in _bars:
-							a['s'] = b
-							a['n'] = 0
-							a['vw'] = 0.0
-							a['t'] = dt.utcfromtimestamp(a['t'])
-							minute_bars.append(a)
-					if minute_bars:
-						insert_minute_bars("daily",minute_bars,col="d")
-				print( "DONE" )
-				
-		else:
-			threads = 0
-			for d in range(days+1):
-				start =  add_days(dt.now(),-1*d) #-1*d
-				if start.weekday() in [5,6]:
-					continue
-				start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
-				beg = pd.Timestamp(start, tz=TZ).isoformat()
-				for result in chunks(symbols,chuck):
-					threads+=1
-					if result:
-						#_insert(threads,beg,result,start)
-						threading.Thread(target=_insert,args=(threads,beg,result,start,)).start()	
-			
+				threads+=1
+				if result:
+					#_insert(threads,beg,result,start)
+					threading.Thread(target=_insert,args=(threads,beg,result,start,)).start()	
+		
 			#time.sleep(5 )
 
 	except Exception as e:
@@ -372,7 +351,7 @@ def init_bars_db(target = 0):
 
 	
 #@multitasking.task 
-def insert_minute_bars(minuteBars,send_last=False,col="m"):
+def insert_minute_bars(ticker,minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print("not minuteBars")
@@ -401,9 +380,8 @@ def insert_minute_bars(minuteBars,send_last=False,col="m"):
 				_col = collection
 			else:
 				_col = collection_day
-				
-			for item in minuteBars:
-				_col.write(item['s'],item )
+
+			_col.write(ticker,minuteBars )
 
 		except Exception as ve:
 			print(day,"--- ValueError ---",ve)
