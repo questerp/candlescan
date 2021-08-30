@@ -40,8 +40,8 @@ class Collection(object):
     def create_table(self,item):
         path = self.get_item_path(item)
         #conn = apsw.Connection(path)
-        self.conn = apsw.Connection(self.path)
-        with self.conn:
+        conn = apsw.Connection(self.path)
+        with conn:
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
             cur.execute(sql)
@@ -89,9 +89,9 @@ class Collection(object):
             data = [data]
 
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
-        self.conn = apsw.Connection(self.path)
-        with self.conn:
-            cur = self.conn.cursor()
+        conn = apsw.Connection(self.path)
+        with conn:
+            cur = conn.cursor()
             cur.executemany("INSERT or IGNORE INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
 
         # with lock:
