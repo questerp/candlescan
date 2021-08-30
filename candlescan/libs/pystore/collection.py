@@ -27,6 +27,7 @@ class Collection(object):
         self.collection = collection
         self.items = self.list_items()
         self.path =  self.get_item_path("data") 
+        self.conn = apsw.Connection(self.path)
 
     def get_item_path(self, item ):
         if not isinstance(item , str):
@@ -38,8 +39,8 @@ class Collection(object):
 
     def create_table(self,item):
         path = self.get_item_path(item)
-        conn = apsw.Connection(path)
-        with conn:
+        #conn = apsw.Connection(path)
+        with self.conn:
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
             cur.execute(sql)
@@ -87,9 +88,9 @@ class Collection(object):
             data = [data]
 
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
-        conn = apsw.Connection(self.path)
-        with conn:
-            cur = conn.cursor() 
+        
+        with self.conn:
+            cur = self.conn.cursor()
             cur.executemany("INSERT or IGNORE INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
 
         # with lock:
