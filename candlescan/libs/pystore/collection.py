@@ -40,7 +40,7 @@ class Collection(object):
         conn = apsw.Connection(path)
         with conn:
             cur = conn.cursor()
-            sql  ="create table bars(t,o,c,h,l,v)"
+            sql  ="drop table if exists bars ;create table bars(t,o,c,h,l,v)"
             cur.execute(sql)
     
 
