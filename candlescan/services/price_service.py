@@ -120,7 +120,10 @@ DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 #@multitasking.task 
 def get_snapshots(conf,i,api,utcminute,symbols):
 	print("START",i,dt.now())
+	bcall = dt.now()
 	snap = api.get_snapshots(symbols)
+	tcall = dt.now()
+
 	# conn = pymysql.connect(
 	# 		user= conf.db_name,
 	# 		password= conf.db_password,
@@ -140,13 +143,13 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			data = snap[s]
 			if not data:
 				continue
-			bcall = dt.now()
+			
 			minuteBar = data.get("minuteBar") 
 			# latestTrade = data.get("latestTrade") or {}
 			# dailyBar = data.get("dailyBar") or {}
 			# prevDailyBar = data.get("prevDailyBar") or {}
 			# latestQuote = data.get("latestQuote") or {}
-			tcall = dt.now()
+			
 			
 			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT).timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
