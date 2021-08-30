@@ -89,7 +89,7 @@ class Collection(object):
         conn = apsw.Connection(path)
         with conn:
             cur = conn.cursor() 
-            cur.executemany("INERT or IGNORE INTO bars(t INTEGER NOT NULL PRIMARY KEY,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
+            cur.executemany("INSERT or IGNORE INTO bars(t INTEGER NOT NULL PRIMARY KEY,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
 
         # with lock:
         #     data.to_hdf(
