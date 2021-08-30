@@ -52,10 +52,10 @@ class Item(object):
         conn = apsw.Connection(self._path)
         conn.setbusytimeout(5000)
         data = []
-        sql  = "select * from bars where s=? " + self.filters
+        sql  = "select * from bars where s=? and t>=?" + self.filters
         with conn:
             try:
-                rows=list( conn.cursor().execute(sql,[self.item]) )
+                rows=list( conn.cursor().execute(sql,[self.item,self.start]) )
                 return rows
             except Exception as e:
                 print("error item",e)
