@@ -275,6 +275,7 @@ def backfill(days=0,symbols=None ):
 				continue
 			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
+			print("BACKFILL FOR",beg)
 			for result in chunks(symbols,chuck):
 				threads+=1
 				if result:
