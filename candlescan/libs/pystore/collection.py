@@ -26,7 +26,6 @@ class Collection(object):
         self.collection = collection
         self.items = self.list_items()
         self.path =  self.get_item_path("data") 
-        self.conn = None
         
 
     def get_item_path(self, item ):
@@ -84,10 +83,15 @@ class Collection(object):
         values = [[a['t'],a['s'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
         conn = self.get_connection()
         with conn:
-            cur = conn.cursor()
-            #cur.execute('BEGIN IMMEDIATE;')
-            cur.executemany("INSERT or IGNORE INTO bars(t,s,o,c,h,l,v) VALUES(?,?,?,?,?,?,?)", values)#or IGNORE
-            # cur.execute('COMMIT;')
+            try:
+                cur = conn.cursor()
+                #cur.execute('BEGIN IMMEDIATE;')
+                cur.executemany("INSERT or IGNORE INTO bars(t,s,o,c,h,l,v) VALUES(?,?,?,?,?,?,?)", values)#or IGNORE
+                # cur.execute('COMMIT;')
+            except BusyErro as err:
+                print("trying again it's Busy",err)
+                time.sleep(5)
+                self.write(data)
 
     def commit(self):
         conn = self.get_connection()
