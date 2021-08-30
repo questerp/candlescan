@@ -384,7 +384,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False,col="m"):
 			_col.write(ticker,minuteBars )
 
 		except Exception as ve:
-			print(day,"--- ValueError ---",ve)
+			print("--- ValueError ---",ve)
 		
 		if send_last  :
 			for ticker in minuteBars:
