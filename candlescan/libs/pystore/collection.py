@@ -37,10 +37,10 @@ class Collection(object):
 
     def create_table(self,item):
         path = self.get_item_path(item)
-        
+        print(path)
         with apsw.Connection(path).cursor() as cur:
             sql  ="create table %s" % item
-            print(sql,path)
+            print(sql)
             cur.execute("BEGIN TRANSACTION;")
             cur.execut(sql)
             cur.execute("COMMIT;")
