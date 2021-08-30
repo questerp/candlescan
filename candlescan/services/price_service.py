@@ -377,6 +377,7 @@ def insert_minute_bars(minuteBars,send_last=False,col="m"):
 			_col.write(minuteBars )
 
 		except Exception as ve:
+			raise(ve)
 			print("--- ValueError ---",ve)
 		
 		if send_last  :
