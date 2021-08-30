@@ -363,7 +363,7 @@ def init_bars_db(target = 0):
 	date = dt.now().replace(year=1990)
 	for idx,s in enumerate(symbols):
 		#if s not in items:
-		print(idx,ct)
+		print(idx)
 		if minute:
 			collection.create_table(s)
 		if day:
