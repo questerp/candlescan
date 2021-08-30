@@ -18,7 +18,7 @@ from datetime import datetime as dt
 class Collection(object):
 
     ITEM_FORMAT = "%Y%m%d"
-
+    conn = None
     def __repr__(self):
         return "PyStore.collection <%s>" % self.collection
 
@@ -40,7 +40,7 @@ class Collection(object):
     def create_table(self,item):
         path = self.get_item_path(item)
         #conn = apsw.Connection(path)
-        conn = apsw.Connection(self.path)
+        conn = self.get_connection()
         with conn:
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
@@ -71,66 +71,24 @@ class Collection(object):
             self.items = self._list_items_threaded()
         return True
 
+    def get_connection(self):
+        global conn
+        if not conn:
+            conn = apsw.Connection(self.path)
+            conn.setbusytimeout(5000)
+        return conn
 
     def write(self,data ):
-         
-            
-        #print(path)
-        # if   append :
-        #     if  utils.path_exists(path) :
-        #         raise ValueError("""
-        #             Item already exists. To overwrite, use `overwrite=True`.
-        #             Otherwise, use `<collection>.append()`""")
-
         if not data:
             return
 
-        if not isinstance(data,list):
-            data = [data]
-
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
-        conn = apsw.Connection(self.path)
-        conn.setbusytimeout(5000)
-        #with conn:
+        conn = self.get_connection()
+        
         cur = conn.cursor()
         cur.execute('BEGIN IMMEDIATE;')
         cur.executemany("INSERT  INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)#or IGNORE
         cur.execute('COMMIT;')
-        # with lock:
-        #     data.to_hdf(
-        #         path,
-        #         "table",
-        #         min_itemsize=min_itemsize,
-        #         append=True,
-        #         complib="zlib",
-        #         complevel= 6,
-        #         data_columns = True,
-        #         format="table"
-        #     )
-        # wr.s3.to_parquet(
-        #                 df=data,
-        #                 path=path,
-        #                 dataset=True,
-        #                 mode ="append",
-        #                 partition_cols =["s"],
-        #                 index=False,
-        #             )
-                    
-        # table = pa.Table.from_pandas(data,preserve_index=False)
-        # pq.ParquetWriter(path, table.schema).write_table(table)            
-
-        # if append:
-        #     pq.ParquetWriter(path, table.schema).write_table(table)            
-        # else:
-        #     pq.write_table(table, path)
-
-
-    # def append(self, item, data):
-    #     self.write(
-    #         item,
-    #         data, 
-    #         append=True,
-    #         path = self._item_path(item,True) )
-
+      
 
   
