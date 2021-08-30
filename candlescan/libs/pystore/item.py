@@ -30,7 +30,7 @@ class Item(object):
     def __repr__(self):
         return "PyStore.item <%s/%s>" % (self.collection, self.item)
 
-    def __init__(self, item, datastore, collection,start, filters=None, columns=None,):
+    def __init__(self, item, path,start, filters=None, columns=None,):
                  
         # self.engine = engine
         self.datastore = datastore
@@ -38,10 +38,10 @@ class Item(object):
         self.item = item
         self.filters = filters or ''
         self.columns = columns
-        
+        self.path = path
         self.start = start
 
-        self._path  =  utils.make_path(datastore, collection, "data") 
+        # self._path  =  utils.make_path(datastore, collection, "data") 
         # print("self._path",self._path)
         # if not self._path.exists():
         #     raise ValueError(
@@ -49,7 +49,7 @@ class Item(object):
         #         "Create it using collection.write(`%s`, data, ...)" % (
         #             item, item))
     def data(self):
-        conn = apsw.Connection(self._path)
+        conn = apsw.Connection(self.path)
         conn.setbusytimeout(5000)
         data = []
         sql  = "select * from bars where s=? and t>=?" + self.filters
