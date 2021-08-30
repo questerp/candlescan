@@ -88,7 +88,7 @@ class Collection(object):
             with conn:
                 cur = conn.cursor()
                 #cur.execute('BEGIN IMMEDIATE;')insert into foo values(:alpha, :beta, :gamma)", {'alpha': 1, 'beta': 2, 'gamma': 'three'})
-                cur.executemany("INSERT or IGNORE INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", data)#or IGNORE
+                cur.executemany("INSERT  INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", data)#or IGNORE
                 # cur.execute('COMMIT;')
         except BusyErro as err:
             print("trying again it's Busy",err)
