@@ -91,12 +91,14 @@ class Collection(object):
                 cur.executemany("INSERT  INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", data)#or IGNORE
                 # cur.execute('COMMIT;')
         except apsw.BusyError as err:
-            print("trying again it's Busy",err)
+            print("BusyError",err)
             time.sleep(5)
             self.write(data)
         except apsw.SQLError as sqlerr:
-            print("sqlerr",sqlerr)
-
+            print("SQLError",sqlerr)
+        except apsw.ConstraintError as consterr:
+            print("ConstraintError",consterr)
+        
 
     def commit(self):
         conn = self.get_connection()
