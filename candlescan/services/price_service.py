@@ -372,7 +372,7 @@ def init_bars_db(target = 0):
 
 	
 #@multitasking.task 
-def insert_minute_bars(day,minuteBars,send_last=False,col="m"):
+def insert_minute_bars(minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print(day,"not minuteBars")
@@ -380,39 +380,39 @@ def insert_minute_bars(day,minuteBars,send_last=False,col="m"):
 	# print("path",path)
 	try:
 		#_bars = minuteBars #[to_candle(a) for a in minuteBars ]
-		items = pd.DataFrame.from_dict(minuteBars)
-		items = items.astype(dtype= {
-			"s":"str",
-			"t":"int64", 
-			"o":"float64",
-			"c":"float64",
-			"h":"float64",
-			"l":"float64",
-			"n":"int64",
-			"v":"int64",
-			"vw":"float64",
-			})
+		# items = pd.DataFrame.from_dict(minuteBars)
+		# items = items.astype(dtype= {
+		# 	"s":"str",
+		# 	"t":"int64", 
+		# 	"o":"float64",
+		# 	"c":"float64",
+		# 	"h":"float64",
+		# 	"l":"float64",
+		# 	"n":"int64",
+		# 	"v":"int64",
+		# 	"vw":"float64",
+		# 	})
 		
-		if not items.empty :
-			try:
-				if col=="m":
-					path = collection.get_item_path(day)
-					collection.write(day, items,path=path,min_itemsize={"s":20})
-				else:
-					path = collection_day.get_item_path(day)
-					collection_day.write(day, items,path=path,min_itemsize={"s":20})
+		#if not items.empty :
+		try:
+			if col=="m":
+				path = collection.get_item_path(day)
+				collection.write(day, items,path=path,min_itemsize={"s":20})
+			else:
+				path = collection_day.get_item_path(day)
+				collection_day.write(day, items,path=path,min_itemsize={"s":20})
 
-			except Exception as ve:
-				print(day,"--- ValueError ---",ve)
-			
-			if send_last  :
-				for ticker in minuteBars:
-					s = ticker.get("s")
-					if s in bar_symbols:
-						ev  = "bars_%s"%  s.lower()
-						add_to_queue(ev,ev,ticker)
-		else:
-			print(ticker,"empty")
+		except Exception as ve:
+			print(day,"--- ValueError ---",ve)
+		
+		if send_last  :
+			for ticker in minuteBars:
+				s = ticker.get("s")
+				if s in bar_symbols:
+					ev  = "bars_%s"%  s.lower()
+					add_to_queue(ev,ev,ticker)
+		# else:
+		# 	print(ticker,"empty")
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
 

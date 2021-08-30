@@ -42,6 +42,8 @@ class Collection(object):
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(t,o,c,h,l,v)"
             cur.execute(sql)
+            cur.execute("create unique index on bars(t)")
+
     
 
     @multitasking.task
@@ -81,11 +83,10 @@ class Collection(object):
             return
 
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
-
-        with apsw.Connection(path).cursor() as cur:
-            cur.execute("BEGIN TRANSACTION;")
-            cur.executemany("INERT INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
-            cur.execute("COMMIT;")
+        conn=  apsw.Connection(path)
+        with conn:
+            cur = conn.cursor() 
+            cur.executemany("INERT INTO bars(t INTEGER NOT NULL PRIMARY KEY,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
         
         # with lock:
         #     data.to_hdf(
