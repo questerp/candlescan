@@ -23,26 +23,25 @@ import pandas as pd
 # import pyarrow.parquet as pq
 import os
 from . import utils
-import threading
-lock = threading.Lock()
+import apsw
+
 
 class Item(object):
     def __repr__(self):
         return "PyStore.item <%s/%s>" % (self.collection, self.item)
 
-    def __init__(self, item, datastore, collection,files, filters=None, columns=None,):
+    def __init__(self, item, datastore, collection,start, filters=None, columns=None,):
                  
         # self.engine = engine
         self.datastore = datastore
         self.collection = collection
         self.item = item
-        self.filters = filters
+        self.filters = filters or ''
         self.columns = columns
-        if isinstance(files,str):
-            files = [files]
-        self.files = files
+        
+        self.start = start
 
-        self._paths = [str(utils.make_path(datastore, collection, file)) for file in files]
+        self._path  =  utils.make_path(datastore, collection, "data") 
         # print("self._path",self._path)
         # if not self._path.exists():
         #     raise ValueError(
@@ -50,23 +49,35 @@ class Item(object):
         #         "Create it using collection.write(`%s`, data, ...)" % (
         #             item, item))
     def data(self):
-        ticker = self.item
-        df = pd.DataFrame()
-        for path in self._paths:
-            # if os.path.exists(path):
-            with lock:
-                with pd.HDFStore(path) as store:
-                    try:
-                        filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
-                        data = store.select('table',where= filters, auto_close=True,columns=self.columns)
-                        df = pd.concat([df, data], ignore_index=True) 
-                    except Exception as e:
-                        print("error item",e)
+        conn = apsw.Connection(self._path)
+        conn.setbusytimeout(5000)
+        data = []
+        sql  = "select * from bars where s=? " + self.filters
+        with conn:
+            try:
+                rows=list( conn.cursor().execute(sql,[self.item]) )
+                return rows
+            except Exception as e:
+                print("error item",e)
+                return []
+
+
+        # df = pd.DataFrame()
+        # for path in self._paths:
+        #     # if os.path.exists(path):
+        #     with lock:
+        #         with pd.HDFStore(path) as store:
+        #             try:
+        #                 filters = 's == ticker' + (' & '+self.filters  if self.filters else '')
+        #                 data = store.select('table',where= filters, auto_close=True,columns=self.columns)
+        #                 df = pd.concat([df, data], ignore_index=True) 
+        #             except Exception as e:
+        #                 print("error item",e)
             
         # wheres = [" 't==%s'"%self.item] + (self.filters or [])
         # print(wheres)
         # data = pd.read_hdf(self._path,key="table",where=wheres,columns=self.columns) # pq.read_pandas(self._path,filters=self.filters,columns=self.columns)
-        return df.drop_duplicates("t")
+        # return df.drop_duplicates("t")
         #df = dataset.to_table(columns=columns).to_pandas()
         # self.metadata = utils.read_metadata(self._path)
         # print("self._path",self._path)

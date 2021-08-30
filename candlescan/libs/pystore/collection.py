@@ -80,14 +80,14 @@ class Collection(object):
         if not data:
             return
 
-        values = [[a['t'],a['s'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
+        #values = [[a['t'],a['s'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
         conn = self.get_connection()
        
         try:
             with conn:
                 cur = conn.cursor()
-                #cur.execute('BEGIN IMMEDIATE;')
-                cur.executemany("INSERT or IGNORE INTO bars(t,s,o,c,h,l,v) VALUES(?,?,?,?,?,?,?)", values)#or IGNORE
+                #cur.execute('BEGIN IMMEDIATE;')insert into foo values(:alpha, :beta, :gamma)", {'alpha': 1, 'beta': 2, 'gamma': 'three'})
+                cur.executemany("INSERT or IGNORE INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", data)#or IGNORE
                 # cur.execute('COMMIT;')
         except BusyErro as err:
             print("trying again it's Busy",err)

@@ -400,8 +400,8 @@ def add_to_queue(event,ev,last):
 	queue_data(event,ev,last)
 
 
-def get_minute_bars(symbol,timeframe,days ):
-	if not (symbol and days):
+def get_minute_bars(symbol,timeframe,start ):
+	if not (symbol and start):
 		return
 	
 	#start = dt.utcfromtimestamp(start)
@@ -409,10 +409,9 @@ def get_minute_bars(symbol,timeframe,days ):
 	#	end = dt.utcfromtimestamp(end)
 	try:
 		result = []
-		print("days",days)
+		print("start",start)
 		# print("end",end)
 		_collection = None
-		file = ""
 		if timeframe == "m":
 			_collection = collection#.item(symbol,filters=[('t','')])
 		else:
@@ -425,7 +424,7 @@ def get_minute_bars(symbol,timeframe,days ):
 		# 	filters = 't >= start '
 			
 		
-		data = _collection.item(symbol,days ).data()
+		data = _collection.item(symbol,start ).data()
 		if not data.empty:
 			#data = data[~data.t.duplicated(keep='first')]
 			result = data.to_dict("records")
