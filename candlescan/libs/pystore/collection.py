@@ -73,9 +73,9 @@ class Collection(object):
 
     def get_connection(self):
         #if not self.conn:
-        self.conn = apsw.Connection(self.path)
-        self.conn.setbusytimeout(5000)
-        return self.conn
+        conn = apsw.Connection(self.path)
+        conn.setbusytimeout(5000)
+        return conn
 
     def write(self,data ):
         if not data:
