@@ -90,10 +90,11 @@ class Collection(object):
 
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
         conn = apsw.Connection(self.path)
-        with conn:
-            cur = conn.cursor()
-            cur.executemany("INSERT or IGNORE INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
-
+        #with conn:
+        cur = conn.cursor()
+        cur.execute('BEGIN IMMEDIATE;')
+        cur.executemany("INSERT or IGNORE INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
+        cur.execute('COMMIT')
         # with lock:
         #     data.to_hdf(
         #         path,
