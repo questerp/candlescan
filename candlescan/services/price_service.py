@@ -425,9 +425,9 @@ def get_minute_bars(symbol,timeframe,start ):
 			
 		
 		data = _collection.item(symbol,start ).data()
-		if not data.empty:
+		if data:
 			#data = data[~data.t.duplicated(keep='first')]
-			result = data.to_dict("records")
+			result = data
 		return result
 	except Exception as ex:
 		print("ERROR get_minute_bars",ex)
