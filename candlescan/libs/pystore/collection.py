@@ -37,7 +37,6 @@ class Collection(object):
 
     def create_table(self,item):
         path = self.get_item_path(item)
-        print(path)
         conn = apsw.Connection(path)
         with conn:
             cur = conn.cursor()
