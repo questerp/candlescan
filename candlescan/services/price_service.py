@@ -149,7 +149,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT).timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 				minuteBar['s'] = s
-				insert_minute_bars(s,bars,True)
+				insert_minute_bars(s,minuteBar,True)
 				# bars.append(minuteBar)
 				# price = latestTrade.get("p") or 0
 				# if price:
