@@ -40,7 +40,7 @@ class Collection(object):
         conn = apsw.Connection(path)
         with conn:
             cur = conn.cursor()
-            sql  ="drop table if exists bars ;create table bars(t,o,c,h,l,v)"
+            sql  ="drop table if exists bars ;create table bars(t INTEGER NOT NULL PRIMARY KEY,o,c,h,l,v)"
             cur.execute(sql)
             # cur.execute("create unique index on bars(t)")
 
@@ -89,7 +89,7 @@ class Collection(object):
         conn = apsw.Connection(path)
         with conn:
             cur = conn.cursor() 
-            cur.executemany("INSERT or IGNORE INTO bars(t INTEGER NOT NULL PRIMARY KEY,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
+            cur.executemany("INSERT or IGNORE INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
 
         # with lock:
         #     data.to_hdf(
