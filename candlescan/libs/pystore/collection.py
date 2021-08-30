@@ -39,7 +39,7 @@ class Collection(object):
         path = self.get_item_path(item)
         print(path)
         conn = apsw.Connection(path)
-        with print:
+        with conn:
             cur = conn.cursor()
             sql  ="create table %s" % item
             print(sql)
