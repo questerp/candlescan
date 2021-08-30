@@ -18,7 +18,6 @@ from datetime import datetime as dt
 class Collection(object):
 
     ITEM_FORMAT = "%Y%m%d"
-    conn = None
     def __repr__(self):
         return "PyStore.collection <%s>" % self.collection
 
@@ -27,6 +26,7 @@ class Collection(object):
         self.collection = collection
         self.items = self.list_items()
         self.path =  self.get_item_path("data") 
+        self.conn = None
         
 
     def get_item_path(self, item ):
@@ -72,11 +72,10 @@ class Collection(object):
         return True
 
     def get_connection(self):
-        global conn
-        if not conn:
-            conn = apsw.Connection(self.path)
-            conn.setbusytimeout(5000)
-        return conn
+        if not self.conn:
+            self.conn = apsw.Connection(self.path)
+            self.conn.setbusytimeout(5000)
+        return self.conn
 
     def write(self,data ):
         if not data:
