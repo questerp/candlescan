@@ -238,7 +238,7 @@ def backfill(days=0,symbols=None ):
 		symbols  = get_active_symbols()
 
 	def _insert(i,start,chunk_symbols,startdt):
-		try:
+		#try:
 			#sleeptime = random.uniform(0, i)
 			#time.sleep(i)
 			print("start",i,start)
@@ -263,8 +263,8 @@ def backfill(days=0,symbols=None ):
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 
-		except Exception as e:
-			print("_insert ERROR",e)	
+		# except Exception as e:
+		# 	print("_insert ERROR",e)	
 		
 
 	try:
