@@ -30,7 +30,7 @@ class Item(object):
     def __repr__(self):
         return "PyStore.item <%s/%s>" % (self.collection, self.item)
 
-    def __init__(self, item, path,start, filters=None, columns=None,):
+    def __init__(self, item, path,start,end, filters=None, columns=None,):
                  
         # self.engine = engine
         # self.datastore = datastore
@@ -40,6 +40,7 @@ class Item(object):
         self.columns = columns
         self.path = path
         self.start = start
+        self.end = end
 
         # self._path  =  utils.make_path(datastore, collection, "data") 
         # print("self._path",self._path)
@@ -52,10 +53,17 @@ class Item(object):
         conn = apsw.Connection(self.path)
         conn.setbusytimeout(5000)
         data = []
-        sql  = "select t,o,c,h,l,v from bars where s=? and t>=?" + self.filters
+        attrs =[]
+        if self.end:
+            sql  = "select t,o,c,h,l,v from bars where s=? and t>=? and t<=?" + self.filters
+            attrs = [self.item,self.start,self.end]
+        else:
+            sql  = "select t,o,c,h,l,v from bars where s=? and t>=?" + self.filters
+            attrs = [self.item,self.start ]
+
         with conn:
             try:
-                rows=list( conn.cursor().execute(sql,[self.item,self.start]) )
+                rows=list( conn.cursor().execute(sql,attrs) )
                 return rows
             except Exception as e:
                 print("error item",e)

@@ -400,7 +400,7 @@ def add_to_queue(event,ev,last):
 	queue_data(event,ev,last)
 
 
-def get_minute_bars(symbol,timeframe,start ):
+def get_minute_bars(symbol,timeframe,start,end=None ):
 	if not (symbol and start):
 		return
 	
@@ -424,7 +424,7 @@ def get_minute_bars(symbol,timeframe,start ):
 		# 	filters = 't >= start '
 			
 		
-		data = _collection.item(symbol,start ).data()
+		data = _collection.item(symbol,start,end ).data()
 		if data:
 			#data = data[~data.t.duplicated(keep='first')]
 			result = data
