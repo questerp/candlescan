@@ -140,16 +140,19 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			data = snap[s]
 			if not data:
 				continue
+			bcall = dt.now()
 			minuteBar = data.get("minuteBar") 
 			# latestTrade = data.get("latestTrade") or {}
 			# dailyBar = data.get("dailyBar") or {}
 			# prevDailyBar = data.get("prevDailyBar") or {}
 			# latestQuote = data.get("latestQuote") or {}
+			tcall = dt.now()
 			
 			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT).timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 				minuteBar['s'] = s
-				insert_minute_bars(s,minuteBar,True)
+				insert_minute_bars(s,[minuteBar],True)
+
 				# bars.append(minuteBar)
 				# price = latestTrade.get("p") or 0
 				# if price:
@@ -204,38 +207,14 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	except Exception as e:
 			print("error",e)
 
-
-	# for s in snap:
-	# 	try:
-	# 		data = snap[s]
-	# 		if not data:
-	# 			continue
-	# 		minuteBar = data.get("minuteBar") or {}
-	# 		# latestTrade = data.get("latestTrade") or {}
-	# 		# latestQuote = data.get("latestQuote") or {}
-	# 		# dailyBar = data.get("dailyBar") or {}
-	# 		# prevDailyBar = data.get("prevDailyBar")  or {}
-			
-	# 		if minuteBar.get('t'):
-	# 			minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT) #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
-	# 		else:
-	# 			continue
-
-	# 		# if  utcminute != minuteBar['t']:
-	# 		# 	continue
-
-	# 		minuteBar["s"] = s
-	# 		#vol = minuteBar.get("v") or 0
-	# 		#minuteBar['s'] = s
-	# 		insert_minute_bars(s,[minuteBar],False)
-	
-
 	# 	except Exception as e:
 	# 		print("error",e)
 	# conn.close()
 	# _cursor = None
 	# conn = None
-	print("DONE",i,dt.now())
+	endcall = dt.now()
+	
+	print("DONE",i,endcall-tcall,tcall-bcall)
 				
 def backfill(days=0,symbols=None,daily=False):
 	api = REST(raw_data=True)
@@ -388,8 +367,8 @@ def insert_minute_bars(ticker,minuteBars,send_last=False,col="m"):
 			print("--- ValueError ---",ve)
 		
 		if send_last  :
-			if not isinstance(minuteBars,list):
-				minuteBars = [minuteBars]
+			# if not isinstance(minuteBars,list):
+			# 	minuteBars = [minuteBars]
 
 			for ticker in minuteBars:
 				s = ticker.get("s")
