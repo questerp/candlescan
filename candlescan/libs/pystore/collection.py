@@ -26,6 +26,7 @@ class Collection(object):
         self.datastore = datastore
         self.collection = collection
         self.items = self.list_items()
+        self.path =  self.get_item_path("data") 
 
     def get_item_path(self, item ):
         if not isinstance(item , str):
@@ -40,7 +41,7 @@ class Collection(object):
         conn = apsw.Connection(path)
         with conn:
             cur = conn.cursor()
-            sql  ="drop table if exists bars ;create table bars(t INTEGER NOT NULL PRIMARY KEY,o,c,h,l,v)"
+            sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
             cur.execute(sql)
             # cur.execute("create unique index on bars(t)")
 
@@ -69,9 +70,9 @@ class Collection(object):
         return True
 
 
-    def write(self,item,data,path=None ):
-        if path is None:
-            path =  self.get_item_path(item) 
+    def write(self,data ):
+         
+            
         #print(path)
         # if   append :
         #     if  utils.path_exists(path) :
@@ -86,7 +87,7 @@ class Collection(object):
             data = [data]
 
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
-        conn = apsw.Connection(path)
+        conn = apsw.Connection(self.path)
         with conn:
             cur = conn.cursor() 
             cur.executemany("INSERT or IGNORE INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)

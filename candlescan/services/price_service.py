@@ -154,9 +154,9 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT).timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 				minuteBar['s'] = s
-				insert_minute_bars(s,[minuteBar],True)
+				#insert_minute_bars(s,[minuteBar],True)
 
-				# bars.append(minuteBar)
+				bars.append(minuteBar)
 				# price = latestTrade.get("p") or 0
 				# if price:
 				# 	sql = """ update tabSymbol set 
@@ -205,8 +205,8 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 
 				# 	except Exception as e:
 				# 		print(s,"error sql",e)
-		# if bars:
-		# 	insert_minute_bars(bars,True)
+		if bars:
+			insert_minute_bars(bars,True)
 	except Exception as e:
 			print("error",e)
 
@@ -259,7 +259,7 @@ def backfill(days=0,symbols=None,daily=False):
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
 					if _bars:
-						insert_minute_bars(b,_bars)
+						insert_minute_bars(_bars)
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 
@@ -319,22 +319,25 @@ def init_bars_db(target = 0):
 	if day:
 		store.delete_collection("1DAY")
 		collection_day = store.collection("1DAY",overwrite=True)
-
+	if minute:
+		collection.create_table("data")
+	if day:
+		collection_day.create_table("data")
 	#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
-	symbols =  get_active_symbols()#[a[0] for a in symbols]
-	date = dt.now().replace(year=1990)
-	for idx,s in enumerate(symbols):
-		#if s not in items:
-		print(idx)
-		if minute:
-			collection.create_table(s)
-		if day:
-			collection_day.create_table(s)
+	# symbols =  get_active_symbols()#[a[0] for a in symbols]
+	# date = dt.now().replace(year=1990)
+	# for idx,s in enumerate(symbols):
+	# 	#if s not in items:
+	# 	print(idx)
+	# 	if minute:
+	# 		collection.create_table(s)
+	# 	if day:
+	# 		collection_day.create_table(s)
 	print("DONE")
 
 	
 #@multitasking.task 
-def insert_minute_bars(ticker,minuteBars,send_last=False,col="m"):
+def insert_minute_bars(minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print("not minuteBars")
@@ -364,7 +367,7 @@ def insert_minute_bars(ticker,minuteBars,send_last=False,col="m"):
 			else:
 				_col = collection_day
 
-			_col.write(ticker,minuteBars )
+			_col.write(minuteBars )
 
 		except Exception as ve:
 			print("--- ValueError ---",ve)
@@ -372,7 +375,6 @@ def insert_minute_bars(ticker,minuteBars,send_last=False,col="m"):
 		if send_last  :
 			# if not isinstance(minuteBars,list):
 			# 	minuteBars = [minuteBars]
-
 			for ticker in minuteBars:
 				s = ticker.get("s")
 				if s in bar_symbols:
