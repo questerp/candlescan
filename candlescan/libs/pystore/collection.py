@@ -43,9 +43,7 @@ class Collection(object):
             cur = conn.cursor()
             sql  ="create table %s" % item
             print(sql)
-            cur.execute("BEGIN TRANSACTION;")
             cur.execut(sql)
-            cur.execute("COMMIT;")
     
 
     @multitasking.task
