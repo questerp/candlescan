@@ -10,7 +10,6 @@ from .item import Item
 from . import config
 import pandas as pd
 import apsw
-from aspw import BusyError,SQLError
 # import threading
 # lock = threading.Lock()
 
@@ -91,11 +90,11 @@ class Collection(object):
                 #cur.execute('BEGIN IMMEDIATE;')insert into foo values(:alpha, :beta, :gamma)", {'alpha': 1, 'beta': 2, 'gamma': 'three'})
                 cur.executemany("INSERT  INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", data)#or IGNORE
                 # cur.execute('COMMIT;')
-        except BusyError as err:
+        except apsw.BusyError as err:
             print("trying again it's Busy",err)
             time.sleep(5)
             self.write(data)
-        except SQLError as sqlerr:
+        except apsw.SQLError as sqlerr:
             print("sqlerr",sqlerr)
 
 
