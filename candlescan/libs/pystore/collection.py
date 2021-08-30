@@ -90,6 +90,7 @@ class Collection(object):
 
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
         conn = apsw.Connection(self.path)
+        conn.setbusytimeout(5000)
         #with conn:
         cur = conn.cursor()
         cur.execute('BEGIN IMMEDIATE;')
