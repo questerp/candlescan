@@ -33,8 +33,8 @@ class Item(object):
     def __init__(self, item, path,start, filters=None, columns=None,):
                  
         # self.engine = engine
-        self.datastore = datastore
-        self.collection = collection
+        # self.datastore = datastore
+        # self.collection = collection
         self.item = item
         self.filters = filters or ''
         self.columns = columns
