@@ -82,16 +82,17 @@ class Collection(object):
 
         values = [[a['t'],a['s'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
         conn = self.get_connection()
-        with conn:
-            try:
+       
+        try:
+            with conn:
                 cur = conn.cursor()
                 #cur.execute('BEGIN IMMEDIATE;')
                 cur.executemany("INSERT or IGNORE INTO bars(t,s,o,c,h,l,v) VALUES(?,?,?,?,?,?,?)", values)#or IGNORE
                 # cur.execute('COMMIT;')
-            except BusyErro as err:
-                print("trying again it's Busy",err)
-                time.sleep(5)
-                self.write(data)
+        except BusyErro as err:
+            print("trying again it's Busy",err)
+            time.sleep(5)
+            self.write(data)
 
     def commit(self):
         conn = self.get_connection()
