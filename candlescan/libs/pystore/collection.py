@@ -98,7 +98,7 @@ class Collection(object):
             print("SQLError",sqlerr)
         except apsw.ConstraintError as consterr:
             print("ConstraintError",consterr)
-        
+            print(data)
 
     def commit(self):
         conn = self.get_connection()
