@@ -9,8 +9,9 @@ from . import utils
 from .item import Item
 from . import config
 import pandas as pd
-import threading
-lock = threading.Lock()
+import apsw
+# import threading
+# lock = threading.Lock()
 
 from datetime import datetime as dt 
 
@@ -33,6 +34,15 @@ class Collection(object):
         # if as_string:
         return  str(p)
         # return p 
+
+    def create_table(self,item):
+        path = get_item_path(item)
+        with apsw.Connection(path).cursor() as cur:
+            sql  ="create table %s" % item
+            cur.execute("BEGIN TRANSACTION;")
+            cur.execut(sql)
+            cur.execute("COMMIT;")
+    
 
     @multitasking.task
     def _list_items_threaded(self):
@@ -67,19 +77,27 @@ class Collection(object):
         #             Item already exists. To overwrite, use `overwrite=True`.
         #             Otherwise, use `<collection>.append()`""")
 
-        if data.empty:
+        if not data:
             return
-        with lock:
-            data.to_hdf(
-                path,
-                "table",
-                min_itemsize=min_itemsize,
-                append=True,
-                complib="zlib",
-                complevel= 6,
-                data_columns = True,
-                format="table"
-            )
+
+        values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
+
+        with apsw.Connection(path).cursor() as cur:
+            cur.execute("BEGIN TRANSACTION;")
+            cur.executemany("INERT INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)
+            cur.execute("COMMIT;")
+        
+        # with lock:
+        #     data.to_hdf(
+        #         path,
+        #         "table",
+        #         min_itemsize=min_itemsize,
+        #         append=True,
+        #         complib="zlib",
+        #         complevel= 6,
+        #         data_columns = True,
+        #         format="table"
+        #     )
         # wr.s3.to_parquet(
         #                 df=data,
         #                 path=path,

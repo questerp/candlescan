@@ -19,6 +19,8 @@ import signal
 import threading
 from numpy import random
 import numpy as np
+import apsw
+
 
 multitasking.set_max_threads(30)
 #multitasking.set_engine("process")
@@ -344,6 +346,29 @@ def update_chart_subs(redis):
 		if dt.now().minute % 5 == 0:
 			clear_active_symbols()
 
+
+def init_bars_db(target = 0):
+	print("init")
+	day = target in [0,2]
+	minute = target in [0,1]
+	if minute:
+		store.delete_collection("1MIN" )
+		collection = store.collection("1MIN",overwrite=True)
+	if day:
+		store.delete_collection("1DAY")
+		collection_day = store.collection("1DAY",overwrite=True)
+
+	#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
+	symbols =  get_active_symbols()#[a[0] for a in symbols]
+	date = dt.now().replace(year=1990)
+	for idx,s in enumerate(symbols):
+		#if s not in items:
+		print(idx,ct)
+		if minute:
+			collection.create_table(s)
+		if day:
+			collection_day.create_table(s)
+	print("DONE")
 
 	
 #@multitasking.task 
