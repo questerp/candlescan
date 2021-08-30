@@ -388,6 +388,9 @@ def insert_minute_bars(ticker,minuteBars,send_last=False,col="m"):
 			print("--- ValueError ---",ve)
 		
 		if send_last  :
+			if not isinstance(minuteBars,list):
+				minuteBars = [minuteBars]
+
 			for ticker in minuteBars:
 				s = ticker.get("s")
 				if s in bar_symbols:
