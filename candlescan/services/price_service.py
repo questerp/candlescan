@@ -219,7 +219,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	
 	print("DONE",i,endcall-tcall,tcall-bcall)
 				
-def backfill(days=0,symbols=None,daily=False):
+def backfill(days=0,symbols=None ):
 	api = REST(raw_data=True)
 	
 	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)

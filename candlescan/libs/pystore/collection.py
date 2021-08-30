@@ -83,10 +83,14 @@ class Collection(object):
 
         values = [[a['t'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
         conn = self.get_connection()
-        
-        cur = conn.cursor()
-        cur.execute('BEGIN IMMEDIATE;')
-        cur.executemany("INSERT  INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)#or IGNORE
+        with conn:
+            cur = conn.cursor()
+            #cur.execute('BEGIN IMMEDIATE;')
+            cur.executemany("INSERT  INTO bars(t,o,c,h,l,v) VALUES(?,?,?,?,?,?)", values)#or IGNORE
+            # cur.execute('COMMIT;')
+
+    def commit(self):
+        conn = self.get_connection()
         cur.execute('COMMIT;')
       
 
