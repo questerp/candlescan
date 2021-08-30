@@ -100,7 +100,8 @@ scheduler_events = {
  	"hourly": [
  	],
 	"daily_long":[
-		"candlescan.services.market_service.process_calendar"
+		"candlescan.services.market_service.process_calendar",
+		"candlescan.services.market_service.process_tickers"
 	],
  	"weekly": [
  	],

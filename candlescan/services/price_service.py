@@ -260,6 +260,7 @@ def backfill(days=0,symbols=None ):
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
 					if _bars:
+						print("bars",len(_bars))
 						insert_minute_bars(_bars)
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)

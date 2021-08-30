@@ -132,7 +132,7 @@ def process_cik():
 			if frappe.db.exists("Symbol",sym):
 				frappe.db.set_value("Symbol",sym,"cik",cik)
 		frappe.db.commit()
-		print("Done !")
+		print("Done CIK!")
 			
 
 def process_tickers():
@@ -145,7 +145,7 @@ def process_tickers():
 		#ticker['symbol'] = ticker['symbol'].replace('^','p')
 		#ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
 		exist = frappe.db.exists("Symbol",ticker['symbol'])
-		print(ticker['symbol'],exist)
+		#print(ticker['symbol'],exist)
 		
 		if not exist:
 			cik = True
@@ -163,7 +163,5 @@ def process_tickers():
 		print("Processing CIK")
 		process_cik()
 
-	# setup parquet
-	
-
 	clear_active_symbols()
+	print("Done process_tickers!")
