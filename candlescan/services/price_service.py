@@ -147,9 +147,10 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			# latestQuote = data.get("latestQuote") or {}
 			
 			if minuteBar:
-				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT) #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
+				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT).timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 				minuteBar['s'] = s
-				bars.append(minuteBar)
+				insert_minute_bars(s,bars,True)
+				# bars.append(minuteBar)
 				# price = latestTrade.get("p") or 0
 				# if price:
 				# 	sql = """ update tabSymbol set 
@@ -198,8 +199,8 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 
 				# 	except Exception as e:
 				# 		print(s,"error sql",e)
-		if bars:
-			insert_minute_bars(bars,True)
+		# if bars:
+		# 	insert_minute_bars(bars,True)
 	except Exception as e:
 			print("error",e)
 
