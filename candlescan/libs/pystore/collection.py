@@ -42,7 +42,7 @@ class Collection(object):
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(t,o,c,h,l,v)"
             cur.execute(sql)
-            cur.execute("create unique index on bars(t)")
+            # cur.execute("create unique index on bars(t)")
 
     
 
