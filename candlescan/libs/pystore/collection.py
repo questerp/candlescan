@@ -41,8 +41,7 @@ class Collection(object):
         conn = apsw.Connection(path)
         with conn:
             cur = conn.cursor()
-            sql  ="create table %s" % item
-            print(sql)
+            sql  ="create table bars(t,o,c,h,l,v)"
             cur.execute(sql)
     
 
