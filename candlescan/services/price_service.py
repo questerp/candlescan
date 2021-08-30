@@ -392,6 +392,8 @@ def insert_minute_bars(minuteBars,send_last=False,col="m"):
 		# 	print(ticker,"empty")
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
+		raise(e)
+
 
 @multitasking.task 
 def add_to_queue(event,ev,last):
