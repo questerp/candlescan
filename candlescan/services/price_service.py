@@ -20,6 +20,9 @@ import threading
 from numpy import random
 import numpy as np
 import apsw
+import pymysql
+from pymysql.converters import conversions, escape_string
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 multitasking.set_max_threads(30)
@@ -27,7 +30,6 @@ multitasking.set_max_threads(30)
 signal.signal(signal.SIGINT, multitasking.killall)	 
 bar_symbols = []
 sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
-lock = threading.Lock()
 log = logging.getLogger(__name__)
 api = None
 store = pystore.store('bars' )
@@ -92,7 +94,7 @@ def _start():
 		utc =  dt.utcnow()
 		
 		utcminute =   utc - minutedelta
-		utcminute = utcminute.replace(second=0).replace(microsecond=0)
+		utcminute = int(utcminute.replace(second=0).replace(microsecond=0).timestamp())
 		
 		print("utcminute",utcminute)
 		i = 0
@@ -113,11 +115,7 @@ def _start():
 		time.sleep(1)
 		
 		
-
-import pymysql
-from pymysql.converters import conversions, escape_string
-DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-#@multitasking.task 
+ 
 def get_snapshots(conf,i,api,utcminute,symbols):
 	print("START",i,dt.now())
 	bcall = dt.now()
@@ -154,6 +152,9 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT).timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 				minuteBar['s'] = s
+				
+				if utcminute != minuteBar['t']:
+					continue
 				#insert_minute_bars(s,[minuteBar],True)
 
 				bars.append(minuteBar)
@@ -210,14 +211,12 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			_cursor.execute("commit")
 	except Exception as e:
 			print("error",e)
+	finally:
+		conn.close()
+		_cursor = None
+		conn = None
 
-	# 	except Exception as e:
-	# 		print("error",e)
-	# conn.close()
-	# _cursor = None
-	# conn = None
 	endcall = dt.now()
-	
 	print("DONE",i,endcall-tcall,tcall-bcall)
 				
 def backfill(days=0,symbols=None,daily=False ):
