@@ -52,7 +52,7 @@ def validate_data(data, fields):
 def build_response(message,data,event):#(event,to,data):
 	source = ""
 	call_id = event
-	if isintance(message,str):
+	if isinstance(message,str):
 		source = message
 	else:
 		source = message.get("source_sid")
