@@ -90,7 +90,7 @@ class Collection(object):
                 #cur.execute('BEGIN IMMEDIATE;')insert into foo values(:alpha, :beta, :gamma)", {'alpha': 1, 'beta': 2, 'gamma': 'three'})
                 for item in data:
                     try:
-                        cur.execute("INSERT INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", item)#or IGNORE
+                        cur.execute("INSERT INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", (item['t'],item['s'],item['o'],item['c'],item['h'],item['l'],item['v']))#or IGNORE
                     except apsw.ConstraintError as consterr:
                         print("ConstraintError",consterr)
                         print(item)
