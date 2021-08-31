@@ -94,7 +94,7 @@ def _start():
 		utc =  dt.utcnow()
 		
 		utcminute =   utc - minutedelta
-		utcminute = int(utcminute.replace(second=0).replace(microsecond=0).timestamp())
+		utcminute = utcminute.replace(second=0).replace(microsecond=0) 
 		
 		print("utcminute",utcminute)
 		i = 0
@@ -150,10 +150,13 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			
 			
 			if minuteBar:
-				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT).timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
+				_date = dt.strptime(minuteBar['t'], DATE_FORMAT)
+				minuteBar['t'] = _date.timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 				minuteBar['s'] = s
 
-				if utcminute != minuteBar['t']:
+				if utcminute != _date:
+					print(_date)
+					input()
 					continue
 				#insert_minute_bars(s,[minuteBar],True)
 
