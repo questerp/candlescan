@@ -152,7 +152,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			if minuteBar:
 				minuteBar['t'] = dt.strptime(minuteBar['t'], DATE_FORMAT).timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 				minuteBar['s'] = s
-				
+
 				if utcminute != minuteBar['t']:
 					continue
 				#insert_minute_bars(s,[minuteBar],True)
@@ -209,6 +209,8 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			#print("inserting",len(bars))
 			insert_minute_bars(bars,True)
 			_cursor.execute("commit")
+		endcall = dt.now()
+		print("DONE",len(bars),endcall-tcall,tcall-bcall)
 	except Exception as e:
 			print("error",e)
 	finally:
@@ -216,8 +218,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 		_cursor = None
 		conn = None
 
-	endcall = dt.now()
-	print("DONE",i,endcall-tcall,tcall-bcall)
+	
 				
 def backfill(days=0,symbols=None,daily=False ):
 	api = REST(raw_data=True)
