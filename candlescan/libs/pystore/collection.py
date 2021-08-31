@@ -89,7 +89,11 @@ class Collection(object):
                 cur = conn.cursor()
                 #cur.execute('BEGIN IMMEDIATE;')insert into foo values(:alpha, :beta, :gamma)", {'alpha': 1, 'beta': 2, 'gamma': 'three'})
                 for item in data:
-                    cur.execute("INSERT INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", item)#or IGNORE
+                    try:
+                        cur.execute("INSERT INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", item)#or IGNORE
+                    except apsw.ConstraintError as consterr:
+                        print("ConstraintError",consterr)
+                        print(item)
                 # cur.execute('COMMIT;')
         except apsw.BusyError as err:
             print("BusyError",err)
@@ -97,9 +101,7 @@ class Collection(object):
             self.write(data)
         except apsw.SQLError as sqlerr:
             print("SQLError",sqlerr)
-        except apsw.ConstraintError as consterr:
-            print("ConstraintError",consterr)
-            print(data)
+        
 
     def commit(self):
         conn = self.get_connection()
