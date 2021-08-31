@@ -201,13 +201,13 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 					try:
 						sql = str(sql)
 						_cursor.execute(sql)
-						_cursor.execute("commit")
 
 					except Exception as e:
 						print(s,"error sql",e)
 		if bars:
 			#print("inserting",len(bars))
 			insert_minute_bars(bars,True)
+			_cursor.execute("commit")
 	except Exception as e:
 			print("error",e)
 
