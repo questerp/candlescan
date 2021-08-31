@@ -220,7 +220,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	
 	print("DONE",i,endcall-tcall,tcall-bcall)
 				
-def backfill(days=0,symbols=None ):
+def backfill(days=0,symbols=None,daily=False ):
 	api = REST(raw_data=True)
 	
 	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
@@ -238,7 +238,7 @@ def backfill(days=0,symbols=None ):
 	if not symbols:
 		symbols  = get_active_symbols()
 
-	def _insert(i,start,chunk_symbols,startdt):
+	def _insert(i,start,chunk_symbols):
 		try:
 			#sleeptime = random.uniform(0, i)
 			#time.sleep(i)
@@ -266,7 +266,35 @@ def backfill(days=0,symbols=None ):
 
 		except Exception as e:
 			print("_insert ERROR",e)	
-		
+
+	def _insert_day(i,start,chunk_symbols):
+		try:
+			#sleeptime = random.uniform(0, i)
+			#time.sleep(i)
+			print("start",i,start)
+			tcall = dt.now()
+			bars = api.get_barset(chunk_symbols,"day",limit=1000 )	
+			#print(i,"BARS",len(bars))
+
+			tstart = dt.now()
+			if bars :
+				for b in bars:
+					_bars = bars[b]
+					for a in _bars:
+						a['s'] = b
+						# a['n'] = 0
+						# a['vw'] = 0.0
+						#a['t'] = dt.utcfromtimestamp(a['t'])
+						#minute_bars.append(a)
+					#minute_bars.extend(_bars)
+					#candles = [to_candle(a,b) for a in candles]
+					if _bars:
+						insert_minute_bars(_bars,col="d")
+				tend = dt.now()
+				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
+
+		except Exception as e:
+			print("_insert ERROR",e)	
 
 	try:
 		threads = 0
@@ -281,7 +309,8 @@ def backfill(days=0,symbols=None ):
 				threads+=1
 				if result:
 					#_insert(threads,beg,result,start)
-					threading.Thread(target=_insert,args=(threads,beg,result,start,)).start()	
+					func =  _insert_day if daily else _insert
+					threading.Thread(target=func,args=(threads,beg,result,)).start()	
 		
 			#time.sleep(5 )
 
