@@ -39,13 +39,14 @@ async def transfer(sid, data):
 		return
 	data['source_sid'] = sid
 	event = data['event']
+	#call_id = data.get('call_id')
 	to = None
 	if 'to' in data:
 		to = data['to']
 	else:
 		to = events_map.get(event)
 	if not to:
-		sio.emit("errors", "Destination not found", room=sid)
+		await sio.emit("errors", "Destination not found", room=sid)
 		return
 	print("sending",event,"to",to)
 	await sio.emit(event, data, room=to)

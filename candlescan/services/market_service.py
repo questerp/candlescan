@@ -86,6 +86,7 @@ async def get_calendar(message):
 async def get_symbol_prices(message):
 	source = message.get("source_sid")
 	data = message.get("data")
+	call_id = message.get("call_id") or "get_symbol_prices"
 	if not data:
 		return []
 	symbol = data.get("symbol")
@@ -105,7 +106,7 @@ async def get_symbol_prices(message):
 	data = get_minute_bars(symbol,timeframe,start,end)
 	#data = api.get_bars(symbol, td,start, end)._raw
 	#data = get_prices(symbol,period_type, period, frequency_type, frequency)
-	await sio.emit("transfer",build_response("get_symbol_prices",source,data))
+	await sio.emit("transfer",build_response(call_id,source,data))
 
 @sio.event
 async def get_symbol_info(message):
