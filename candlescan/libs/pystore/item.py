@@ -68,7 +68,7 @@ class Item(object):
             except Exception as e:
                 print("error item",e)
             finally:
-                conn.close()
+                #conn.close()
                 return data
 
         # df = pd.DataFrame()
