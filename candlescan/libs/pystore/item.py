@@ -50,8 +50,7 @@ class Item(object):
         #         "Create it using collection.write(`%s`, data, ...)" % (
         #             item, item))
     def data(self):
-        conn = apsw.Connection(self.path)
-        conn.setbusytimeout(5000)
+        
         data = []
         attrs =[]
         if self.end:
@@ -60,15 +59,17 @@ class Item(object):
         else:
             sql  = "select t,o,c,h,l,v from bars where s=? and t>=?" + self.filters
             attrs = [self.item,self.start ]
-
+        
+        conn = apsw.Connection(self.path)
+        #conn.setbusytimeout(5000)
         with conn:
             try:
-                rows=list( conn.cursor().execute(sql,attrs) )
-                return rows
+                data=list( conn.cursor().execute(sql,attrs) )
             except Exception as e:
                 print("error item",e)
-                return []
-
+            finally:
+                conn.close()
+                return data
 
         # df = pd.DataFrame()
         # for path in self._paths:

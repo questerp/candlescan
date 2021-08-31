@@ -45,7 +45,7 @@ class Collection(object):
             sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
             cur.execute(sql)
             # cur.execute("create unique index on bars(t)")
-
+            conn.close()
     
 
     @multitasking.task
@@ -94,6 +94,8 @@ class Collection(object):
                     except apsw.ConstraintError as consterr:
                         print("ConstraintError",consterr)
                         print(item)
+
+                conn.close()
                 # cur.execute('COMMIT;')
         except apsw.BusyError as err:
             print("BusyError",err)
@@ -106,6 +108,6 @@ class Collection(object):
     def commit(self):
         conn = self.get_connection()
         cur.execute('COMMIT;')
-      
+        conn.close()
 
   
