@@ -89,7 +89,7 @@ class Collection(object):
                 cur = conn.cursor()
                 #cur.execute('BEGIN IMMEDIATE;')insert into foo values(:alpha, :beta, :gamma)", {'alpha': 1, 'beta': 2, 'gamma': 'three'})
                 for item in data:
-                    cur.execute("INSERT or IGNORE INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", item)#or IGNORE
+                    cur.execute("INSERT INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", item)#or IGNORE
                 # cur.execute('COMMIT;')
         except apsw.BusyError as err:
             print("BusyError",err)
