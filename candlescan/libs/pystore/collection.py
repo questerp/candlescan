@@ -81,7 +81,7 @@ class Collection(object):
         if not data:
             return
 
-        #values = [[a['t'],a['s'],a['o'],a['c'],a['h'],a['l'],a['v']] for a in data]
+        #s NOT NULL,t NOT NULL,o,c,h,l,v
         conn = self.get_connection()
        
         try:
@@ -90,14 +90,14 @@ class Collection(object):
                 #cur.execute('BEGIN IMMEDIATE;')insert into foo values(:alpha, :beta, :gamma)", {'alpha': 1, 'beta': 2, 'gamma': 'three'})
                 for item in data:
                     try:
-                        cur.execute("INSERT INTO bars VALUES(:t,:s,:o,:c,:h,:l,:v)", (item['t'],item['s'],item['o'],item['c'],item['h'],item['l'],item['v']))#or IGNORE
+                        cur.execute("INSERT or IGNORE INTO bars VALUES(?,?,?,?,?,?,?)", (item['s'],item['t'],item['o'],item['c'],item['h'],item['l'],item['v']))#or IGNORE
                     except apsw.ConstraintError as consterr:
                         print("ConstraintError",consterr)
                         print(item)
                 # cur.execute('COMMIT;')
         except apsw.BusyError as err:
             print("BusyError",err)
-            time.sleep(5)
+            time.sleep(1)
             self.write(data)
         except apsw.SQLError as sqlerr:
             print("SQLError",sqlerr)
