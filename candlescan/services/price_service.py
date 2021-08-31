@@ -155,8 +155,6 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				minuteBar['s'] = s
 
 				if utcminute != _date:
-					print(_date)
-					input()
 					continue
 				#insert_minute_bars(s,[minuteBar],True)
 
