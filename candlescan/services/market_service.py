@@ -63,7 +63,7 @@ async def get_filings(message):
 	if cik:
 		url = "https://sec.report/CIK/%s.rss" % cik
 		data = feedparser.parse(url)
-		print("data",data)
+		#print("data",data)
 		if not data:
 			return
 		data = json.dumps(data)
