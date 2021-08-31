@@ -28,7 +28,6 @@ async def run():
 		
 @sio.event
 async def get_news(message):
-	sid = message.get("source_sid")
 	symbol = message.get("data")
 	if not symbol:
 		return
@@ -40,7 +39,7 @@ async def get_news(message):
 		news = fetch_news(symbol)
 		
 
-	await sio.emit("transfer",build_response("get_news",sid,news))
+	await sio.emit("transfer",build_response(message,news,"get_news"))
 
 def fetch_news(symbol):
 	mytopic = "$%s" % symbol

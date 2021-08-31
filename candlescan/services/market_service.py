@@ -67,26 +67,23 @@ async def get_filings(message):
 		if not data:
 			return
 		data = json.dumps(data)
-		await sio.emit("transfer",build_response("get_filings",source,data))	
+		await sio.emit("transfer",build_response(message,data,"get_filings" ))	
 	else:
-		await sio.emit("transfer",build_response("get_filings",source,False))	
+		await sio.emit("transfer",build_response(message,False,"get_filings"))	
 		
 	
 @sio.event
 async def get_calendar(message):
-	source = message.get("source_sid")
 	target = message.get("data")
 	if not target:
 		return
 	calendar = frappe.db.get_value("Fundamentals",None,target)
-	await sio.emit("transfer",build_response("get_calendar",source,calendar))
+	await sio.emit("transfer",build_response(message,calendar,"get_calendar"))
 
 	
 @sio.event
 async def get_symbol_prices(message):
-	source = message.get("source_sid")
 	data = message.get("data")
-	call_id = message.get("call_id") or "get_symbol_prices"
 	if not data:
 		return []
 	symbol = data.get("symbol")
@@ -97,16 +94,11 @@ async def get_symbol_prices(message):
 	timeframe = data.get("timeframe")
 	
 	if not (symbol or  start) :
-		await sio.emit("transfer",build_response("errors",source,"Invalid data for: %s" % symbol))
+		await sio.emit("transfer",build_response(message,"Invalid data for: %s" % symbol,"errors"))
 		return
-	# if symbol not in get_active_symbols():
-	# 	await sio.emit("transfer",build_response("errors",source,"Invalid Symbol: %s" % symbol))
-	# 	return
 	
 	data = get_minute_bars(symbol,timeframe,start,end)
-	#data = api.get_bars(symbol, td,start, end)._raw
-	#data = get_prices(symbol,period_type, period, frequency_type, frequency)
-	await sio.emit("transfer",build_response(call_id,source,data))
+	await sio.emit("transfer",build_response(message,data,"get_symbol_prices"))
 
 @sio.event
 async def get_symbol_info(message):
@@ -120,7 +112,7 @@ async def get_symbol_info(message):
 	fields =  ' ,'.join(["name","stock_summary_detail","key_statistics_data","key_price_data","key_summary_data","website","summary","industry_type","company","country","floating_shares","sector","exchange"])
 	data = frappe.db.sql(""" select {0} from tabSymbol where symbol='{1}' limit 1 """.format(fields,symbol),as_dict=True)
 	if data and len(data)>0 :
-		await sio.emit("transfer",build_response("get_symbol_info",source,data))
+		await sio.emit("transfer",build_response(message,data,"get_symbol_info"))
 		
 
 def process_cik():

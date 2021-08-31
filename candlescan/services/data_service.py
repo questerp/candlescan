@@ -120,25 +120,21 @@ async def subscribe_chart(message):
 @sio.event
 async def lookup(message):
 	symbol = message.get('data')
-	sid = message.get('source_sid')
 	if not symbol or len(symbol) > 9 or len(symbol) < 1:
 		return
 	print(symbol,"get_active_symbols()",len(get_active_symbols()))
 	symbols = [a for a in get_active_symbols() if symbol in a ] #get_active_symbols() frappe.db.sql("""select symbol from tabSymbol where name LIKE  %(symbol)s limit 10 """ ,{"symbol":'%%%s%%' % symbol},as_dict=True)
-	await sio.emit("transfer",build_response("lookup",sid,symbols))
+	await sio.emit("transfer",build_response(message,symbols,"lookup"))
 	
 	
 @sio.event
 async def get_history_result(message):
 	data = message.get('data')
-	source_sid = message.get('source_sid')
-	if not source_sid:
-		return
 	scanner_id = data.get('scanner_id')
 	date = data.get('date')
 	frappe.db.commit()
 	results = get_history(scanner_id,date)
-	await sio.emit("transfer",build_response("get_history_result",source_sid,results[0]))
+	await sio.emit("transfer",build_response(message,results[0],"get_history_result" ))
 	
 
 @sio.event
@@ -151,7 +147,7 @@ async def set_default_layout(message):
 	if user and data:
 		frappe.db.set_value("Customer",user,"default_layout",data)
 		frappe.db.commit()
-		await sio.emit("transfer",build_response("set_default_layout",source_sid,"Default layout changed"))    
+		await sio.emit("transfer",build_response(message,"Default layout changed","set_default_layout"))    
 		
 @sio.event
 async def get_last_result(message):
@@ -166,7 +162,7 @@ async def get_last_result(message):
 	results = get_history(scanner_id,now_datetime())
 	#results = frappe.db.sql("""select state,date from `tabScanner Result` where scanner='%s' order by date desc limit 1""" % scanner_id,as_dict=True)
 	if results and len(results):
-		await sio.emit("transfer",build_response("get_last_result",source_sid,results[0]))
+		await sio.emit("transfer",build_response(message,results[0],"get_last_result" ))
 		
 
 def get_history(scanner,date):
@@ -187,7 +183,7 @@ async def ressource(message):
 		if not source_sid:
 			return
 		if not (validated or source_sid):
-			await sio.emit("transfer",build_response("ressource",source_sid,"Invalid data format"))
+			await sio.emit("transfer",build_response(message,"Invalid data format","ressource" ))
 			return
 
 		user = get_user(source_sid)
@@ -210,25 +206,20 @@ async def ressource(message):
 				response = doc.save().as_dict()
 				
 				if response:
-					await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
+					await sio.emit("transfer",build_response(message,{"method":method,"doctype":doctype,"data":response},"ressource" ))
 					frappe.db.commit()
-					#frappe.clear_cache(doctype=doctype)
-					#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 			else:
 				document.update({"doctype": doctype})
 				response = frappe.get_doc(document).insert()
 				if response:
-					await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
+					await sio.emit("transfer",build_response(message,{"method":method,"doctype":doctype,"data":response},"ressource" ,))
 					frappe.db.commit()
-					#frappe.clear_cache(doctype=doctype)
-					#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
 
 		if method == "delete" and name:
 			frappe.delete_doc(doctype, name, ignore_missing=True)
 			frappe.db.commit()
-			await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":"Deleted"}))
-			#await sio.emit("send_to_client",build_response("ressource",source_sid,"Deleted"))
+			await sio.emit("transfer",build_response(message,{"method":method,"doctype":doctype,"data":"Deleted"},"ressource"))
 
 
 		if method == "list":
@@ -249,12 +240,11 @@ async def ressource(message):
 			else:
 				response = frappe.db.sql(""" select * from `tab%s` where user='%s'""" % (doctype,user),as_dict=True)
 
-			await sio.emit("transfer",build_response("ressource",source_sid,{"method":method,"doctype":doctype,"data":response}))
-			#await sio.emit("send_to_client",build_response("ressource",source_sid,response))
+			await sio.emit("transfer",build_response(message,{"method":method,"doctype":doctype,"data":response},"ressource"))
 	except Exception as exc:
 		print("ERROR---------------------")
 		print(exc)
-		await sio.emit("transfer",build_response("errors",source_sid,"Operation failed! %s" % exc))
+		await sio.emit("transfer",build_response(source_sid,"Operation failed! %s" % exc,"errors"))
 			
 			
 
@@ -264,7 +254,7 @@ async def get_platform_data(data):
 	source = data['source_sid']
 	user = get_redis_server().hget("sockets",source)
 	if source and not user:
-		await sio.emit("transfer",build_response("get_platform_data",source,"Not connected"))
+		await sio.emit("transfer",build_response(data,"Not connected","get_platform_data"))
 		#await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":"Not connected"})
 		#await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":"Not connected"})
 		return
@@ -293,7 +283,7 @@ async def get_platform_data(data):
 	res = handle(True,"Success",{"filters":filters,"layouts":layouts,"scanners":scanners,"extras":fExtras,"alerts":alerts,"customScanners":customScanners,"watchlists":watchlists})
 	#await sio.emit("transfer",{"event":"get_platform_data","to":source,"data":res})
 	#await sio.emit("send_to_client",{"event":"get_platform_data","to":source,"data":res})
-	await sio.emit("transfer",build_response("get_platform_data",source,res))
+	await sio.emit("transfer",build_response(data,res,"get_platform_data"))
 	
 
 async def get_symbol_info(message):
@@ -307,12 +297,11 @@ async def get_symbol_info(message):
 	fields =  ' ,'.join(["name","stock_summary_detail","key_statistics_data","key_price_data","key_summary_data","website","summary","industry_type","company","country","floating_shares","sector","exchange"])
 	data = frappe.db.sql(""" select {0} from tabSymbol where symbol='{1}' limit 1 """.format(fields,symbol),as_dict=True)
 	if(data and len(data)>0):
-		await sio.emit("transfer",build_response("get_symbol_info",source,data))
+		await sio.emit("transfer",build_response(message,data,"get_symbol_info"))
 
 
 @sio.event
 async def get_extra_data(message):
-	source = message['source_sid']
 	data = message.get("data")
 	symbols = data.get("symbols")
 	fields = data.get("fields")
@@ -326,12 +315,11 @@ async def get_extra_data(message):
 	result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
 	#print("result",result)
 	
-	await sio.emit("transfer",build_response("get_extra_data",source,result))
+	await sio.emit("transfer",build_response(message,result,"get_extra_data"))
 
 
 async def get_last_broadcast(message):
 	scanner = message.get("data")
-	source = message.get('source_sid')
 	
 	if not (symbol and scanner):
 		return
@@ -339,7 +327,7 @@ async def get_last_broadcast(message):
 	raw_state = frappe.db.get_value(scanner,None,"state")
 	if raw_state:
 		data = json.loads(raw_state)
-		await sio.emit("transfer",build_response("get_last_broadcast",source,data))
+		await sio.emit("transfer",build_response(message,data,"get_last_broadcast"))
 
 def check_symbol(user,symbol):
     #logged_in()
@@ -377,13 +365,12 @@ def get_historical(user,doctype,date,feed_type):
 @sio.event
 async def get_select_values(message):
 	doctype = message.get("data")
-	source = message.get("source_sid")
 	if not doctype:
 		return
 	values = frappe.db.sql(""" select name from `tab%s` limit 100""" % doctype,as_dict=True)
 	values = [a['name'] for a in values]
 	print("values",values)
-	await sio.emit("transfer",build_response("get_select_values",source,values))
+	await sio.emit("transfer",build_response(message,values,"get_select_values"))
     
 
 

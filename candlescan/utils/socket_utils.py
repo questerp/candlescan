@@ -27,7 +27,7 @@ class CustomSocketJsonHandler(object):
 def queue_data(event,room,data):
 	#print("keys",get_redis_server().keys())
 	if event and room and data:
-		data = build_response(event,room,data)
+		data = build_response(event,data,room)
 		sc = json.dumps(data,default=str)
 		#response_queue.put(sc)
 		get_redis_server().lpush("queue",sc)
@@ -49,10 +49,18 @@ def get_user(sid):
 def validate_data(data, fields):
 	return all([field in data for field in fields])
 
-def build_response(event,to,data):
+def build_response(message,data,event):#(event,to,data):
+	source = ""
+	call_id = event
+	if isintance(message,str):
+		source = message
+	else:
+		source = message.get("source_sid")
+		call_id = message.get("call_id") or event
+
 	return {
-		"event":event,
-		"to":to,
+		"event":call_id,
+		"to":source,
 		"data":data
 	}
 

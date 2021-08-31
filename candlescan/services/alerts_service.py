@@ -82,7 +82,7 @@ async def _process():
 							#doc.save()
 							frappe.db.commit()
 							msg = '%s alert is triggered' % alert.symbol
-							await sio.emit("transfer",build_response("alerts",socket_id,msg))
+							await sio.emit("transfer",build_response(socket_id,msg,"alerts"))
 							#redis.publish("candlescan_single",frappe.as_json({"socket_id":socket_id,"data":'%s alert is triggered' % alert.symbol}))
 
 
