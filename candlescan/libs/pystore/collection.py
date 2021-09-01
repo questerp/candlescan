@@ -44,7 +44,15 @@ class Collection(object):
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
             cur.execute(sql)
-            # cur.execute("create unique index on bars(t)")
+            sql  ="drop table if exists ta ;create table ta(s NOT NULL,sma20 ,PRIMARY KEY(s))"
+            cur.execute(sql)
+            sql  ="""create trigger if not exists sma20 after insert on bars
+            begin
+                update ta set sma20=((select sum(b.c) from bars as b where b.s=NEW.s limit 20)/20) where s=NEW.s
+            end
+            """
+            
+            cur.execute("create unique index on bars(t)")
             #conn.close()
     
 
