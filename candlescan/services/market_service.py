@@ -58,7 +58,7 @@ async def get_filings(message):
 	symbol = symbol.upper()
 	frappe.db.commit()
 	cik = frappe.db.get_value("Symbol",symbol,"cik")
-	print("cik",cik)
+	#print("cik",cik)
 	
 	if cik:
 		url = "https://sec.report/CIK/%s.rss" % cik
