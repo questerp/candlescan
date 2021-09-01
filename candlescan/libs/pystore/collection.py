@@ -49,8 +49,8 @@ class Collection(object):
             cur.execute(sql)
             sql  ="""create trigger if not exists sma20 after insert on bars
             begin
-                update ta set sma20=((select sum(b.c) from bars as b where b.s=NEW.s limit 20)/20) where s=NEW.s
-            end
+                update ta set sma20=((select sum(b.c) from bars as b where b.s=NEW.s limit 20)/20) where s=NEW.s;
+            end;
             """
             cur.execute(sql)
             for s in symbols:
