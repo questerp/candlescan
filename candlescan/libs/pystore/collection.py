@@ -117,9 +117,9 @@ class Collection(object):
                             sma6    =   (select sum(c)/6 from (select c from bars_tmp limit 6)),
                             sma5    =   (select sum(c)/5 from (select c from bars_tmp limit 5)),
                             sma4    =   (select sum(c)/4 from (select c from bars_tmp limit 4)),
-                            cum_vol =   cum_vol + NEW.v,
-                            price   =  (NEW.c + NEW.h + NEW.l) / 3,
-                            total_tpv = NEW.v * price,
+                            cum_vol =   IFNULL(cum_vol,0) + NEW.v,
+                            price   =   (NEW.c + NEW.h + NEW.l) / 3,
+                            total_tpv = IFNULL(total_tpv,0)  + (NEW.v * price),
                             vwap    =   total_tpv / IFNULL(cum_vol,1)
                         where s=NEW.s;
                         DELETE FROM bars_tmp;
