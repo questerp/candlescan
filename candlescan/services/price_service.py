@@ -214,10 +214,10 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 		print("DONE",len(bars),endcall-tcall,tcall-bcall)
 	except Exception as e:
 			print("error",e)
-	finally:
-		conn.close()
-		_cursor = None
-		conn = None
+	# finally:
+	# 	conn.close()
+	# 	_cursor = None
+	# 	conn = None
 
 	
 				
@@ -315,7 +315,7 @@ def backfill(days=0,symbols=None,daily=False ):
 					func =  _insert_day if daily else _insert
 					threading.Thread(target=func,args=(threads,beg,result,)).start()	
 		
-			#time.sleep(5 )
+			time.sleep(20)
 
 	except Exception as e:
 		print("backfill ERROR",e)
