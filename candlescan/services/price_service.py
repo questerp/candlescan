@@ -300,7 +300,7 @@ def backfill(days=0,symbols=None,daily=False ):
 
 	try:
 		threads = 0
-		_range = [0] if days else range(days+1) 
+		_range =  range(days+1) 
 		for d in _range:
 			start =  add_days(dt.now(),-1*d) #-1*d
 			if start.weekday() in [5,6]:
