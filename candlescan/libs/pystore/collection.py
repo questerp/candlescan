@@ -89,6 +89,7 @@ class Collection(object):
             """
             cur.execute(sql)
             # view
+            #  select sum(c)/20 from select c from bars_tmp limit 20,
             # sma15   =   select sum(c)/15 from (select c from bars_tmp limit 15),
             # sma10   =   select sum(c)/10 from (select c from bars_tmp limit 10),
             # sma9    =   select sum(c)/9 from (select c from bars_tmp limit 9),
@@ -102,7 +103,7 @@ class Collection(object):
                 begin
                 INSERT INTO bars_tmp(s,c ,o,h,l,v) select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50 ;
                 update ta set 
-                    sma20   =   select sum(c)/20 from select c from bars_tmp limit 20,
+                    sma20   =  9,
                    
                     price=NEW.c
                 where s=NEW.s;
