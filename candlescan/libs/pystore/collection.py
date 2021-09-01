@@ -54,7 +54,7 @@ class Collection(object):
             """
             cur.execute(sql)
             for s in symbols:
-                cur.execute("INSERT INTO ta VALUES(:s)", {'s':s})
+                cur.execute("INSERT INTO ta(s) VALUES(?)", s)
 
 
             
