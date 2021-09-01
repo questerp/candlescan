@@ -209,7 +209,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 		if bars:
 			#print("inserting",len(bars))
 			insert_minute_bars(bars,True)
-			_cursor.execute("commit")
+			#_cursor.execute("commit")
 		endcall = dt.now()
 		print("DONE",len(bars),endcall-tcall,tcall-bcall)
 	except Exception as e:
