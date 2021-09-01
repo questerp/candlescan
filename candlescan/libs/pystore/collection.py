@@ -101,8 +101,8 @@ class Collection(object):
             create trigger if not exists ta_trigger after insert on bars
                 begin
                 INSERT INTO bars_tmp(s,c ,o,h,l,v) select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50 ;
-                    update ta set 
-                    sma20 = SELECT sum(c)  as somme FROM (SELECT c FROM bars_tmp LIMIT 20) AS temp,
+                update ta set 
+                    sma20 = SELECT max(c) FROM (SELECT c FROM bars_tmp LIMIT 20) AS temp,
                     price=NEW.c
                 where s=NEW.s;
                 DELETE FROM bars_tmp;
