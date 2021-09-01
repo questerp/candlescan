@@ -12,7 +12,7 @@ import pandas as pd
 import apsw
 # import threading
 # lock = threading.Lock()
-
+from candlescan.utils.candlescan import get_active_symbols
 from datetime import datetime as dt 
 
 class Collection(object):
@@ -40,6 +40,7 @@ class Collection(object):
         path = self.get_item_path(item)
         #conn = apsw.Connection(path)
         conn = self.get_connection()
+        symbols = get_active_symbols()
         with conn:
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
@@ -51,6 +52,11 @@ class Collection(object):
                 update ta set sma20=((select sum(b.c) from bars as b where b.s=NEW.s limit 20)/20) where s=NEW.s
             end
             """
+            cur.execute(sql)
+            for s in symbols:
+                cur.execute("INSERT  INTO ta VALUES(?)", ([s]))
+
+
             
             cur.execute("create unique index on bars(t)")
             #conn.close()
