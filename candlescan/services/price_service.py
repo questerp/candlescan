@@ -364,6 +364,7 @@ def init_bars_db(target = 0):
 
 
 	def setwal(db):
+		print("WAL MODE <----")
 		db.cursor().execute("pragma journal_mode=wal")
 		# custom auto checkpoint interval (use zero to disable)
 		db.wal_autocheckpoint(10)
