@@ -47,6 +47,8 @@ class Collection(object):
             cur.execute(sql)
             sql  ="drop table if exists ta ;create table ta(s NOT NULL,sma20 ,PRIMARY KEY(s))"
             cur.execute(sql)
+
+            # view
             sql  ="""
             create trigger if not exists sma20 after insert on bars
                 begin
