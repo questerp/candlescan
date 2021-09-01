@@ -15,6 +15,15 @@ import apsw
 from candlescan.utils.candlescan import get_active_symbols
 from datetime import datetime as dt 
 
+
+def setwal(db):
+    print("WAL MODE <----")
+    db.cursor().execute("pragma journal_mode=wal")
+    # custom auto checkpoint interval (use zero to disable)
+    db.wal_autocheckpoint(10)
+
+apsw.connection_hooks.append(setwal)
+
 class Collection(object):
 
     ITEM_FORMAT = "%Y%m%d"

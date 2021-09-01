@@ -363,13 +363,6 @@ def init_bars_db(target = 0):
 
 
 
-	def setwal(db):
-		print("WAL MODE <----")
-		db.cursor().execute("pragma journal_mode=wal")
-		# custom auto checkpoint interval (use zero to disable)
-		db.wal_autocheckpoint(10)
-
-	apsw.connection_hooks.append(setwal)
 	#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	# symbols =  get_active_symbols()#[a[0] for a in symbols]
 	# date = dt.now().replace(year=1990)
