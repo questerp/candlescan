@@ -104,8 +104,7 @@ class Collection(object):
             sql  ="""
             create trigger if not exists ta_trigger after insert on bars
                 begin
-                case when NEW.t >= (strftime('%s','now')-120)
-                    then
+                case when (NEW.t >= (strftime('%s','now')-120)) then
                         INSERT INTO bars_tmp(s,c ,o,h,l,v) select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50 ;
                         update ta set 
                             sma50   =   (SELECT sum(c)/50 FROM (SELECT c FROM bars_tmp LIMIT 50)) ,
