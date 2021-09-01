@@ -343,6 +343,9 @@ def update_chart_subs(redis):
 			clear_active_symbols()
 
 
+def create_ta_table(symbols=None):
+	collection.create_ta_table(symbols)
+
 def init_bars_db(target = 0):
 	print("init")
 	day = target in [0,2]

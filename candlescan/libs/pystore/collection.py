@@ -40,29 +40,61 @@ class Collection(object):
         path = self.get_item_path(item)
         #conn = apsw.Connection(path)
         conn = self.get_connection()
-        symbols = get_active_symbols()
+        
         with conn:
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
             cur.execute(sql)
-            sql  ="drop table if exists ta ;create table ta(s NOT NULL,sma20 ,PRIMARY KEY(s))"
-            cur.execute(sql)
+            self.create_ta_table(conn)
 
+
+    def create_ta_table(self,conn=None,symbols=None):
+        if conn is None:
+            conn = self.get_connection()
+        if symbols is None:
+            symbols = get_active_symbols()
+        with conn:
+            cur = conn.cursor()
+            sql  ="""drop table if exists ta ;
+            create table 
+            ta(
+                s NOT NULL,
+                sma20 ,
+                price,
+                atr7,
+                atr14,
+                atr20,
+                PRIMARY KEY(s)
+            )
+            """
+            cur.execute(sql)
+            sql  ="""drop table if exists bars_tmp ;
+            create table 
+            bars_tmp(
+                s,
+                c ,
+                o,
+                h,
+                l,
+                v
+            )
+            """
+            cur.execute(sql)
             # view
             sql  ="""
-            create trigger if not exists sma20 after insert on bars
+            create trigger if not exists ta_trigger after insert on bars
                 begin
-                    update ta set sma20=999 where s=NEW.s;
+                INSERT INTO bars_tmp VALUES(select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50);
+                update ta set 
+                    sma20=(select sum(c) from bars_tmp limit 20)/20,
+                    price=NEW.c
+                where s=NEW.s;
+                DELETE FROM bars_tmp;
                 end;
             """
             cur.execute(sql)
             for s in symbols:
                 cur.execute("INSERT INTO ta(s) VALUES(?)", (s,))
-
-
-            
-            #cur.execute("create unique index on bars(t)")
-            #conn.close()
     
 
     @multitasking.task

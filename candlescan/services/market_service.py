@@ -23,7 +23,7 @@ from alpaca_trade_api.rest import REST, TimeFrame
 from frappe.utils import cstr, today, add_days, getdate, add_months
 from frappe.realtime import get_redis_server
 from alpaca_trade_api.common import URL
-from candlescan.services.price_service import get_minute_bars
+from candlescan.services.price_service import get_minute_bars,create_ta_table
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 api = None
@@ -157,4 +157,5 @@ def process_tickers():
 		process_cik()
 
 	clear_active_symbols()
+	create_ta_table()
 	print("Done process_tickers!")
