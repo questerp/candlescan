@@ -113,9 +113,10 @@ class Collection(object):
             # sma6    =   select sum(c)/6 from (select c from bars_tmp limit 6),
             # sma5    =   select sum(c)/5 from (select c from bars_tmp limit 5),
             # sma4    =   select sum(c)/4 from (select c from bars_tmp limit 4),
-            sql  ="""
+            # (select strftime('%s','now')-4120)
+            sql  =  """
             create trigger if not exists ta_trigger after insert on bars
-                when (NEW.t >= (select strftime('%s','now')-4120))
+                when (NEW.t > 0)
                     begin
                         INSERT INTO bars_tmp(s,c ,o,h,l,v) select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50 ;
                         update ta set 
@@ -135,7 +136,7 @@ class Collection(object):
                             vwap    =   total_tpv / IFNULL(cum_vol,1),
                             pclose  =   close,
                             close   =   NEW.c,
-                            tr      =   (select max(h,pclose) - min(l,pclose) from  (select c,h,l from bars_tmp limit 1))
+                            tr      =   (select max(h,pclose) - min(l,pclose) from  (select h,l from bars_tmp limit 1))
                         where s=NEW.s;
                         DELETE FROM bars_tmp;
                     end;
