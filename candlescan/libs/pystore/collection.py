@@ -102,7 +102,7 @@ class Collection(object):
                 begin
                 INSERT INTO bars_tmp(s,c ,o,h,l,v) select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50 ;
                 update ta set 
-                    sma20   =   select sum(c)/20 from (select c from bars_tmp limit 20),
+                    sma20   =   select sum(c)/20 from select c from bars_tmp limit 20,
                    
                     price=NEW.c
                 where s=NEW.s;
