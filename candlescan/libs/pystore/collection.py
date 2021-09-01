@@ -123,7 +123,7 @@ class Collection(object):
                             vwap    =   total_tpv / IFNULL(cum_vol,1)
                         where s=NEW.s;
                         DELETE FROM bars_tmp;
-                    end;
+                    end
                 end;
             """
             cur.execute(sql)
