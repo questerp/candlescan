@@ -103,8 +103,8 @@ class Collection(object):
             # sma4    =   select sum(c)/4 from (select c from bars_tmp limit 4),
             sql  ="""
             create trigger if not exists ta_trigger after insert on bars
-                begin
-                case when (NEW.t >= (strftime('%s','now')-120)) then
+                when (NEW.t >= (strftime('%s','now')-120))
+                    begin
                         INSERT INTO bars_tmp(s,c ,o,h,l,v) select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50 ;
                         update ta set 
                             sma50   =   (SELECT sum(c)/50 FROM (SELECT c FROM bars_tmp LIMIT 50)) ,
@@ -123,8 +123,7 @@ class Collection(object):
                             vwap    =   total_tpv / IFNULL(cum_vol,1)
                         where s=NEW.s;
                         DELETE FROM bars_tmp;
-                    end
-                end;
+                    end;
             """
             cur.execute(sql)
             for s in symbols:
