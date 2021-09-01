@@ -17,10 +17,10 @@ from datetime import datetime as dt
 
 
 def setwal(db):
-    print("WAL MODE <----")
+    # print("WAL MODE <----")
     db.cursor().execute("pragma journal_mode=wal")
     # custom auto checkpoint interval (use zero to disable)
-    db.wal_autocheckpoint(10)
+    db.wal_autocheckpoint(1000)
 
 apsw.connection_hooks.append(setwal)
 
@@ -85,6 +85,9 @@ class Collection(object):
                 cum_vol,
                 total_tpv,
                 vwap,
+                close,
+                pclose,
+                tr,
                 PRIMARY KEY(s)
             )
             """
@@ -129,7 +132,10 @@ class Collection(object):
                             cum_vol =   IFNULL(cum_vol,0) + NEW.v,
                             price   =   (NEW.c + NEW.h + NEW.l) / 3,
                             total_tpv = IFNULL(total_tpv,0)  + (NEW.v * price),
-                            vwap    =   total_tpv / IFNULL(cum_vol,1)
+                            vwap    =   total_tpv / IFNULL(cum_vol,1),
+                            pclose  =   close,
+                            close   =   NEW.c,
+                            tr      =   (select max(h,pclose) - min(l,pclose) from  (select c,h,l from bars_tmp limit 1))
                         where s=NEW.s;
                         DELETE FROM bars_tmp;
                     end;
