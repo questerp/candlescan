@@ -104,26 +104,27 @@ class Collection(object):
             sql  ="""
             create trigger if not exists ta_trigger after insert on bars
                 begin
-                INSERT INTO bars_tmp(s,c ,o,h,l,v) select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50 ;
-                update ta set 
-                    sma50   =   (SELECT sum(c)/50 FROM (SELECT c FROM bars_tmp LIMIT 50)) ,
-                    sma20   =   (SELECT sum(c)/20 FROM (SELECT c FROM bars_tmp LIMIT 20)) ,
-                    sma15   =   (select sum(c)/15 from (select c from bars_tmp limit 15)),
-                    sma10   =   (select sum(c)/10 from (select c from bars_tmp limit 10)),
-                    sma9    =   (select sum(c)/9 from (select c from bars_tmp limit 9)),
-                    sma8    =   (select sum(c)/8 from (select c from bars_tmp limit 8)),
-                    sma7    =   (select sum(c)/7 from (select c from bars_tmp limit 7)),
-                    sma6    =   (select sum(c)/6 from (select c from bars_tmp limit 6)),
-                    sma5    =   (select sum(c)/5 from (select c from bars_tmp limit 5)),
-                    sma4    =   (select sum(c)/4 from (select c from bars_tmp limit 4)),
-                    cum_vol =   cum_vol + NEW.v,
-                    price   =  (NEW.c + NEW.h + NEW.l) / 3,
-                    total_tpv = NEW.v * price,
-                    vwap    =   total_tpv / IFNULL(cum_vol,1)
-
-
-                where s=NEW.s;
-                DELETE FROM bars_tmp;
+                case when NEW.t >= (strftime('%s','now')-120)
+                    then
+                        INSERT INTO bars_tmp(s,c ,o,h,l,v) select s,c,o,h,l,v from bars where s=NEW.s order by t desc limit 50 ;
+                        update ta set 
+                            sma50   =   (SELECT sum(c)/50 FROM (SELECT c FROM bars_tmp LIMIT 50)) ,
+                            sma20   =   (SELECT sum(c)/20 FROM (SELECT c FROM bars_tmp LIMIT 20)) ,
+                            sma15   =   (select sum(c)/15 from (select c from bars_tmp limit 15)),
+                            sma10   =   (select sum(c)/10 from (select c from bars_tmp limit 10)),
+                            sma9    =   (select sum(c)/9 from (select c from bars_tmp limit 9)),
+                            sma8    =   (select sum(c)/8 from (select c from bars_tmp limit 8)),
+                            sma7    =   (select sum(c)/7 from (select c from bars_tmp limit 7)),
+                            sma6    =   (select sum(c)/6 from (select c from bars_tmp limit 6)),
+                            sma5    =   (select sum(c)/5 from (select c from bars_tmp limit 5)),
+                            sma4    =   (select sum(c)/4 from (select c from bars_tmp limit 4)),
+                            cum_vol =   cum_vol + NEW.v,
+                            price   =  (NEW.c + NEW.h + NEW.l) / 3,
+                            total_tpv = NEW.v * price,
+                            vwap    =   total_tpv / IFNULL(cum_vol,1)
+                        where s=NEW.s;
+                        DELETE FROM bars_tmp;
+                    end;
                 end;
             """
             cur.execute(sql)
