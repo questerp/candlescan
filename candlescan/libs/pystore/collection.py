@@ -59,7 +59,7 @@ class Collection(object):
 
 
             
-            cur.execute("create unique index on bars(t)")
+            #cur.execute("create unique index on bars(t)")
             #conn.close()
     
 
