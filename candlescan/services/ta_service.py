@@ -18,6 +18,8 @@ import numpy as np
 import threading
 import pymysql
 from pymysql.converters import conversions, escape_string
+import math
+
 
 store = pystore.store('bars' )
 collection = store.collection('1MIN' )
@@ -115,19 +117,19 @@ def ta_snapshot(symbols=None,conf=None):
 						f = getattr(tl,"stream_%s"%fun)
 					
 					val = f(close)
-					if val and val != np.nan:
+					if val and not math.isnan(val):
 						analysis[t] = val
 
 				except Exception as e:
 					print("ERROR TA",e,close)
 			print(symbol)
 			if _cursor and analysis:
-				fields = [field.lower() for field in ta_func if analysis[field]] + [""]
+				fields = [field.lower() for field in ta_func ] + [""]
 				args = ("=%s, ".join(fields))
 				args = args[:-2]
 				#print(args)
 				#print(tuple([analysis[t] for t in ta_func]))
-				fargs= args % tuple([analysis[field] for field in ta_func if analysis[field]])
+				fargs= args % tuple([analysis[field] for field in ta_func  ])
 				#print(fargs)
 
 				sql = """  update tabIndicators set 
@@ -140,8 +142,7 @@ def ta_snapshot(symbols=None,conf=None):
 					_cursor.execute(sql)
 				except Exception as e:
 					print("error sql",e,sql)
-					print(analysis)
-					print(type(analysis['RSI_5']) )
+
 
 
 	end = dt.now()
