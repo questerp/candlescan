@@ -300,7 +300,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 					if "." in  t:
 						targets = t.split(".")
 						fun = targets[0]
-						params = set(targets[1:])
+						params = set([int(a) for a in targets[1:]])
 					f = getattr(tl,"stream_%s"%fun)
                     
 					if params:
