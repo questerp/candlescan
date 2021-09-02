@@ -27,7 +27,10 @@ import apsw
 
 
 def setwal(db):
-    db.cursor().execute("pragma journal_mode=wal")
+    try:
+        db.cursor().execute("pragma journal_mode=wal")
+    except:
+        pass
 
 apsw.connection_hooks.append(setwal)
 
