@@ -56,7 +56,7 @@ class Item(object):
         attrs =[self.item,size]
         data = []
         conn = apsw.Connection(self.path)
-        #conn.setbusytimeout(5000)
+        conn.setbusytimeout(10000)
         with conn:
             try:
                 data=list( conn.cursor().execute(sql,attrs) )
@@ -79,7 +79,7 @@ class Item(object):
             attrs = [self.item,self.start ]
         
         conn = apsw.Connection(self.path)
-        #conn.setbusytimeout(5000)
+        conn.setbusytimeout(10000)
         with conn:
             try:
                 data=list( conn.cursor().execute(sql,attrs) )

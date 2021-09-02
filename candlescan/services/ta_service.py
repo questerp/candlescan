@@ -98,7 +98,7 @@ def ta_snapshot(symbols=None):
 
 					analysis[t] = f(close)
 				except Exception as e:
-					print("ERROR TA",e)
+					print("ERROR TA",e,close)
 	end = dt.now()
 			
 	print("DONE",end-start)
