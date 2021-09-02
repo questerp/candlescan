@@ -151,7 +151,7 @@ def process_tickers():
 				'market_class': ticker['class']
 			})
 			insert_symbol(symbol)
-			
+
 		if not existIndic:
 			indic = frappe.get_doc({
 				'doctype':'Indicators',
@@ -161,7 +161,7 @@ def process_tickers():
 	if cik:
 		print("Processing CIK")
 		process_cik()
-
+	frappe.db.commit()
 	clear_active_symbols()
 	create_ta_table()
 	print("Done process_tickers!")
