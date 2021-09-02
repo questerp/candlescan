@@ -13,7 +13,7 @@ import talib as ta
 import talib._ta_lib as tl
 from candlescan.utils.candlescan import get_active_symbols 
 from candlescan.libs import pystore
-
+import numpy as np
 
 
 store = pystore.store('bars' )
@@ -71,6 +71,7 @@ async def run():
 def ta_snapshot(symbols):
 	for symbol in symbols:
 		close = collection.item(symbol).snapshot(50,["c"])
+		close = np.array(close)
 		analysis = {}
 		#t,o,c,h,l,v 
 		#df = pd.DataFrame(data,columns=["t","o","c","h","l","v"])
