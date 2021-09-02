@@ -121,9 +121,14 @@ def ta_snapshot(symbols=None,conf=None):
 
 			if _cursor and analysis:
 				fields = ta_func + [""]
+				args = ("=%s, ".join(fields))
+				print(args)
+				fargs= args % ([analysis[t] for t in ta_func])
+				print(fargs)
+
 				sql = """  update tabIndicators set 
 						%s
-				 """ % ("=%s, ".join(fields) % ([analysis[t] for t in ta_func]))
+				 """ %  fargs
 				print(sql)
 				try:
 					sql = str(sql)
