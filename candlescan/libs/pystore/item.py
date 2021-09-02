@@ -55,15 +55,15 @@ class Item(object):
             sql  = "select t,o,c,h,l,v from bars where s=? order by t desc limit ?"
         attrs =[self.item,size]
         data = []
-        conn = apsw.Connection(self.path)
-        conn.setbusytimeout(10000)
+        conn = apsw.Connection(self.path,flags = apsw.SQLITE_OPEN_READONLY)
+        conn.setbusytimeout(2000)
         with conn:
             try:
                 data=list( conn.cursor().execute(sql,attrs) )
             except Exception as e:
-                print("error item",e)
+                print("error snapshot",e)
             finally:
-                #conn.close()
+                conn.close()
                 return data
 
     def data(self):
@@ -78,15 +78,15 @@ class Item(object):
             sql  = "select t,o,c,h,l,v from bars where s=? and t>=?" + self.filters
             attrs = [self.item,self.start ]
         
-        conn = apsw.Connection(self.path)
-        conn.setbusytimeout(10000)
+        conn = apsw.Connection(self.path,flags = apsw.SQLITE_OPEN_READONLY)
+        conn.setbusytimeout(2000)
         with conn:
             try:
                 data=list( conn.cursor().execute(sql,attrs) )
             except Exception as e:
                 print("error item",e)
             finally:
-                #conn.close()
+                conn.close()
                 return data
 
         # df = pd.DataFrame()
