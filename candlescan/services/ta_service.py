@@ -124,12 +124,12 @@ def ta_snapshot(symbols=None,conf=None):
 					print("ERROR TA",e,close)
 			print(symbol)
 			if _cursor and analysis:
-				fields = [field.lower() for field in ta_func ] + [""]
+				fields = [field.lower() for field in analysis.keys() ] + [""]
 				args = ("=%s, ".join(fields))
 				args = args[:-2]
 				#print(args)
 				#print(tuple([analysis[t] for t in ta_func]))
-				fargs= args % tuple([analysis[field] for field in ta_func  ])
+				fargs= args % tuple([ val  for val in  analysis.values() ])
 				#print(fargs)
 
 				sql = """  update tabIndicators set 
