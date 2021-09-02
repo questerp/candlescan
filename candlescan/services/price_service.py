@@ -143,10 +143,10 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				continue
 			
 			minuteBar = data.get("minuteBar") 
-			latestTrade = data.get("latestTrade") or {}
-			dailyBar = data.get("dailyBar") or {}
-			prevDailyBar = data.get("prevDailyBar") or {}
-			latestQuote = data.get("latestQuote") or {}
+			#latestTrade = data.get("latestTrade") or {}
+			# dailyBar = data.get("dailyBar") or {}
+			# prevDailyBar = data.get("prevDailyBar") or {}
+			# latestQuote = data.get("latestQuote") or {}
 			
 			
 			if minuteBar:
@@ -159,7 +159,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				#insert_minute_bars(s,[minuteBar],True)
 
 				bars.append(minuteBar)
-				price = latestTrade.get("p") or 0
+				#price = latestTrade.get("p") or 0
 				# if price:
 				# 	sql = """ update tabSymbol set 
 				# 	price=%s, 
