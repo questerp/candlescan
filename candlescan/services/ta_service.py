@@ -123,10 +123,10 @@ def ta_snapshot(symbols=None,conf=None):
 				fields = [f.lower() for f in ta_func] + [""]
 				args = ("=%s, ".join(fields))
 				args = args[:-2]
-				print(args)
-				print(tuple([analysis[t] for t in ta_func]))
+				#print(args)
+				#print(tuple([analysis[t] for t in ta_func]))
 				fargs= args % tuple([analysis[t] for t in ta_func])
-				print(fargs)
+				#print(fargs)
 
 				sql = """  update tabIndicators set 
 						%s
