@@ -228,6 +228,10 @@ async def ressource(message):
 			if doctype == "Scanner":
 				response = frappe.db.sql(""" select * from `tabCandlescan scanner` """,as_dict=True)
 
+			elif doctype == "Technicals":
+				technicals = frappe.db.get_single_value('Candlescan Settings', 'technicals')
+				response = [technicals]
+
 			elif doctype == "Extras":
 				extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
 				response = []
@@ -312,9 +316,9 @@ async def get_extra_data(message):
 	sql_fields =  ' ,'.join(fields)
 	sql_symbols =  ', '.join(['%s']*len(symbols))
 	sql=""
-	if target == "technicals":
+	if target == "T":
 		sql = """select symbol,{0} from tabIndicators where symbol in ({1})""".format(sql_fields,sql_symbols)
-	else:
+	elif target == "F":
 		sql = """select symbol,{0} from tabSymbol where symbol in ({1})""".format(sql_fields,sql_symbols)
 		
 	frappe.db.commit()
