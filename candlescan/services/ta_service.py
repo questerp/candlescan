@@ -140,6 +140,9 @@ def ta_snapshot(symbols=None,conf=None):
 					_cursor.execute(sql)
 				except Exception as e:
 					print("error sql",e,sql)
+					print(analysis)
+					print(type(analysis['rsi_5']) )
+
 
 	end = dt.now()
 	if conn:
