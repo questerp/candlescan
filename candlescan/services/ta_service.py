@@ -24,7 +24,7 @@ def start():
 	asyncio.get_event_loop().run_until_complete(run())
 	asyncio.get_event_loop().run_forever()
 
-ta_func = ["SMA","RSI"]
+ta_func = ["SMA_5","RSI_5","RSI_6","RSI_7","RSI_8","RSI_9","RSI_10","RSI_15","RSI_16","RSI_20"]
 
 async def run():
 	try:
@@ -68,7 +68,9 @@ async def run():
 
 
 
-def ta_snapshot(symbols):
+def ta_snapshot(symbols=None):
+	if symbols is None:
+		symbols= get_active_symbols()
 	for symbol in symbols:
 		close = collection.item(symbol).snapshot(50,["c"]) # [(a,b,...),()...]
 		if close:
@@ -77,7 +79,17 @@ def ta_snapshot(symbols):
 			#t,o,c,h,l,v 
 			for t in ta_func:
 				try:
-					f = getattr(tl,"stream_%s"%t)
+					fun = t
+					period = None
+					if "_" in  t:
+						targets = t.split("_")
+						fun = targets[0]
+						period = targets[1]
+					if period:
+						f = getattr(tl,"stream_%s"%fun,period)
+					else:
+						f = getattr(tl,"stream_%s"%fun)
+
 					analysis[t] = f(close)
 				except Exception as e:
 					print("ERROR TA",e)
