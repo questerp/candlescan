@@ -29,7 +29,12 @@ def start():
 	asyncio.get_event_loop().run_until_complete(run())
 	asyncio.get_event_loop().run_forever()
 
-ta_func = ["SMA_5","RSI_5"]
+ta_func = [
+	"SMA_5",
+	"SMA_10",
+	"SMA_15",
+	"RSI_5"
+	]
 
 async def run():
 	try:
