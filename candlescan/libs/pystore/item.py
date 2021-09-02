@@ -63,7 +63,7 @@ class Item(object):
             except Exception as e:
                 print("error snapshot",e)
             finally:
-                conn.close()
+                #conn.close()
                 return data
 
     def data(self):
@@ -86,7 +86,7 @@ class Item(object):
             except Exception as e:
                 print("error item",e)
             finally:
-                conn.close()
+                #conn.close()
                 return data
 
         # df = pd.DataFrame()
