@@ -72,10 +72,18 @@ async def run():
 		await run()
 
 def ta_snapshot_all():
-	conf = frappe.conf.copy()
-	for symbols in chunks(get_active_symbols(),500):
-		threading.Thread(target=ta_snapshot,args=(symbols,conf,)).start()	
-
+	try:
+		ts  = []
+		conf = frappe.conf.copy()
+		for symbols in chunks(get_active_symbols(),500):
+			t = threading.Thread(target=ta_snapshot,args=(symbols,conf,))
+			ts.append(t)
+			t.start()	
+	except Exception as e:
+		print("error ta_snapshot_all",e)
+		for t in ts:
+			t.raise_exception()
+			t.join()
 
 def ta_snapshot(symbols=None,conf=None):
 	start = dt.now()
