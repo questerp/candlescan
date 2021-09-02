@@ -121,7 +121,7 @@ def process_cik():
 		tickers = ciks["ticker"]
 		for sym in tickers:
 			cik = tickers[sym]
-			print(sym,cik)
+			#print(sym,cik)
 			if frappe.db.exists("Symbol",sym):
 				frappe.db.set_value("Symbol",sym,"cik",cik)
 		frappe.db.commit()

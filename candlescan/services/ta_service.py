@@ -118,7 +118,7 @@ def ta_snapshot(symbols=None,conf=None):
 					
 				except Exception as e:
 					print("ERROR TA",e,close)
-
+			print(symbol)
 			if _cursor and analysis:
 				fields = [f.lower() for f in ta_func] + [""]
 				args = ("=%s, ".join(fields))
