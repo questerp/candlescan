@@ -296,13 +296,13 @@ def ta_snapshot(i,symbols=None,conf=None):
 			)
 		_cursor = conn.cursor()
 	for symbol in symbols:
-		close = collection.item(symbol).snapshot(200,["c","h","l","o"]) # [(a,b,...),()...]
-		if close:
+		data = collection.item(symbol).snapshot(200,["c","h","l","o"]) # [(a,b,...),()...]
+		if data:
 			#print(symbol)
-			close = np.array([v[0] for v in close if v[0]],dtype=np.double)
-			heigh = np.array([v[1] for v in close if v[1]],dtype=np.double)
-			low = np.array([v[2] for v in close if v[2]],dtype=np.double)
-			open = np.array([v[3] for v in close if v[3]],dtype=np.double)
+			close = np.array([v[0] for v in data if v[0]],dtype=np.double)
+			heigh = np.array([v[1] for v in data if v[1]],dtype=np.double)
+			low = np.array([v[2] for v in data if v[2]],dtype=np.double)
+			open = np.array([v[3] for v in data if v[3]],dtype=np.double)
 			analysis = {}
 			#t,o,c,h,l,v 
 			for t in ta_func:
@@ -312,7 +312,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 						analysis[t] = result
 
 				except Exception as e:
-					print("ERROR TA",e,close)
+					print("ERROR TA",e,data)
 			if _cursor and analysis:
 				fields = [field for field in analysis.keys() ] + [""]
 				args = ("=%s, ".join(fields))
