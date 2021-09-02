@@ -156,7 +156,7 @@ class Collection(object):
 
     def item(self, item,start=None,end=None,  filters=None, columns=None):
         #(self, item, path,start, filters=None, columns=None,):
-        return Item(item, self.path,start,end, filters, columns )
+        return Item(item, self.path,start=start,end=end, filters=filters, columns=columns )
 
     def index(self, item, last=False):
         return 0

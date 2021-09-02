@@ -67,7 +67,7 @@ class Item(object):
                 return data
 
     def data(self):
-        if start is None:
+        if self.start is None:
             return []
         data = []
         attrs =[]
