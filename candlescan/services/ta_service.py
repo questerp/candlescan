@@ -70,7 +70,7 @@ async def run():
 		await run()
 
 def ta_snapshot_all():
-	conf = frappe.conf
+	conf = frappe.conf.copy()
 	for symbols in chunks(get_active_symbols(),500):
 		threading.Thread(target=ta_snapshot,args=(symbols,conf,)).start()	
 
