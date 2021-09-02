@@ -122,7 +122,7 @@ def ta_snapshot(symbols=None,conf=None):
 			if _cursor and analysis:
 				fields = ta_func + [""]
 				args = ("=%s, ".join(fields))
-				args = args[:-1]
+				args = args[:-2]
 				print(args)
 				print(([analysis[t] for t in ta_func]))
 				fargs= args % ([analysis[t] for t in ta_func])
