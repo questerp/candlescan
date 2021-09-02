@@ -95,6 +95,7 @@ def ta_snapshot(symbols=None):
 					print("ERROR TA",e)
 			
 			print(analysis)
+	print("DONE")
 
 
 @sio.event
