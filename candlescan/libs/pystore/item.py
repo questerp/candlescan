@@ -46,7 +46,7 @@ class Item(object):
 
     def snapshot(self,size):
         sql  = "select t,o,c,h,l,v from bars where s=? order by t desc limit ?"
-        attrs =[self.symbol,size]
+        attrs =[self.item,size]
 
         conn = apsw.Connection(self.path)
         #conn.setbusytimeout(5000)
