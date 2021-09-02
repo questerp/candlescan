@@ -113,9 +113,11 @@ def ta_snapshot(symbols=None,conf=None):
 						f = getattr(tl,"stream_%s"%fun,period)
 					else:
 						f = getattr(tl,"stream_%s"%fun)
-
-					analysis[t] = f(close)
 					
+					val = f(close)
+					if val and val != np.nan:
+						analysis[t] = val
+						
 				except Exception as e:
 					print("ERROR TA",e,close)
 			print(symbol)
