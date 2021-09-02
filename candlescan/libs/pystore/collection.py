@@ -18,10 +18,10 @@ from datetime import datetime as dt
 
 def setwal(db):
     # print("WAL MODE <----")
-    db.cursor().execute("pragma journal_mode=wal")
-    # custom auto checkpoint interval (use zero to disable)
-    db.wal_autocheckpoint(1000)
-
+    try:
+        db.cursor().execute("pragma journal_mode=wal")
+    except:
+        pass
 apsw.connection_hooks.append(setwal)
 
 class Collection(object):
