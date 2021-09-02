@@ -137,7 +137,7 @@ def ta_snapshot(symbols=None,conf=None):
 					sql = str(sql)
 					_cursor.execute(sql)
 				except Exception as e:
-					print("error sql",e)
+					print("error sql",e,sql)
 
 	end = dt.now()
 	if conn:
