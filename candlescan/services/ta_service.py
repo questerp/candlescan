@@ -115,7 +115,7 @@ def ta_snapshot(symbols=None,conf=None):
 						f = getattr(tl,"stream_%s"%fun)
 					
 					val = f(close)
-					if val and val != 'nan':
+					if val and val != np.nan:
 						analysis[t] = val
 
 				except Exception as e:
@@ -141,7 +141,7 @@ def ta_snapshot(symbols=None,conf=None):
 				except Exception as e:
 					print("error sql",e,sql)
 					print(analysis)
-					print(type(analysis['rsi_5']) )
+					print(type(analysis['RSI_5']) )
 
 
 	end = dt.now()
