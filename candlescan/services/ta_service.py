@@ -75,8 +75,10 @@ def ta_snapshot_all():
 	try:
 		ts  = []
 		conf = frappe.conf.copy()
+		i=0
 		for symbols in chunks(get_active_symbols(),500):
-			t = threading.Thread(target=ta_snapshot,args=(symbols,conf,))
+			i+=1
+			t = threading.Thread(target=ta_snapshot,args=(i,symbols,conf,))
 			ts.append(t)
 			t.start()	
 	except KeyboardInterrupt as e:
@@ -86,7 +88,7 @@ def ta_snapshot_all():
 			t.join()
 
 
-def ta_snapshot(symbols=None,conf=None):
+def ta_snapshot(i,symbols=None,conf=None):
 	start = dt.now()
 	if symbols is None:
 		symbols= get_active_symbols()
@@ -160,7 +162,7 @@ def ta_snapshot(symbols=None,conf=None):
 		conn.close()
 		_cursor = None
 		conn = None		
-	print("DONE",end-start)
+	print(i,"DONE",end-start)
 
 
 @sio.event
