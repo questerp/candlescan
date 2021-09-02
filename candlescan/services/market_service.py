@@ -133,16 +133,15 @@ def process_tickers():
 	api = REST(raw_data=True)
 	assets = api.list_assets()
 	cik = False
-	new_ones = []
 	for ticker in assets:
 		#ticker['symbol'] = ticker['symbol'].replace('^','p')
 		#ticker['name'] = (ticker['name'][:100] + '..') if len(ticker['name']) > 100 else ticker['name']
 		exist = frappe.db.exists("Symbol",ticker['symbol'])
 		#print(ticker['symbol'],exist)
+		existIndic = frappe.db.exists("Indicators",ticker['symbol'])
 		
 		if not exist:
 			cik = True
-			new_ones.append(ticker['symbol'])
 			symbol = frappe.get_doc({
 				'doctype':'Symbol',
 				'active': ticker["status"] == 'active',
@@ -152,6 +151,13 @@ def process_tickers():
 				'market_class': ticker['class']
 			})
 			insert_symbol(symbol)
+			
+		if not existIndic:
+			indic = frappe.get_doc({
+				'doctype':'Indicators',
+				'symbol':ticker['symbol']
+			}).insert()
+
 	if cik:
 		print("Processing CIK")
 		process_cik()
