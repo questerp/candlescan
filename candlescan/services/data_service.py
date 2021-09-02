@@ -305,12 +305,18 @@ async def get_extra_data(message):
 	data = message.get("data")
 	symbols = data.get("symbols")
 	fields = data.get("fields")
+	target = data.get("target")
 	
 	if not (symbols or fields):
 		return
 	sql_fields =  ' ,'.join(fields)
 	sql_symbols =  ', '.join(['%s']*len(symbols))
-	sql = """select symbol,{0} from tabSymbol where name in ({1})""".format(sql_fields,sql_symbols)
+	sql=""
+	if target == "technicals":
+		sql = """select symbol,{0} from tabIndicators where symbol in ({1})""".format(sql_fields,sql_symbols)
+	else:
+		sql = """select symbol,{0} from tabSymbol where symbol in ({1})""".format(sql_fields,sql_symbols)
+		
 	frappe.db.commit()
 	result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
 	#print("result",result)
