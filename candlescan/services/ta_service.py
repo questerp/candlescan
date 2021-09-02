@@ -76,7 +76,7 @@ def ta_snapshot(symbols):
 		df = pd.DataFrame(data,columns=["t","o","c","h","l","v"])
 		for t in ta_func:
 			f = getattr(tl,"stream_%s"%t)
-			analysis[t] = f(df)
+			analysis[t] = f(df.c)
 		
 		print(analysis)
 
