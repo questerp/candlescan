@@ -154,7 +154,7 @@ class Collection(object):
         dirs = utils.subdirs(utils.make_path(self.datastore, self.collection))
         return set(dirs)
 
-    def item(self, item,start,end,  filters=None, columns=None):
+    def item(self, item,start=None,end=None,  filters=None, columns=None):
         #(self, item, path,start, filters=None, columns=None,):
         return Item(item, self.path,start,end, filters, columns )
 

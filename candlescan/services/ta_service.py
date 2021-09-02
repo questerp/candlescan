@@ -11,7 +11,9 @@ from frappe.utils import cstr,add_days, get_datetime
 import pandas as pd
 import talib as ta
 from candlescan.utils.candlescan import get_active_symbols 
-
+from candlescan.libs import pystore
+store = pystore.store('bars' )
+collection = store.collection('1MIN' )
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 def start():
@@ -22,7 +24,7 @@ async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
 		while(1):
-			if dt.now().second != 30:
+			if dt.now().second <= 30:
 				time.sleep(1)
 				continue
 			frappe.db.sql("""update tabSymbol set 
@@ -43,6 +45,10 @@ async def run():
 			where prev_day_close>0 and price > 0""")
 			frappe.db.commit()
 			time.sleep(1)
+
+			for symbol in get_active_symbols():
+				data = collection.item(symbol,start,end ).data()
+			
 			
 			
 			
@@ -52,9 +58,8 @@ async def run():
 		await sio.sleep(5)
 		await run()
 
-	
-def ta(volume_min,volume_max):
-	pass
+
+
 		
 		
 

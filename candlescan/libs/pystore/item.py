@@ -26,15 +26,16 @@ from . import utils
 import apsw
 
 
+def setwal(db):
+    db.cursor().execute("pragma journal_mode=wal")
+
+apsw.connection_hooks.append(setwal)
+
 class Item(object):
     def __repr__(self):
         return "PyStore.item <%s/%s>" % (self.collection, self.item)
 
-    def __init__(self, item, path,start,end, filters=None, columns=None,):
-                 
-        # self.engine = engine
-        # self.datastore = datastore
-        # self.collection = collection
+    def __init__(self, item, path,start=None,end=None, filters=None, columns=None,):
         self.item = item
         self.filters = filters or ''
         self.columns = columns
@@ -42,15 +43,25 @@ class Item(object):
         self.start = start
         self.end = end
 
-        # self._path  =  utils.make_path(datastore, collection, "data") 
-        # print("self._path",self._path)
-        # if not self._path.exists():
-        #     raise ValueError(
-        #         "Item `%s` doesn't exist. "
-        #         "Create it using collection.write(`%s`, data, ...)" % (
-        #             item, item))
+
+    def snapshot(self,size):
+        sql  = "select t,o,c,h,l,v from bars where s=? order by t desc limit ?"
+        attrs =[self.symbol,size]
+
+        conn = apsw.Connection(self.path)
+        #conn.setbusytimeout(5000)
+        with conn:
+            try:
+                data=list( conn.cursor().execute(sql,attrs) )
+            except Exception as e:
+                print("error item",e)
+            finally:
+                #conn.close()
+                return data
+
     def data(self):
-        
+        if start is None:
+            return []
         data = []
         attrs =[]
         if self.end:
