@@ -130,7 +130,7 @@ def ta_snapshot(symbols=None,conf=None):
 
 				sql = """  update tabIndicators set 
 						%s
-						where symbol=%s
+						where symbol='%s'
 				 """ %  (fargs,symbol)
 				print(sql)
 				try:
