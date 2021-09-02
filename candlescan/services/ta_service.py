@@ -70,13 +70,13 @@ async def run():
 
 def ta_snapshot(symbols):
 	for symbol in symbols:
-		data = collection.item(symbol).snapshot(50)
+		close = collection.item(symbol).snapshot(50,["c"])
 		analysis = {}
 		#t,o,c,h,l,v 
-		df = pd.DataFrame(data,columns=["t","o","c","h","l","v"])
+		#df = pd.DataFrame(data,columns=["t","o","c","h","l","v"])
 		for t in ta_func:
 			f = getattr(tl,"stream_%s"%t)
-			analysis[t] = f(df.c)
+			analysis[t] = f(close)
 		
 		print(analysis)
 

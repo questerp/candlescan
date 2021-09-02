@@ -44,8 +44,12 @@ class Item(object):
         self.end = end
 
 
-    def snapshot(self,size):
-        sql  = "select t,o,c,h,l,v from bars where s=? order by t desc limit ?"
+    def snapshot(self,size,columns=None):
+        sql = ""
+        if columns:
+            sql  = "select %s from bars where s=? order by t desc limit ?" % (",".join(columns))
+        else:
+            sql  = "select t,o,c,h,l,v from bars where s=? order by t desc limit ?"
         attrs =[self.item,size]
 
         conn = apsw.Connection(self.path)
