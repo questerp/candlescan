@@ -70,16 +70,19 @@ async def run():
 
 def ta_snapshot(symbols):
 	for symbol in symbols:
-		close = collection.item(symbol).snapshot(50,["c"])
-		close = np.array(close)
-		analysis = {}
-		#t,o,c,h,l,v 
-		#df = pd.DataFrame(data,columns=["t","o","c","h","l","v"])
-		for t in ta_func:
-			f = getattr(tl,"stream_%s"%t)
-			analysis[t] = f(close)
-		
-		print(analysis)
+		close = collection.item(symbol).snapshot(50,["c"]) # [(a,b,...),()...]
+		if close:
+			close = np.array([v[0] for v in close])
+			analysis = {}
+			#t,o,c,h,l,v 
+			for t in ta_func:
+				try:
+					f = getattr(tl,"stream_%s"%t)
+					analysis[t] = f(close)
+				except Exception as e:
+					print("ERROR TA",e)
+			
+			print(analysis)
 
 
 @sio.event
