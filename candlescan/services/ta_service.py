@@ -395,5 +395,5 @@ def calculate_ta(func,o,c,h,l):
 	if func == "EMA200":
 		result = stream.EMA(c,200)	
 
-
+	return result
 
