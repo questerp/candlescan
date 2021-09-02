@@ -84,7 +84,7 @@ def ta_snapshot_all():
 		for t in ts:
 			t.raise_exception()
 			t.join()
-				
+
 
 def ta_snapshot(symbols=None,conf=None):
 	start = dt.now()
@@ -109,6 +109,7 @@ def ta_snapshot(symbols=None,conf=None):
 	for symbol in symbols:
 		close = collection.item(symbol).snapshot(50,["c"]) # [(a,b,...),()...]
 		if close:
+			print(symbol)
 			close = np.array([v[0] for v in close if v[0]],dtype=np.double)
 			analysis = {}
 			#t,o,c,h,l,v 
