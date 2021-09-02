@@ -10,8 +10,12 @@ from datetime import timedelta,datetime as dt
 from frappe.utils import cstr,add_days, get_datetime
 import pandas as pd
 import talib as ta
+import talib._ta_lib as tl
 from candlescan.utils.candlescan import get_active_symbols 
 from candlescan.libs import pystore
+
+
+
 store = pystore.store('bars' )
 collection = store.collection('1MIN' )
 
@@ -20,6 +24,8 @@ def start():
 	asyncio.get_event_loop().run_until_complete(run())
 	asyncio.get_event_loop().run_forever()
 
+ta_func = ["SMA","RSI"]
+
 async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
@@ -27,6 +33,9 @@ async def run():
 			if dt.now().second <= 30:
 				time.sleep(1)
 				continue
+
+			# for symbol in get_active_symbols():
+
 			frappe.db.sql("""update tabSymbol set 
 			daily_change_per=ROUND(100*((price - today_open)/today_open),2), 
 			daily_change_val=ROUND((price - today_open),2) 
@@ -46,9 +55,8 @@ async def run():
 			frappe.db.commit()
 			time.sleep(1)
 
-			for symbol in get_active_symbols():
-				data = collection.item(symbol,start,end ).data()
 			
+
 			
 			
 			
@@ -60,8 +68,17 @@ async def run():
 
 
 
+def ta_snapshot(symbols):
+	for symbol in symbols:
+		data = collection.item(symbol).snapshot(50)
+		analysis = {}
+		#t,o,c,h,l,v 
+		df = pd.DataFrame(data,columns=["t","o","c","h","l","v"])
+		for t in ta_func:
+			f = getattr(tl,"stream_%s"%t)
+			analysis[t] = f(df)
 		
-		
+		print(analysis)
 
 
 @sio.event
