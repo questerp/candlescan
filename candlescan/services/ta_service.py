@@ -62,6 +62,7 @@ async def run():
 
 			try:
 				ta_snapshot_all(True)
+				time.sleep(2)
 			except Exception as e:
 				pass
 			
