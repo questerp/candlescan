@@ -71,13 +71,14 @@ async def run():
 		await sio.sleep(5)
 		await run()
 
-def ta_snapshot_all():
+def ta_snapshot_all(apply_priority=False):
 	try:
 		ts  = []
 		conf = frappe.conf.copy()
 		i=0
 		for symbols in chunks(get_active_symbols(),500):
 			i+=1
+			print("FIRST",symbols[0])
 			t = threading.Thread(target=ta_snapshot,args=(i,symbols,conf,))
 			ts.append(t)
 			t.start()	
