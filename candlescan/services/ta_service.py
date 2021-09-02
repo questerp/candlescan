@@ -120,7 +120,7 @@ def ta_snapshot(symbols=None,conf=None):
 					print("ERROR TA",e,close)
 
 			if _cursor and analysis:
-				fields = ta_func + [""]
+				fields = [f.lower() for f in ta_func] + [""]
 				args = ("=%s, ".join(fields))
 				args = args[:-2]
 				print(args)
