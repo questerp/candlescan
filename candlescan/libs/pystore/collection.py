@@ -54,7 +54,7 @@ class Collection(object):
             cur = conn.cursor()
             sql  ="drop table if exists bars ;create table bars(s NOT NULL,t NOT NULL,o,c,h,l,v,PRIMARY KEY(s,t))"
             cur.execute(sql)
-            self.create_ta_table(conn)
+            #self.create_ta_table(conn)
 
 
     def create_ta_table(self,conn=None,symbols=None):

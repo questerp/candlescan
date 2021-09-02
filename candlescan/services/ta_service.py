@@ -16,7 +16,8 @@ from candlescan.services.price_service import chunks
 from candlescan.libs import pystore
 import numpy as np
 import threading
-
+import pymysql
+from pymysql.converters import conversions, escape_string
 
 store = pystore.store('bars' )
 collection = store.collection('1MIN' )
@@ -69,14 +70,31 @@ async def run():
 		await run()
 
 def ta_snapshot_all():
+	conf = frappe.conf
 	for symbols in chunks(get_active_symbols(),500):
-		threading.Thread(target=ta_snapshot,args=(symbols,)).start()	
+		threading.Thread(target=ta_snapshot,args=(symbols,conf,)).start()	
 
 
-def ta_snapshot(symbols=None):
+def ta_snapshot(symbols=None,conf=None):
 	start = dt.now()
 	if symbols is None:
 		symbols= get_active_symbols()
+	_cursor = None
+	conn = None
+	if conf:
+		conn = pymysql.connect(
+				user= conf.db_name,
+				password= conf.db_password,
+				database=conf.db_name,
+				host='127.0.0.1',
+				port='',
+				charset='utf8mb4',
+				use_unicode=True,
+				ssl=  None,
+				conv=conversions,
+				local_infile=conf.local_infile
+			)
+		_cursor = conn.cursor()
 	for symbol in symbols:
 		close = collection.item(symbol).snapshot(50,["c"]) # [(a,b,...),()...]
 		if close:
@@ -97,10 +115,28 @@ def ta_snapshot(symbols=None):
 						f = getattr(tl,"stream_%s"%fun)
 
 					analysis[t] = f(close)
+					
 				except Exception as e:
 					print("ERROR TA",e,close)
+
+			if _cursor and analysis:
+				fields = ta_func + [""]
+				sql = """  update tabIndicators set 
+						%s
+				 """ % ("=%s, ".join(fields) % ([analysis[t] for t in ta_func]))
+				print(sql)
+				try:
+					sql = str(sql)
+					_cursor.execute(sql)
+				except Exception as e:
+					print(s,"error sql",e)
+					
+	_cursor.execute("COMMIT;")
 	end = dt.now()
-			
+	if conn:
+		conn.close()
+		_cursor = None
+		conn = None		
 	print("DONE",end-start)
 
 
