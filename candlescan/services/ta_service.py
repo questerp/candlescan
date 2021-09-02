@@ -124,8 +124,8 @@ def ta_snapshot(symbols=None,conf=None):
 				args = ("=%s, ".join(fields))
 				args = args[:-2]
 				print(args)
-				print(([analysis[t] for t in ta_func]))
-				fargs= args % ([analysis[t] for t in ta_func])
+				print((analysis[t] for t in ta_func))
+				fargs= args % (analysis[t] for t in ta_func)
 				print(fargs)
 
 				sql = """  update tabIndicators set 
