@@ -35,7 +35,7 @@ async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
 		while(1):
-			if dt.now().second <= 30:
+			if dt.now().second <= 10:
 				time.sleep(1)
 				continue
 
@@ -61,7 +61,7 @@ async def run():
 			time.sleep(1)
 
 			
-
+			ta_snapshot_all(True)
 			
 			
 			
@@ -76,9 +76,12 @@ def ta_snapshot_all(apply_priority=False):
 		ts  = []
 		conf = frappe.conf.copy()
 		i=0
-		for symbols in chunks(get_active_symbols(),500):
+		all_symbols = get_active_symbols()
+		if apply_priority:
+			if dt.now().minute % 5 != 0:
+				all_symbols = all_symbols[:1000]
+		for symbols in chunks(all_symbols,500):
 			i+=1
-			print("FIRST",symbols[0])
 			t = threading.Thread(target=ta_snapshot,args=(i,symbols,conf,))
 			ts.append(t)
 			t.start()	
