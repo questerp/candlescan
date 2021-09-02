@@ -132,7 +132,7 @@ def ta_snapshot(symbols=None,conf=None):
 						%s
 						where symbol='%s'
 				 """ %  (fargs,symbol)
-				print(sql)
+				#print(sql)
 				try:
 					sql = str(sql)
 					_cursor.execute(sql)
