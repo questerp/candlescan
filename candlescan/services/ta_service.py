@@ -111,7 +111,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 	for symbol in symbols:
 		close = collection.item(symbol).snapshot(50,["c"]) # [(a,b,...),()...]
 		if close:
-			print(symbol)
+			#print(symbol)
 			close = np.array([v[0] for v in close if v[0]],dtype=np.double)
 			analysis = {}
 			#t,o,c,h,l,v 
