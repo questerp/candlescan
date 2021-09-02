@@ -27,7 +27,7 @@ def start():
 	asyncio.get_event_loop().run_until_complete(run())
 	asyncio.get_event_loop().run_forever()
 
-ta_func = ["SMA_5","RSI_5","RSI_6","RSI_7","RSI_8","RSI_9","RSI_10","RSI_15","RSI_16","RSI_20"]
+ta_func = ["SMA_5","RSI_5"]
 
 async def run():
 	try:
@@ -130,13 +130,14 @@ def ta_snapshot(symbols=None,conf=None):
 
 				sql = """  update tabIndicators set 
 						%s
-				 """ %  fargs
+						where symbol=%s
+				 """ %  (fargs,symbol)
 				print(sql)
 				try:
 					sql = str(sql)
 					_cursor.execute(sql)
 				except Exception as e:
-					print(s,"error sql",e)
+					print("error sql",e)
 
 	end = dt.now()
 	if conn:
