@@ -427,7 +427,7 @@ def insert_minute_bars(minuteBars,send_last=False,col="m"):
 
 @multitasking.task 
 def add_to_queue(event,ev,last):
-	print("queue",event)
+	#print("queue",event)
 	queue_data(event,ev,last)
 
 
