@@ -73,7 +73,7 @@ async def run():
 
 def ta_snapshot_all():
 	conf = frappe.conf.copy()
-	for symbols in chunks(get_active_symbols(),500):
+	for symbols in chunks(get_active_symbols(),2000):
 		threading.Thread(target=ta_snapshot,args=(symbols,conf,)).start()	
 
 
@@ -122,7 +122,6 @@ def ta_snapshot(symbols=None,conf=None):
 
 				except Exception as e:
 					print("ERROR TA",e,close)
-			print(symbol)
 			if _cursor and analysis:
 				fields = [field.lower() for field in analysis.keys() ] + [""]
 				args = ("=%s, ".join(fields))
