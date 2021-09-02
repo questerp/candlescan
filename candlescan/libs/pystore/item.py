@@ -54,7 +54,7 @@ class Item(object):
         else:
             sql  = "select t,o,c,h,l,v from bars where s=? order by t desc limit ?"
         attrs =[self.item,size]
-
+        data = []
         conn = apsw.Connection(self.path)
         #conn.setbusytimeout(5000)
         with conn:
