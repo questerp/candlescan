@@ -455,7 +455,7 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 		# 	filters = 't >= start '
 			
 		
-		data = _collection.item(symbol,start,end ).data()
+		data = _collection.item(symbol,start=start,end=end ).data()
 		if data:
 			#data = data[~data.t.duplicated(keep='first')]
 			result = data
