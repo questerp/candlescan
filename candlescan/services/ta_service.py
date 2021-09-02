@@ -12,8 +12,10 @@ import pandas as pd
 import talib as ta
 import talib._ta_lib as tl
 from candlescan.utils.candlescan import get_active_symbols 
+from candlescan.services.price_service import chunks 
 from candlescan.libs import pystore
 import numpy as np
+import threading
 
 
 store = pystore.store('bars' )
@@ -66,9 +68,13 @@ async def run():
 		await sio.sleep(5)
 		await run()
 
+def ta_snapshot_all():
+	for symbols in chunks(get_active_symbols(),500):
+		threading.Thread(target=ta_snapshot,args=(symbols,)).start()	
 
 
 def ta_snapshot(symbols=None):
+	start = dt.now()
 	if symbols is None:
 		symbols= get_active_symbols()
 	for symbol in symbols:
@@ -93,9 +99,9 @@ def ta_snapshot(symbols=None):
 					analysis[t] = f(close)
 				except Exception as e:
 					print("ERROR TA",e)
+	end = dt.now()
 			
-			print(analysis)
-	print("DONE")
+	print("DONE",end-start)
 
 
 @sio.event
