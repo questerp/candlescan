@@ -230,7 +230,7 @@ async def ressource(message):
 
 			elif doctype == "Technicals":
 				technicals = frappe.db.get_single_value('Candlescan Settings', 'technicals')
-				response = [technicals]
+				response = technicals
 
 			elif doctype == "Extras":
 				extras = frappe.db.get_single_value('Candlescan Settings', 'extras')
