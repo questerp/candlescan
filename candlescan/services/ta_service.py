@@ -19,6 +19,7 @@ import threading
 import pymysql
 from pymysql.converters import conversions, escape_string
 import math
+from talib import stream
 
 
 store = pystore.store('bars' )
@@ -64,11 +65,11 @@ ta_func = [
         # 'TANH',
 		#  'ADX',
         # 'ADXR',
-        # 'APO',
+         'APO',
         # 'AROON',
         # 'AROONOSC',
         # 'BOP',
-        # 'CCI',
+         'CCI',
         # 'CMO',
         # 'DX',
         # 'MACD',
@@ -77,34 +78,34 @@ ta_func = [
         # 'MFI',
         # 'MINUS_DI',
         # 'MINUS_DM',
-        # 'MOM',
+         'MOM',
         # 'PLUS_DI',
         # 'PLUS_DM',
-        # 'PPO',
-        # 'ROC',
-        # 'ROCP',
-        # 'ROCR',
-        # 'ROCR100',
-        # 'RSI',
+         'PPO',
+         'ROC',
+         'ROCP',
+         'ROCR',
+         'ROCR100',
+        'RSI',
         # 'STOCH',
         # 'STOCHF',
         # 'STOCHRSI',
-        # 'TRIX',
+         'TRIX',
         # 'ULTOSC',
         # 'WILLR',
 	  	# 'BBANDS',
         # 'DEMA',
         # 'EMA',
-		'EMA.7',
-		'EMA.8',
-		'EMA.9',
-		'EMA.10',
-		'EMA.11',
-		'EMA.12',
-		'EMA.15',
-		'EMA.20',
-		'EMA.50',
-		'EMA.200',
+		'EMA7',
+		'EMA8',
+		'EMA9',
+		'EMA10',
+		'EMA11',
+		'EMA12',
+		'EMA15',
+		'EMA20',
+		'EMA50',
+		'EMA200',
         # 'HT_TRENDLINE',
         # 'KAMA',
         # 'MA',
@@ -114,16 +115,16 @@ ta_func = [
         # 'MIDPRICE',
         # 'SAR',
         # 'SAREXT',
-         'SMA.7',
-         'SMA.8',
-         'SMA.9',
-         'SMA.10',
-         'SMA.11',
-         'SMA.12',
-         'SMA.15',
-         'SMA.20',
-         'SMA.50',
-         'SMA.200',
+         'SMA7',
+         'SMA8',
+         'SMA9',
+         'SMA10',
+         'SMA11',
+         'SMA12',
+         'SMA15',
+         'SMA20',
+         'SMA50',
+         'SMA200',
         # 'T3',
         # 'TEMA',
         # 'TRIMA',
@@ -295,36 +296,25 @@ def ta_snapshot(i,symbols=None,conf=None):
 			)
 		_cursor = conn.cursor()
 	for symbol in symbols:
-		close = collection.item(symbol).snapshot(200,["c"]) # [(a,b,...),()...]
+		close = collection.item(symbol).snapshot(200,["c","h","l","o"]) # [(a,b,...),()...]
 		if close:
 			#print(symbol)
 			close = np.array([v[0] for v in close if v[0]],dtype=np.double)
-			# heigh = np.array([v[1] for v in close if v[1]],dtype=np.double)
-			# low = np.array([v[2] for v in close if v[2]],dtype=np.double)
+			heigh = np.array([v[1] for v in close if v[1]],dtype=np.double)
+			low = np.array([v[2] for v in close if v[2]],dtype=np.double)
+			open = np.array([v[3] for v in close if v[3]],dtype=np.double)
 			analysis = {}
 			#t,o,c,h,l,v 
 			for t in ta_func:
 				try:
-					fun = t
-					params = None
-					if "." in  t:
-						targets = t.split(".")
-						fun = targets[0]
-						params = set([int(a) for a in targets[1:]])
-					f = getattr(tl,"stream_%s"%fun)
-                    
-					if params:
-					    val = f(close,*params)
-					else:
-						val = f(close)
-
-					if val and not math.isnan(val):
-						analysis[t] = val
+					result = calculate_ta(t,open,close,heigh,low)
+					if result and not math.isnan(result):
+						analysis[t] = result
 
 				except Exception as e:
 					print("ERROR TA",e,close)
 			if _cursor and analysis:
-				fields = [field.replace(".","").lower() for field in analysis.keys() ] + [""]
+				fields = [field for field in analysis.keys() ] + [""]
 				args = ("=%s, ".join(fields))
 				args = args[:-2]
 				#print(args)
@@ -359,3 +349,51 @@ def ta_snapshot(i,symbols=None,conf=None):
 @sio.event
 async def connect():
 	print("I'm connected!")
+
+
+
+def calculate_ta(func,o,c,h,l):
+	result = 0
+	if func == "APO":
+		result = stream.APO(c)
+	if func == "MOM":
+		result = stream.MOM(c)
+	if func == "PPO":
+		result = stream.PPO(c)
+	if func == "CCI":
+		result = stream.CCI(h,l,c)
+	if func == "ROC":
+		result = stream.ROC(c)
+	if func == "ROCP":
+		result = stream.ROCP(c)	
+	if func == "ROCR":
+		result = stream.ROCR(c)	
+	if func == "ROCR100":
+		result = stream.ROCR100(c)	
+	if func == "RSI":
+		result = stream.RSI(c)		
+	if func == "TRIX":
+		result = stream.TRIX(c)		 
+	if func == "EMA7":
+		result = stream.EMA(c,7)		 
+	if func == "EMA8":
+		result = stream.EMA(c,8)	
+	if func == "EMA9":
+		result = stream.EMA(c,9)	
+	if func == "EMA10":
+		result = stream.EMA(c,10)	
+	if func == "EMA11":
+		result = stream.EMA(c,11)	
+	if func == "EMA12":
+		result = stream.EMA(c,12)	
+	if func == "EMA15":
+		result = stream.EMA(c,15)	
+	if func == "EMA20":
+		result = stream.EMA(c,20)	
+	if func == "EMA50":
+		result = stream.EMA(c,50)	
+	if func == "EMA200":
+		result = stream.EMA(c,200)	
+
+
+
