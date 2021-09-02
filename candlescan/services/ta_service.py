@@ -466,7 +466,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 				try:
 					fun = t
 					period = None
-					if "_" in  t:
+					if "." in  t:
 						targets = t.split(".")
 						fun = targets[0]
 						period = targets[1]
