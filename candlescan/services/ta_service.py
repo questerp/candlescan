@@ -79,11 +79,12 @@ def ta_snapshot_all():
 			t = threading.Thread(target=ta_snapshot,args=(symbols,conf,))
 			ts.append(t)
 			t.start()	
-	except Exception as e:
+	except KeyboardInterrupt as e:
 		print("error ta_snapshot_all",e)
 		for t in ts:
 			t.raise_exception()
 			t.join()
+				
 
 def ta_snapshot(symbols=None,conf=None):
 	start = dt.now()
