@@ -158,17 +158,19 @@ def ta_snapshot(i,symbols=None,conf=None):
 				try:
 					sql = str(sql)
 					_cursor.execute(sql)
-					_cursor.execute("COMMIT;")
+					
 				except Exception as e:
 					print("error sql",e,sql)
 
 
 
-	end = dt.now()
+	
 	if conn:
+		_cursor.execute("COMMIT;")
 		conn.close()
 		_cursor = None
 		conn = None		
+	end = dt.now()
 	print(i,"DONE",end-start)
 
 
