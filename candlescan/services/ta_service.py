@@ -35,33 +35,35 @@ async def run():
 	try:
 		await sio.connect('http://localhost:9002',headers={"microservice":"ta_service"})
 		while(1):
-			if dt.now().second <= 10:
+			if dt.now().second != 30:
 				time.sleep(1)
 				continue
 
 			# for symbol in get_active_symbols():
+			if dt.now().minute % 5 == 0:
+				frappe.db.sql("""update tabSymbol set 
+				daily_change_per=ROUND(100*((price - today_open)/today_open),2), 
+				daily_change_val=ROUND((price - today_open),2) 
+				where today_open>0 and price > 0""")
+				frappe.db.commit()
+				time.sleep(1)
+				frappe.db.sql("""update tabSymbol set 
+				daily_close_change_per=ROUND(100*((price - prev_day_close)/prev_day_close),2), 
+				daily_close_change_val=ROUND((price - prev_day_close),2) 
+				where prev_day_close>0 and price > 0""")
+				frappe.db.commit()
+				time.sleep(1)
+				frappe.db.sql("""update tabSymbol set 
+				gap_per=ROUND(100*((price - prev_day_close)/prev_day_close),2), 
+				gap_val=ROUND((price - prev_day_close),2) 
+				where prev_day_close>0 and price > 0""")
+				frappe.db.commit()
+				time.sleep(1)
 
-			frappe.db.sql("""update tabSymbol set 
-			daily_change_per=ROUND(100*((price - today_open)/today_open),2), 
-			daily_change_val=ROUND((price - today_open),2) 
-			where today_open>0 and price > 0""")
-			frappe.db.commit()
-			time.sleep(1)
-			frappe.db.sql("""update tabSymbol set 
-			daily_close_change_per=ROUND(100*((price - prev_day_close)/prev_day_close),2), 
-			daily_close_change_val=ROUND((price - prev_day_close),2) 
-			where prev_day_close>0 and price > 0""")
-			frappe.db.commit()
-			time.sleep(1)
-			frappe.db.sql("""update tabSymbol set 
-			gap_per=ROUND(100*((price - prev_day_close)/prev_day_close),2), 
-			gap_val=ROUND((price - prev_day_close),2) 
-			where prev_day_close>0 and price > 0""")
-			frappe.db.commit()
-			time.sleep(1)
-
-			
-			ta_snapshot_all(True)
+			try:
+				ta_snapshot_all(True)
+			except Exception as e:
+				pass
 			
 			
 			
