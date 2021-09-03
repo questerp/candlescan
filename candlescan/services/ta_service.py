@@ -319,7 +319,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 						analysis[t] = result
 
 				except Exception as e:
-					print("ERROR TA",e,data)
+					print("ERROR TA",e)
 			if _cursor and analysis:
 				fields = [field for field in analysis.keys() ] + [""]
 				args = ("=ROUND(%s, 2), ".join(fields))
@@ -418,3 +418,4 @@ def calculate_ta(symbol,func,o,c,h,l,v):
 		return result
 	except Exception as e:
 		print("ta_fun error",e,func)
+
