@@ -282,7 +282,7 @@ def ta_snapshot_all(apply_priority=False):
 		conf = frappe.conf.copy()
 		i=0
 		all_symbols = []
-
+		print("---- START -----")
 		if apply_priority:
 			minute = dt.now().minute
 			if minute % 5 == 0:
