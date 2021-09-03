@@ -416,7 +416,8 @@ def calculate_ta(symbol,func,o,c,h,l,v):
 		if func == "EMA200":
 			result = stream.EMA(c,200)	
 
-		return result
 	except Exception as e:
 		print("ta_fun error",e,func)
-		return 0
+	finally:
+		return result
+
