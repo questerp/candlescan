@@ -263,7 +263,7 @@ def ta_snapshot_all(apply_priority=False):
 		if apply_priority:
 			if dt.now().minute % 5 != 0:
 				all_symbols = all_symbols[:2000]
-		for symbols in chunks(all_symbols,500):
+		for symbols in chunks(all_symbols,200):
 			i+=1
 			t = threading.Thread(target=ta_snapshot,args=(i,symbols,conf,))
 			ts.append(t)
