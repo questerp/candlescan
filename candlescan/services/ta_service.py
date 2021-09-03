@@ -20,12 +20,17 @@ from pymysql.converters import conversions, escape_string
 import math
 from talib import stream
 import signal
+import sys
+
 
 stop_threads = False
 def handler(signum, frame):
 	global stop_threads
 	stop_threads = True
 	print('Ctrl+Z pressed')
+	time.sleep(5)
+	sys.exit()
+
 
 signal.signal(signal.SIGTSTP, handler)
 store = pystore.store('bars' )
