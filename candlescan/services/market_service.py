@@ -174,8 +174,7 @@ def process_tickers():
     inactive = frappe.get_all("Symbol",filters=[("active","=",0)])
     for inc in inactive:
         frappe.db.delete("Indicators", {"name": inc['name']})
-        print("delete",symbol)
-            
+        print("delete",inc['name'])
 
 
     if cik:
