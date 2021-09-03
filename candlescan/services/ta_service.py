@@ -325,7 +325,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 					conv=conversions,
 					local_infile=conf.local_infile
 				)
-			_cursor = conn.cursor()
+			_cursor = conn.cursor() 
 		for symbol in symbols:
 			if stop_threads:
 				print("breaking")
