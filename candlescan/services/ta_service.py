@@ -236,6 +236,8 @@ async def run():
 		while(1):
 			try:
 				if dt.now().second != 30:
+					if stop_threads:
+						break
 					time.sleep(1)
 					continue
 
