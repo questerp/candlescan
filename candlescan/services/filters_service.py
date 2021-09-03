@@ -43,20 +43,26 @@ async def disconnect():
 @sio.event
 async def run_stock_filter(message):
 	name = message.get('data')
+	if not name:
+		return
+	#frappe.db.commit()
+	
+	data = run_filter(name)
+	await sio.emit("transfer",build_response(message,data,"run_stock_filter"))
 
-	frappe.db.commit()
-	filter = frappe.get_doc("Stock Filter",name)
 	#filter = frappe.db.sql("select sql_script,limit_results,name,sort_field from `tabStock Filter` where name='%s' limit 1" % name,as_dict=True)
 	#if filter:
 	#	filter = filter[0]
 	#else:
 	#	return
-	
+
+def run_filter(name):
+	filter = frappe.get_doc("Stock Filter",name)
 	print("filter.limit_results",filter.limit_results)
-		
+	data = []
 	if filter.sql_script:
 		sql = json.loads(filter.sql_script)
 		sort = "ASC" if filter.sort_mode == "Ascending" else "DESC"
 		if sql:
 			data = frappe.db.sql("""%s order by %s %s limit %s""" % (sql,filter.sort_field,sort,filter.limit_results or 1),as_dict=True)
-			await sio.emit("transfer",build_response(message,data,"run_stock_filter"))
+	return data
