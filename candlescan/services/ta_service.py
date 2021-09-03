@@ -32,6 +32,11 @@ def start():
  
 
 ta_func = [
+	"CLOSE",
+	"OPEN",
+	"LOW",
+	"HIGH",
+	"M_VOLUME",
 		# 'HT_DCPERIOD',
         # 'HT_DCPHASE',
         # 'HT_PHASOR',
@@ -296,18 +301,19 @@ def ta_snapshot(i,symbols=None,conf=None):
 			)
 		_cursor = conn.cursor()
 	for symbol in symbols:
-		data = collection.item(symbol).snapshot(200,["c","h","l","o"]) # [(a,b,...),()...]
+		data = collection.item(symbol).snapshot(200,["c","h","l","o","v"]) # [(a,b,...),()...]
 		if data:
 			#print(symbol)
 			close = np.array([v[0] for v in data if v[0]],dtype=np.double)
 			heigh = np.array([v[1] for v in data if v[1]],dtype=np.double)
 			low = np.array([v[2] for v in data if v[2]],dtype=np.double)
 			open = np.array([v[3] for v in data if v[3]],dtype=np.double)
+			volume = np.array([v[4] for v in data if v[4]],dtype=np.double)
 			analysis = {}
 			#t,o,c,h,l,v 
 			for t in ta_func:
 				try:
-					result = calculate_ta(t,open,close,heigh,low)
+					result = calculate_ta(t,open,close,heigh,low,volume)
 					if result and not math.isnan(result):
 						analysis[t] = result
 
@@ -352,8 +358,20 @@ async def connect():
 
 
 
-def calculate_ta(func,o,c,h,l):
+def calculate_ta(func,o,c,h,l,v):
 	result = 0
+
+	if func == "CLOSE":
+		result = c[-1]
+	if func == "OPEN":
+		result = o[-1]
+	if func == "LOW":
+		result = l[-1]
+	if func == "HIGH":
+		result = h[-1]
+	if func == "M_VOLUME":
+		result = v[-1]
+
 	if func == "APO":
 		result = stream.APO(c)
 	if func == "MOM":
