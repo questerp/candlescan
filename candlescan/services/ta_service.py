@@ -1,7 +1,6 @@
 
 from __future__ import unicode_literals
 import frappe,time
-from frappe.utils import cstr
 import socketio
 import asyncio
 from frappe.realtime import get_redis_server
