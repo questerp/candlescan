@@ -297,7 +297,7 @@ def ta_snapshot_all(apply_priority=False):
 				print("breaking")
 				break
 			i+=1
-			threading.Thread(target=ta_snapshot,args=(i,symbols,conf,))
+			threading.Thread(target=ta_snapshot,args=(i,symbols,conf,)).start()
 			
 	except KeyboardInterrupt as e:
 		print("error ta_snapshot_all",e)
