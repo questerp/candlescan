@@ -266,6 +266,7 @@ def ta_snapshot_all(apply_priority=False):
 		conf = frappe.conf.copy()
 		i=0
 		all_symbols = get_active_symbols()
+
 		if apply_priority:
 			if dt.now().minute % 5 != 0:
 				all_symbols = all_symbols[:2000]
@@ -361,6 +362,7 @@ async def connect():
 
 def calculate_ta(symbol,func,o,c,h,l,v):
 	result = 0
+	long_ops = dt.now().minute % 5 == 0
 	try:
 		if func == "CLOSE":
 			result = c[-1]
@@ -370,7 +372,7 @@ def calculate_ta(symbol,func,o,c,h,l,v):
 			result = l[-1]
 		if func == "HIGH":
 			result = h[-1]
-		if func == "VOLUME":
+		if long_ops and func == "VOLUME":
 			result = collection.item(symbol).today_volume()
 		if func == "M_VOLUME":
 			result = v[-1]
@@ -412,7 +414,7 @@ def calculate_ta(symbol,func,o,c,h,l,v):
 			result = stream.EMA(c,20)	
 		if func == "EMA50":
 			result = stream.EMA(c,50)	
-		if func == "EMA200":
+		if long_ops and func == "EMA200":
 			result = stream.EMA(c,200)	
 
 	except Exception as e:
