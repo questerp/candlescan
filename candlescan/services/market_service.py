@@ -173,7 +173,7 @@ def process_tickers():
             status=False
         if not status:
             frappe.db.delete("Indicators", {"name": symbol})
-
+            print("delete",symbol)
 
 
     if cik:
