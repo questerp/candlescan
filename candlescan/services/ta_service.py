@@ -1,6 +1,5 @@
 
 from __future__ import unicode_literals
-from typing import final
 import frappe,time
 from frappe.utils import cstr
 import socketio
