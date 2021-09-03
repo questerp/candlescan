@@ -27,7 +27,7 @@ stop_threads = False
 def handler(signum, frame):
 	global stop_threads
 	stop_threads = True
-	print('Ctrl+Z pressed')
+	print('Ctrl+Z pressed, wait 5 sec')
 	time.sleep(5)
 	sys.exit()
 
