@@ -171,9 +171,11 @@ def process_tickers():
         if status != active or 'DELISTED' in symbol:
             frappe.db.set_value("Symbol",symbol,"active",active)
             status=False
-        if not status:
-            frappe.db.delete("Indicators", {"name": symbol})
-            print("delete",symbol)
+    inactive = frappe.get_all("Symbol",filters=[("active","=",0)])
+    for inc in inactive:
+        frappe.db.delete("Indicators", {"name": symbol})
+        print("delete",symbol)
+            
 
 
     if cik:
