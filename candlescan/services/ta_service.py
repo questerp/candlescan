@@ -315,7 +315,6 @@ def ta_snapshot(i,symbols=None,conf=None):
 			for t in ta_func:
 				try:
 					result = calculate_ta(symbol,t,open,close,heigh,low,volume)
-					print(result)
 					if result and not math.isnan(result):
 						analysis[t] = result
 
