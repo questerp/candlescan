@@ -418,4 +418,4 @@ def calculate_ta(symbol,func,o,c,h,l,v):
 		return result
 	except Exception as e:
 		print("ta_fun error",e,func)
-
+		return 0
