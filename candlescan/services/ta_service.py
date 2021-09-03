@@ -37,6 +37,7 @@ ta_func = [
 	"LOW",
 	"HIGH",
 	"M_VOLUME",
+	"VOLUME",
 		# 'HT_DCPERIOD',
         # 'HT_DCPHASE',
         # 'HT_PHASOR',
@@ -313,7 +314,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 			#t,o,c,h,l,v 
 			for t in ta_func:
 				try:
-					result = calculate_ta(t,open,close,heigh,low,volume)
+					result = calculate_ta(symbol,t,open,close,heigh,low,volume)
 					if result and not math.isnan(result):
 						analysis[t] = result
 
@@ -358,7 +359,7 @@ async def connect():
 
 
 
-def calculate_ta(func,o,c,h,l,v):
+def calculate_ta(symbol,func,o,c,h,l,v):
 	result = 0
 
 	if func == "CLOSE":
@@ -369,9 +370,10 @@ def calculate_ta(func,o,c,h,l,v):
 		result = l[-1]
 	if func == "HIGH":
 		result = h[-1]
+	if func == "VOLUME":
+		result = collection.item(symbol).today_volume()
 	if func == "M_VOLUME":
 		result = v[-1]
-
 	if func == "APO":
 		result = stream.APO(c)
 	if func == "MOM":

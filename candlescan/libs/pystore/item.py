@@ -20,7 +20,7 @@
 
 # import dask.dataframe as dd
 import pandas as pd
-# import pyarrow.parquet as pq
+from datetime import timedelta,datetime as dt
 import os
 from . import utils
 import apsw
@@ -54,6 +54,21 @@ class Item(object):
         else:
             sql  = "select t,o,c,h,l,v from bars where s=? order by t desc limit ?"
         attrs =[self.item,size]
+        data = []
+        conn = apsw.Connection(self.path,flags = apsw.SQLITE_OPEN_READONLY)
+        conn.setbusytimeout(2000)
+        with conn:
+            try:
+                data=list( conn.cursor().execute(sql,attrs) )
+            except Exception as e:
+                print("error snapshot",e)
+            finally:
+                #conn.close()
+                return data
+
+    def today_volume(self):
+        sql  = "select sum(v) from bars where s=? and t>=?"
+        attrs =[self.item,dt.today().replace(hour=0).timestamp()]
         data = []
         conn = apsw.Connection(self.path,flags = apsw.SQLITE_OPEN_READONLY)
         conn.setbusytimeout(2000)
