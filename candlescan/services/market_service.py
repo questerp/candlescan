@@ -75,14 +75,6 @@ async def get_filings(message):
         await sio.emit("transfer", build_response(message, False, "get_filings"))
 
 
-@sio.event
-async def get_calendar(message):
-    target = message.get("data")
-    if not target:
-        return
-    calendar = frappe.db.get_value("Fundamentals", None, target)
-    await sio.emit("transfer", build_response(message, calendar, "get_calendar"))
-
 
 @sio.event
 async def get_symbol_prices(message):
