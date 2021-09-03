@@ -68,7 +68,7 @@ class Item(object):
 
     def today_volume(self):
         sql  = "select sum(v) from bars where s=? and t>=0"
-        attrs =[self.item,dt.today().replace(hour=0).timestamp()]
+        attrs =[self.item]#,dt.today().replace(hour=0).timestamp()]
         data = 0
         conn = apsw.Connection(self.path,flags = apsw.SQLITE_OPEN_READONLY)
         conn.setbusytimeout(2000)
