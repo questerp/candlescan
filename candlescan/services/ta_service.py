@@ -268,9 +268,10 @@ def ta_snapshot_all(apply_priority=False):
 		all_symbols = []
 
 		if apply_priority:
-			if dt.now().minute % 5 == 0:
+			minute = dt.now().minute
+			if minute % 5 == 0:
 				all_symbols = get_active_symbols()
-			elif dt.now().minute % 2 == 0:
+			elif minute % 2 == 0:
 				all_symbols =  get_active_symbols()[:2000]
 			else:
 				all_symbols =  get_active_symbols()[:1000]
