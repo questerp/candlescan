@@ -361,59 +361,60 @@ async def connect():
 
 def calculate_ta(symbol,func,o,c,h,l,v):
 	result = 0
+	try:
+		if func == "CLOSE":
+			result = c[-1]
+		if func == "OPEN":
+			result = o[-1]
+		if func == "LOW":
+			result = l[-1]
+		if func == "HIGH":
+			result = h[-1]
+		if func == "VOLUME":
+			result = collection.item(symbol).today_volume()
+		if func == "M_VOLUME":
+			result = v[-1]
+		if func == "APO":
+			result = stream.APO(c)
+		if func == "MOM":
+			result = stream.MOM(c)
+		if func == "PPO":
+			result = stream.PPO(c)
+		if func == "CCI":
+			result = stream.CCI(h,l,c)
+		if func == "ROC":
+			result = stream.ROC(c)
+		if func == "ROCP":
+			result = stream.ROCP(c)	
+		if func == "ROCR":
+			result = stream.ROCR(c)	
+		if func == "ROCR100":
+			result = stream.ROCR100(c)	
+		if func == "RSI":
+			result = stream.RSI(c)		
+		if func == "TRIX":
+			result = stream.TRIX(c)		 
+		if func == "EMA7":
+			result = stream.EMA(c,7)		 
+		if func == "EMA8":
+			result = stream.EMA(c,8)	
+		if func == "EMA9":
+			result = stream.EMA(c,9)	
+		if func == "EMA10":
+			result = stream.EMA(c,10)	
+		if func == "EMA11":
+			result = stream.EMA(c,11)	
+		if func == "EMA12":
+			result = stream.EMA(c,12)	
+		if func == "EMA15":
+			result = stream.EMA(c,15)	
+		if func == "EMA20":
+			result = stream.EMA(c,20)	
+		if func == "EMA50":
+			result = stream.EMA(c,50)	
+		if func == "EMA200":
+			result = stream.EMA(c,200)	
 
-	if func == "CLOSE":
-		result = c[-1]
-	if func == "OPEN":
-		result = o[-1]
-	if func == "LOW":
-		result = l[-1]
-	if func == "HIGH":
-		result = h[-1]
-	if func == "VOLUME":
-		result = collection.item(symbol).today_volume()
-	if func == "M_VOLUME":
-		result = v[-1]
-	if func == "APO":
-		result = stream.APO(c)
-	if func == "MOM":
-		result = stream.MOM(c)
-	if func == "PPO":
-		result = stream.PPO(c)
-	if func == "CCI":
-		result = stream.CCI(h,l,c)
-	if func == "ROC":
-		result = stream.ROC(c)
-	if func == "ROCP":
-		result = stream.ROCP(c)	
-	if func == "ROCR":
-		result = stream.ROCR(c)	
-	if func == "ROCR100":
-		result = stream.ROCR100(c)	
-	if func == "RSI":
-		result = stream.RSI(c)		
-	if func == "TRIX":
-		result = stream.TRIX(c)		 
-	if func == "EMA7":
-		result = stream.EMA(c,7)		 
-	if func == "EMA8":
-		result = stream.EMA(c,8)	
-	if func == "EMA9":
-		result = stream.EMA(c,9)	
-	if func == "EMA10":
-		result = stream.EMA(c,10)	
-	if func == "EMA11":
-		result = stream.EMA(c,11)	
-	if func == "EMA12":
-		result = stream.EMA(c,12)	
-	if func == "EMA15":
-		result = stream.EMA(c,15)	
-	if func == "EMA20":
-		result = stream.EMA(c,20)	
-	if func == "EMA50":
-		result = stream.EMA(c,50)	
-	if func == "EMA200":
-		result = stream.EMA(c,200)	
-
-	return result
-
+		return result
+	except Exception as e:
+		print("ta_fun error",e,func)
