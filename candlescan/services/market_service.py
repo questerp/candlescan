@@ -150,7 +150,7 @@ def process_tickers():
         active = (ticker["status"] == 'active')
         if not exist:
             cik = True
-            symbol = frappe.get_doc({
+            symbolobj = frappe.get_doc({
                 'doctype': 'Symbol',
                 'active': active,
                 'symbol': symbol,
@@ -158,7 +158,7 @@ def process_tickers():
                 'exchange': ticker['exchange'],
                 'market_class': ticker['class']
             })
-            insert_symbol(symbol)
+            insert_symbol(symbolobj)
 
         if not existIndic and active:
             indic = frappe.get_doc({
