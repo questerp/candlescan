@@ -315,7 +315,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 					print("ERROR TA",e,data)
 			if _cursor and analysis:
 				fields = [field for field in analysis.keys() ] + [""]
-				args = ("=%s, ".join(fields))
+				args = ("=ROUND(%s, 2), ".join(fields))
 				args = args[:-2]
 				#print(args)
 				#print(tuple([analysis[t] for t in ta_func]))
