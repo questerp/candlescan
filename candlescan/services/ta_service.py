@@ -265,11 +265,17 @@ def ta_snapshot_all(apply_priority=False):
 		ts  = []
 		conf = frappe.conf.copy()
 		i=0
-		all_symbols = get_active_symbols()
+		all_symbols = []
 
 		if apply_priority:
-			if dt.now().minute % 5 != 0:
-				all_symbols = all_symbols[:2000]
+			if dt.now().minute % 5 == 0:
+				all_symbols = get_active_symbols()
+			elif dt.now().minute % 2 == 0:
+				all_symbols =  get_active_symbols()[:2000]
+			else:
+				all_symbols =  get_active_symbols()[:1000]
+
+			
 		for symbols in chunks(all_symbols,500):
 			i+=1
 			t = threading.Thread(target=ta_snapshot,args=(i,symbols,conf,))
