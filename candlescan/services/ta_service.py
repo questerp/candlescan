@@ -220,7 +220,7 @@ ta_func = [
         # 'STDDEV',
         # 'TSF',
         # 'VAR',
-		# 'ATR',
+		 'ATR',
         # 'NATR',
         # 'TRANGE',
 	    # 'AD',
@@ -405,6 +405,9 @@ def calculate_ta(symbol,func,o,c,h,l,v):
 			result = collection.item(symbol).today_volume()
 		if func == "M_VOLUME":
 			result = v[-1]
+
+		if func == "ATR":
+			result = stream.ATR(h,l,c)
 		if func == "APO":
 			result = stream.APO(c)
 		if func == "MOM":
