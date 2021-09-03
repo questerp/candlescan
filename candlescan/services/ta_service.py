@@ -294,6 +294,7 @@ def ta_snapshot_all(apply_priority=False):
 
 		for symbols in chunks(all_symbols,500):
 			if stop_threads:
+				print("breaking")
 				break
 			i+=1
 			threading.Thread(target=ta_snapshot,args=(i,symbols,conf,))
@@ -327,6 +328,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 			_cursor = conn.cursor()
 		for symbol in symbols:
 			if stop_threads:
+				print("breaking")
 				break
 			data = collection.item(symbol).snapshot(200,["c","h","l","o","v"]) # [(a,b,...),()...]
 			if data:
