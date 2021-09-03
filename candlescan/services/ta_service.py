@@ -28,7 +28,7 @@ def handler(signum, frame):
 	global stop_threads
 	stop_threads = True
 	print('Ctrl+Z pressed, wait 5 sec')
-	time.sleep(5)
+	time.sleep(10)
 	sys.exit()
 
 
@@ -344,6 +344,9 @@ def ta_snapshot(i,symbols=None,conf=None):
 				analysis = {}
 				#t,o,c,h,l,v 
 				for t in ta_func:
+					if stop_threads:
+						print("breaking")
+						break
 					try:
 						result = calculate_ta(symbol,t,open,close,heigh,low,volume)
 						if result and not math.isnan(result):
