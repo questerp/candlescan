@@ -339,8 +339,8 @@ def update_chart_subs(redis):
 		print("update bar_symbols",len(bar_symbols))
 
 		time.sleep(60)
-		if dt.now().minute % 5 == 0:
-			clear_active_symbols()
+		#if dt.now().minute % 5 == 0:
+		clear_active_symbols()
 
 
 # def create_ta_table(symbols=None):

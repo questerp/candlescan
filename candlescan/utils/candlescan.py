@@ -19,17 +19,18 @@ _timezone = timezone("America/New_York")
 
 active_symbols = []
 
-def get_active_symbols():
+def get_active_symbols(reload=False):
     global active_symbols
-    if not active_symbols:
+    if reload or not active_symbols:
         s = frappe.db.sql(""" select symbol from tabIndicators  order by M_VOLUME desc""",as_list=True)
         active_symbols = [a[0] for a in s]
         print("top 1m volume",active_symbols[0])
     return active_symbols
 
 def clear_active_symbols():
-    active_symbols = []
-    get_active_symbols()
+    global active_symbols
+    #active_symbols = []
+    get_active_symbols(reload=True)
 
 
 def to_candle(data,symbol=None):
