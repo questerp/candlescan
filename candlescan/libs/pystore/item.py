@@ -67,14 +67,14 @@ class Item(object):
                 return data
 
     def today_volume(self):
-        sql  = "select sum(v) from bars where s=? and t>=0"
-        attrs =[self.item]#,dt.today().replace(hour=0).timestamp()]
+        sql  = "select sum(v) from bars where s=? and t>=?"
+        attrs =[self.item ,dt.today().replace(hour=0).timestamp()]
         data = 0
         conn = apsw.Connection(self.path,flags = apsw.SQLITE_OPEN_READONLY)
         conn.setbusytimeout(2000)
         with conn:
             try:
-                data=list( conn.cursor().execute(sql,attrs) )
+                data=list( conn.cursor().execute(sql,attrs) )[0] or 0
             except Exception as e:
                 print("error today_volume",e)
             finally:
