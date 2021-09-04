@@ -329,6 +329,8 @@ def ta_snapshot(i, symbols=None, conf=None):
 
 	market_hour = start.astimezone(estern)
 	minutes = (market_hour.hour * 60) + market_hour.minute
+	long_ops = dt.now().minute % 5 == 0
+
 	_cursor = None
 	conn = None
 	try:
@@ -367,7 +369,7 @@ def ta_snapshot(i, symbols=None, conf=None):
 						break
 					try:
 						result = calculate_ta(symbol, t, open, close, heigh,
-						                      low, volume, _cursor, analysis, minutes)
+						                      low, volume, _cursor, analysis, minutes,long_ops)
 						if result and not math.isnan(result) and result > 0:
 							analysis[t] = result
 
@@ -410,9 +412,8 @@ async def connect():
 	print("I'm connected!")
 
 
-def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes):
+def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops):
 	result = 0
-	long_ops = dt.now().minute % 5 == 0
 	cursor.execute("select today_open,high_day,low_day,today_close from tabIndicators where symbol='%s' limit 1" % (symbol))
 	_res = cursor.fetchall()
 	today_open = None
