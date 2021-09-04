@@ -462,9 +462,10 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 				print("high_day",high_day)
 				if high_day:
 					high_day = high_day[0][0]
+					result = max(cmax,	high_day)
 				else:
-					high_day= 0
-				result = max(cmax,	high_day)
+					result = cmax
+				
 		elif func == "LOW_DAY":
 			cmin = stream.MIN(l,200)
 			if l[-1] <= (cmin + (.05 * cmin)):
@@ -474,9 +475,9 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 				print("low_day",low_day)
 				if low_day:
 					low_day = low_day[0][0]
+					result = min(cmin,	low_day)
 				else:
-					low_day= 0
-				result = min(cmin,	low_day)
+					result = cmin
 
 		
 			
