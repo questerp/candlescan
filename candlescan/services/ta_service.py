@@ -21,9 +21,10 @@ import math
 from talib import stream
 import signal
 import sys
-
+import pytz
 
 stop_threads = False
+estern = pytz.timezone("US/Eastern")
 def handler(signum, frame):
 	global stop_threads
 	stop_threads = True
@@ -316,6 +317,8 @@ def ta_snapshot(i,symbols=None,conf=None):
 	global stop_threads
 	if symbols is None:
 		symbols= get_active_symbols()
+
+	market_hour = start.astimezone(estern)
 	_cursor = None
 	conn = None
 	try:
@@ -352,7 +355,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 						print("breaking")
 						break
 					try:
-						result = calculate_ta(symbol,t,open,close,heigh,low,volume,_cursor,analysis)
+						result = calculate_ta(symbol,t,open,close,heigh,low,volume,_cursor,analysis,market_hour)
 						if result and not math.isnan(result) and result > 0:
 							analysis[t] = result
 
@@ -396,7 +399,7 @@ async def connect():
 
 
 
-def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis):
+def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis,market_hour):
 	result = 0
 	long_ops = dt.now().minute % 5 == 0
 	try:
@@ -461,6 +464,12 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis):
 		elif  func == "LOW_200":
 			result = stream.MIN(l,200)
 		elif  func == "HIGH_DAY":
+			if market_hour.hour in [4,9,16]:
+				if  (market_hour.hour == 4  or  market_hour.minute == 1) or (market_hour.hour == 9  or  market_hour.minute == 31) or (market_hour.hour == 16  or  market_hour.minute == 1) :
+					result = h[-1]
+					return result
+
+
 			cmax = analysis.get("HIGH_200") or 0
 			if h[-1] >= (cmax - (.05 * cmax)):
 				high_day = 0
@@ -472,6 +481,11 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis):
 				result = max(cmax,	high_day )
 				
 		elif func == "LOW_DAY":
+			if market_hour.hour in [4,9,16]:
+				if  (market_hour.hour == 4  or  market_hour.minute == 1) or (market_hour.hour == 9  or  market_hour.minute == 31) or (market_hour.hour == 16  or  market_hour.minute == 1) :
+					result = l[-1]
+					return result
+					
 			cmin = analysis.get("LOW_200") or 0
 			if l[-1] <= (cmin + (.05 * cmin)):
 				low_day = 0
