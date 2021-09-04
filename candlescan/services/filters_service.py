@@ -59,12 +59,13 @@ async def run_stock_filter(message):
 def run_filter(name):
 	if not name:
 		return
+	frappe.db.commit()
 	filter = frappe.db.sql("""select * from `tabStock Filter` where name='%s'"""%name,as_dict=1)
 	if filter:
 		filter = filter[0]
 	else:
 		return
-	print( filter)
+	#print( filter)
 	
 	data = []
 	if filter.sql_script:
