@@ -57,7 +57,7 @@ async def run_stock_filter(message):
 	#	return
 
 def run_filter(name):
-	filter = frappe.db.sql("""select * from `tabStock Filter` where name='%s'""",name,as_dict=1)
+	filter = frappe.db.sql("""select * from `tabStock Filter` where name='%s'"""%name,as_dict=1)
 	print("filter.limit_results",filter)
 	data = []
 	if filter.sql_script:
