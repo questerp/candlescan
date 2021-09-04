@@ -24,3 +24,7 @@ def start_scanners():
             q = enqueue(method,queue='default', job_name=s.scanner_id,scanner_id=s.scanner_id)
         else:
             frappe.cache().hset(s.scanner_id,"stop",1,shared=True)
+
+@frappe.whitelist()
+def commit():
+    frappe.db.commit()

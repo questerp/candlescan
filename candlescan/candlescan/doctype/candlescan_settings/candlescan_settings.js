@@ -3,17 +3,13 @@
 
 frappe.ui.form.on('Candlescan Settings', {
 	 refresh: function(frm) {
-		frm.add_custom_button("Reload scanners",
+		frm.add_custom_button("Commit",
 			() => {
 				frappe.call({
-					method: 'candlescan.candlescan_service.start_scanners',
+					method: 'candlescan.candlescan.doctype.candlescan_settings.commit',
 					args: { },
 					callback(r) {
-						console.log(r);
-						alert("Scanners running",r.message);
-						if (!r.exc) {
-								frm.reload_doc();
-							}
+						alert("commit");
 					}
 				});
 			});
