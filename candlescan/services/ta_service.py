@@ -351,7 +351,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 						break
 					try:
 						result = calculate_ta(symbol,t,open,close,heigh,low,volume,_cursor)
-						if result and not math.isnan(result):
+						if result and not math.isnan(result) and result > 0:
 							analysis[t] = result
 
 					except Exception as e:
