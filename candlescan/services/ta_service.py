@@ -465,7 +465,7 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis,market_hour):
 			result = stream.MIN(l,200)
 		elif  func == "HIGH_DAY":
 			if market_hour.hour in [4,9,16]:
-				if  (market_hour.hour == 4  or  market_hour.minute == 1) or (market_hour.hour == 9  or  market_hour.minute == 31) or (market_hour.hour == 16  or  market_hour.minute == 1) :
+				if  (market_hour.hour == 4  or  market_hour.minute == 0) or (market_hour.hour == 9  or  market_hour.minute == 30) or (market_hour.hour == 16  or  market_hour.minute == 0) :
 					result = h[-1]
 					return result
 
@@ -481,7 +481,7 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis,market_hour):
 				
 		elif func == "LOW_DAY":
 			if market_hour.hour in [4,9,16]:
-				if  (market_hour.hour == 4  or  market_hour.minute == 1) or (market_hour.hour == 9  or  market_hour.minute == 31) or (market_hour.hour == 16  or  market_hour.minute == 1) :
+				if  (market_hour.hour == 4  or  market_hour.minute == 0) or (market_hour.hour == 9  or  market_hour.minute == 30) or (market_hour.hour == 16  or  market_hour.minute == 0) :
 					result = l[-1]
 					return result
 
