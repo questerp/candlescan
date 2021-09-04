@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 import frappe, json
 from frappe.model.document import Document
+import re
 
 class StockFilter(Document):
 	def validate(self):
@@ -30,7 +31,8 @@ class StockFilter(Document):
 	def validate_script(self):
 		if not self.script:
 			frappe.throw("Script is required")
-		self.script = self.script.replace('(','').replace(')','').replace('[','').replace(']','')
+		
+		self.script = self.script.lower().replace('(','').replace(')','').replace('[','').replace(']','').replace('drop','').replace('alter','').replace('delete','').replace('insert','').replace('update','')
 		script = json.loads(self.script)
 		conds = script.splitlines()
 		sql =""
