@@ -459,7 +459,6 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 			if h[-1] >= (cmax - (.05 * cmax)):
 				cursor.execute("select high_day from tabIndicators where symbol='%s' limit 1" % (symbol))
 				high_day = cursor.fetchall()
-				print("high_day",high_day)
 				if high_day:
 					high_day = high_day[0][0]
 					result = max(cmax,	high_day)
@@ -471,15 +470,12 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 			if l[-1] <= (cmin + (.05 * cmin)):
 				cursor.execute("select low_day from tabIndicators where symbol='%s' limit 1" % (symbol))
 				low_day = cursor.fetchall()
-				
-				print("low_day",low_day)
 				if low_day:
 					low_day = low_day[0][0]
 					result = min(cmin,	low_day)
 				else:
 					result = cmin
 
-		print("result",result)
 		
 			
 	except Exception as e:
