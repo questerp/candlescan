@@ -60,7 +60,12 @@ def run_filter(name):
 	if not name:
 		return
 	filter = frappe.db.sql("""select * from `tabStock Filter` where name='%s'"""%name,as_dict=1)
-	print("filter.limit_results",filter)
+	if filter:
+		filter = filter[0]
+	else:
+		return
+	print( filter)
+	
 	data = []
 	if filter.sql_script:
 		sql = json.loads(filter.sql_script)
