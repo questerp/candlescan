@@ -459,7 +459,7 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis):
 		elif  func == "HIGH_200":
 			result = stream.MAX(h,200)
 		elif  func == "LOW_200":
-			result = stream.MIN(h,200)
+			result = stream.MIN(l,200)
 		elif  func == "HIGH_DAY":
 			cmax = analysis.get("HIGH_200") or 0
 			if h[-1] >= (cmax - (.05 * cmax)):
