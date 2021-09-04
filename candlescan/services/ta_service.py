@@ -479,6 +479,7 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 				else:
 					result = cmin
 
+		print("result",result)
 		
 			
 	except Exception as e:
