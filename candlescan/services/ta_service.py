@@ -467,8 +467,7 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 				low_day = low_day[0][0]
 			result = min(stream.MIN(c,200),	low_day)
 
-		"",
-		"LOW_DAY",
+		
 			
 	except Exception as e:
 		print("ta_fun error",e,func)
