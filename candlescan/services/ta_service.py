@@ -479,7 +479,7 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis):
 				_low_day = cursor.fetchall()
 				if _low_day:
 					low_day = _low_day[0][0]
-				result = min(cmin,	low_day )
+				result = min(cmin,	low_day ) if low_day else cmin
 
 		
 			
