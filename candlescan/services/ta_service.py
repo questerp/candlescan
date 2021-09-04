@@ -49,6 +49,8 @@ ta_func = [
 	"HIGH",
 	"M_VOLUME",
 	"VOLUME",
+	"HIGH_200",
+	"LOW_200",
 	"HIGH_DAY",
 	"LOW_DAY",
 		# 'HT_DCPERIOD',
@@ -350,7 +352,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 						print("breaking")
 						break
 					try:
-						result = calculate_ta(symbol,t,open,close,heigh,low,volume,_cursor)
+						result = calculate_ta(symbol,t,open,close,heigh,low,volume,_cursor,analysis)
 						if result and not math.isnan(result) and result > 0:
 							analysis[t] = result
 
@@ -394,7 +396,7 @@ async def connect():
 
 
 
-def calculate_ta(symbol,func,o,c,h,l,v,cursor):
+def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis):
 	result = 0
 	long_ops = dt.now().minute % 5 == 0
 	try:
@@ -453,28 +455,31 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 		elif func == "EMA50":
 			result = stream.EMA(c,50)	
 		elif long_ops and func == "EMA200":
-			result = stream.EMA(c,200)		
+			result = stream.EMA(c,200)	
+		elif  func == "HIGH_200":
+			result = stream.MAX(h,200)
+		elif  func == "LOW_200":
+			result = stream.MIN(h,200)
 		elif  func == "HIGH_DAY":
-			cmax = stream.MAX(h,200)
+			cmax = analysis.get("HIGH_200") or 0
 			if h[-1] >= (cmax - (.05 * cmax)):
+				high_day = 0
 				cursor.execute("select high_day from tabIndicators where symbol='%s' limit 1" % (symbol))
-				high_day = cursor.fetchall()
-				if high_day:
-					high_day = high_day[0][0]
-					result = max(cmax,	high_day)
-				else:
-					result = cmax
+				_high_day = cursor.fetchall()
+				if _high_day:
+					high_day = _high_day[0][0]
+
+				result = max(cmax,	high_day )
 				
 		elif func == "LOW_DAY":
-			cmin = stream.MIN(l,200)
+			cmin = analysis.get("LOW_200") or 0
 			if l[-1] <= (cmin + (.05 * cmin)):
+				low_day = 0
 				cursor.execute("select low_day from tabIndicators where symbol='%s' limit 1" % (symbol))
-				low_day = cursor.fetchall()
-				if low_day:
-					low_day = low_day[0][0]
-					result = min(cmin,	low_day)
-				else:
-					result = cmin
+				_low_day = cursor.fetchall()
+				if _low_day:
+					low_day = _low_day[0][0]
+				result = min(cmin,	low_day )
 
 		
 			
