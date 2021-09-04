@@ -44,193 +44,193 @@ def start():
  
 
 ta_func = [
-	"CLOSE",
-	"OPEN",
-	"LOW",
-	"HIGH",
-	"M_VOLUME",
-	"VOLUME",
-	"HIGH_200",
-	"LOW_200",
-	"HIGH_DAY",
-	"LOW_DAY",
-		# 'HT_DCPERIOD',
-        # 'HT_DCPHASE',
-        # 'HT_PHASOR',
-        # 'HT_SINE',
-        # 'HT_TRENDMODE',
-        # 'ADD',
-        # 'DIV',
-        # 'MAX',
-        # 'MAXINDEX',
-        # 'MIN',
-        # 'MININDEX',
-        # 'MINMAX',
-        # 'MINMAXINDEX',
-        # 'MULT',
-        # 'SUB',
-        # 'SUM',
-        # 'ACOS',
-        # 'ASIN',
-        # 'ATAN',
-        # 'CEIL',
-        # 'COS',
-        # 'COSH',
-        # 'EXP',
-        # 'FLOOR',
-        # 'LN',
-        # 'LOG10',
-        # 'SIN',
-        # 'SINH',
-        # 'SQRT',
-        # 'TAN',
-        # 'TANH',
-		#  'ADX',
-        # 'ADXR',
-         'APO',
-        # 'AROON',
-        # 'AROONOSC',
-        # 'BOP',
-         'CCI',
-        # 'CMO',
-        # 'DX',
-        # 'MACD',
-        # 'MACDEXT',
-        # 'MACDFIX',
-        # 'MFI',
-        # 'MINUS_DI',
-        # 'MINUS_DM',
-         'MOM',
-        # 'PLUS_DI',
-        # 'PLUS_DM',
-         'PPO',
-         'ROC',
-         'ROCP',
-         'ROCR',
-         'ROCR100',
-        'RSI',
-        # 'STOCH',
-        # 'STOCHF',
-        # 'STOCHRSI',
-         'TRIX',
-        # 'ULTOSC',
-        # 'WILLR',
-	  	# 'BBANDS',
-        # 'DEMA',
-        # 'EMA',
-		'EMA7',
-		'EMA8',
-		'EMA9',
-		'EMA10',
-		'EMA11',
-		'EMA12',
-		'EMA15',
-		'EMA20',
-		'EMA50',
-		'EMA200',
-        # 'HT_TRENDLINE',
-        # 'KAMA',
-        # 'MA',
-        # 'MAMA',
-        # 'MAVP',
-        # 'MIDPOINT',
-        # 'MIDPRICE',
-        # 'SAR',
-        # 'SAREXT',
-         'SMA7',
-         'SMA8',
-         'SMA9',
-         'SMA10',
-         'SMA11',
-         'SMA12',
-         'SMA15',
-         'SMA20',
-         'SMA50',
-         'SMA200',
-        # 'T3',
-        # 'TEMA',
-        # 'TRIMA',
-        # 'WMA',
-		# 'CDL2CROWS',
-        # 'CDL3BLACKCROWS',
-        # 'CDL3INSIDE',
-        # 'CDL3LINESTRIKE',
-        # 'CDL3OUTSIDE',
-        # 'CDL3STARSINSOUTH',
-        # 'CDL3WHITESOLDIERS',
-        # 'CDLABANDONEDBABY',
-        # 'CDLADVANCEBLOCK',
-        # 'CDLBELTHOLD',
-        # 'CDLBREAKAWAY',
-        # 'CDLCLOSINGMARUBOZU',
-        # 'CDLCONCEALBABYSWALL',
-        # 'CDLCOUNTERATTACK',
-        # 'CDLDARKCLOUDCOVER',
-        # 'CDLDOJI',
-        # 'CDLDOJISTAR',
-        # 'CDLDRAGONFLYDOJI',
-        # 'CDLENGULFING',
-        # 'CDLEVENINGDOJISTAR',
-        # 'CDLEVENINGSTAR',
-        # 'CDLGAPSIDESIDEWHITE',
-        # 'CDLGRAVESTONEDOJI',
-        # 'CDLHAMMER',
-        # 'CDLHANGINGMAN',
-        # 'CDLHARAMI',
-        # 'CDLHARAMICROSS',
-        # 'CDLHIGHWAVE',
-        # 'CDLHIKKAKE',
-        # 'CDLHIKKAKEMOD',
-        # 'CDLHOMINGPIGEON',
-        # 'CDLIDENTICAL3CROWS',
-        # 'CDLINNECK',
-        # 'CDLINVERTEDHAMMER',
-        # 'CDLKICKING',
-        # 'CDLKICKINGBYLENGTH',
-        # 'CDLLADDERBOTTOM',
-        # 'CDLLONGLEGGEDDOJI',
-        # 'CDLLONGLINE',
-        # 'CDLMARUBOZU',
-        # 'CDLMATCHINGLOW',
-        # 'CDLMATHOLD',
-        # 'CDLMORNINGDOJISTAR',
-        # 'CDLMORNINGSTAR',
-        # 'CDLONNECK',
-        # 'CDLPIERCING',
-        # 'CDLRICKSHAWMAN',
-        # 'CDLRISEFALL3METHODS',
-        # 'CDLSEPARATINGLINES',
-        # 'CDLSHOOTINGSTAR',
-        # 'CDLSHORTLINE',
-        # 'CDLSPINNINGTOP',
-        # 'CDLSTALLEDPATTERN',
-        # 'CDLSTICKSANDWICH',
-        # 'CDLTAKURI',
-        # 'CDLTASUKIGAP',
-        # 'CDLTHRUSTING',
-        # 'CDLTRISTAR',
-        # 'CDLUNIQUE3RIVER',
-        # 'CDLUPSIDEGAP2CROWS',
-        # 'CDLXSIDEGAP3METHODS',
-	 	# 'AVGPRICE',
-        # 'MEDPRICE',
-        # 'TYPPRICE',
-        # 'WCLPRICE',
-	 	# 'BETA',
-        # 'CORREL',
-        # 'LINEARREG',
-        # 'LINEARREG_ANGLE',
-        # 'LINEARREG_INTERCEPT',
-        # 'LINEARREG_SLOPE',
-        # 'STDDEV',
-        # 'TSF',
-        # 'VAR',
-		 'ATR',
-        # 'NATR',
-        # 'TRANGE',
-	    # 'AD',
-        # 'ADOSC',
-        # 'OBV'
+	"close",
+	"open",
+	"low",
+	"high",
+	"m_volume",
+	"volume",
+	"high_200",
+	"low_200",
+	"high_day",
+	"low_day",
+		# 'ht_dcperiod',
+        # 'ht_dcphase',
+        # 'ht_phasor',
+        # 'ht_sine',
+        # 'ht_trendmode',
+        # 'add',
+        # 'div',
+        # 'max',
+        # 'maxindex',
+        # 'min',
+        # 'minindex',
+        # 'minmax',
+        # 'minmaxindex',
+        # 'mult',
+        # 'sub',
+        # 'sum',
+        # 'acos',
+        # 'asin',
+        # 'atan',
+        # 'ceil',
+        # 'cos',
+        # 'cosh',
+        # 'exp',
+        # 'floor',
+        # 'ln',
+        # 'log10',
+        # 'sin',
+        # 'sinh',
+        # 'sqrt',
+        # 'tan',
+        # 'tanh',
+		#  'adx',
+        # 'adxr',
+         'apo',
+        # 'aroon',
+        # 'aroonosc',
+        # 'bop',
+         'cci',
+        # 'cmo',
+        # 'dx',
+        # 'macd',
+        # 'macdext',
+        # 'macdfix',
+        # 'mfi',
+        # 'minus_di',
+        # 'minus_dm',
+         'mom',
+        # 'plus_di',
+        # 'plus_dm',
+         'ppo',
+         'roc',
+         'rocp',
+         'rocr',
+         'rocr100',
+        'rsi',
+        # 'stoch',
+        # 'stochf',
+        # 'stochrsi',
+         'trix',
+        # 'ultosc',
+        # 'willr',
+	  	# 'bbands',
+        # 'dema',
+        # 'ema',
+		'ema7',
+		'ema8',
+		'ema9',
+		'ema10',
+		'ema11',
+		'ema12',
+		'ema15',
+		'ema20',
+		'ema50',
+		'ema200',
+        # 'ht_trendline',
+        # 'kama',
+        # 'ma',
+        # 'mama',
+        # 'mavp',
+        # 'midpoint',
+        # 'midprice',
+        # 'sar',
+        # 'sarext',
+         'sma7',
+         'sma8',
+         'sma9',
+         'sma10',
+         'sma11',
+         'sma12',
+         'sma15',
+         'sma20',
+         'sma50',
+         'sma200',
+        # 't3',
+        # 'tema',
+        # 'trima',
+        # 'wma',
+		# 'cdl2crows',
+        # 'cdl3blackcrows',
+        # 'cdl3inside',
+        # 'cdl3linestrike',
+        # 'cdl3outside',
+        # 'cdl3starsinsouth',
+        # 'cdl3whitesoldiers',
+        # 'cdlabandonedbaby',
+        # 'cdladvanceblock',
+        # 'cdlbelthold',
+        # 'cdlbreakaway',
+        # 'cdlclosingmarubozu',
+        # 'cdlconcealbabyswall',
+        # 'cdlcounterattack',
+        # 'cdldarkcloudcover',
+        # 'cdldoji',
+        # 'cdldojistar',
+        # 'cdldragonflydoji',
+        # 'cdlengulfing',
+        # 'cdleveningdojistar',
+        # 'cdleveningstar',
+        # 'cdlgapsidesidewhite',
+        # 'cdlgravestonedoji',
+        # 'cdlhammer',
+        # 'cdlhangingman',
+        # 'cdlharami',
+        # 'cdlharamicross',
+        # 'cdlhighwave',
+        # 'cdlhikkake',
+        # 'cdlhikkakemod',
+        # 'cdlhomingpigeon',
+        # 'cdlidentical3crows',
+        # 'cdlinneck',
+        # 'cdlinvertedhammer',
+        # 'cdlkicking',
+        # 'cdlkickingbylength',
+        # 'cdlladderbottom',
+        # 'cdllongleggeddoji',
+        # 'cdllongline',
+        # 'cdlmarubozu',
+        # 'cdlmatchinglow',
+        # 'cdlmathold',
+        # 'cdlmorningdojistar',
+        # 'cdlmorningstar',
+        # 'cdlonneck',
+        # 'cdlpiercing',
+        # 'cdlrickshawman',
+        # 'cdlrisefall3methods',
+        # 'cdlseparatinglines',
+        # 'cdlshootingstar',
+        # 'cdlshortline',
+        # 'cdlspinningtop',
+        # 'cdlstalledpattern',
+        # 'cdlsticksandwich',
+        # 'cdltakuri',
+        # 'cdltasukigap',
+        # 'cdlthrusting',
+        # 'cdltristar',
+        # 'cdlunique3river',
+        # 'cdlupsidegap2crows',
+        # 'cdlxsidegap3methods',
+	 	# 'avgprice',
+        # 'medprice',
+        # 'typprice',
+        # 'wclprice',
+	 	# 'beta',
+        # 'correl',
+        # 'linearreg',
+        # 'linearreg_angle',
+        # 'linearreg_intercept',
+        # 'linearreg_slope',
+        # 'stddev',
+        # 'tsf',
+        # 'var',
+		 'atr',
+        # 'natr',
+        # 'trange',
+	    # 'ad',
+        # 'adosc',
+        # 'obv'
 	]
 
 async def run():
@@ -404,72 +404,72 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis,market_hour):
 	long_ops = dt.now().minute % 5 == 0
 	try:
 
-		if func == "CLOSE":
+		if func == "close":
 			result = c[-1]
-		elif func == "OPEN":
+		elif func == "open":
 			result = o[-1]
-		elif func == "LOW":
+		elif func == "low":
 			result = l[-1]
-		elif func == "HIGH":
+		elif func == "high":
 			result = h[-1]
-		elif long_ops and func == "VOLUME":
+		elif long_ops and func == "volume":
 			result = collection.item(symbol).today_volume()
-		elif func == "M_VOLUME":
+		elif func == "m_volume":
 			result = v[-1]
 
-		elif func == "ATR":
+		elif func == "atr":
 			result = stream.ATR(h,l,c)
-		elif func == "APO":
+		elif func == "apo":
 			result = stream.APO(c)
-		elif func == "MOM":
+		elif func == "mom":
 			result = stream.MOM(c)
-		elif func == "PPO":
+		elif func == "ppo":
 			result = stream.PPO(c)
-		elif func == "CCI":
+		elif func == "cci":
 			result = stream.CCI(h,l,c)
-		elif func == "ROC":
+		elif func == "roc":
 			result = stream.ROC(c)
-		elif func == "ROCP":
+		elif func == "rocp":
 			result = stream.ROCP(c)	
-		elif func == "ROCR":
+		elif func == "rocr":
 			result = stream.ROCR(c)	
-		elif func == "ROCR100":
+		elif func == "rocr100":
 			result = stream.ROCR100(c)	
-		elif func == "RSI":
+		elif func == "rsi":
 			result = stream.RSI(c)		
-		elif func == "TRIX":
+		elif func == "trix":
 			result = stream.TRIX(c)		 
-		elif func == "EMA7":
+		elif func == "ema7":
 			result = stream.EMA(c,7)		 
-		elif func == "EMA8":
+		elif func == "ema8":
 			result = stream.EMA(c,8)	
-		elif func == "EMA9":
+		elif func == "ema9":
 			result = stream.EMA(c,9)	
-		elif func == "EMA10":
+		elif func == "ema10":
 			result = stream.EMA(c,10)	
-		elif func == "EMA11":
+		elif func == "ema11":
 			result = stream.EMA(c,11)	
-		elif func == "EMA12":
+		elif func == "ema12":
 			result = stream.EMA(c,12)	
-		elif func == "EMA15":
+		elif func == "ema15":
 			result = stream.EMA(c,15)	
-		elif func == "EMA20":
+		elif func == "ema20":
 			result = stream.EMA(c,20)	
-		elif func == "EMA50":
+		elif func == "ema50":
 			result = stream.EMA(c,50)	
-		elif long_ops and func == "EMA200":
+		elif long_ops and func == "ema200":
 			result = stream.EMA(c,200)	
-		elif  func == "HIGH_200":
+		elif  func == "high_200":
 			result = stream.MAX(h,200)
-		elif  func == "LOW_200":
+		elif  func == "low_200":
 			result = stream.MIN(l,200)
-		elif  func == "HIGH_DAY":
+		elif  func == "high_day":
 			if market_hour.hour in [4,9,16]:
 				if  (market_hour.hour == 4  or  market_hour.minute == 0) or (market_hour.hour == 9  or  market_hour.minute == 30) or (market_hour.hour == 16  or  market_hour.minute == 0) :
 					result = h[-1]
 					return result
 
-			cmax = analysis.get("HIGH_200") or 0
+			cmax = analysis.get("high_200") or 0
 			if h[-1] >= (cmax - (.05 * cmax)):
 				high_day = 0
 				cursor.execute("select high_day from tabIndicators where symbol='%s' limit 1" % (symbol))
@@ -479,13 +479,13 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis,market_hour):
 
 				result = max(cmax,	high_day )
 				
-		elif func == "LOW_DAY":
+		elif func == "low_day":
 			if market_hour.hour in [4,9,16]:
 				if  (market_hour.hour == 4  or  market_hour.minute == 0) or (market_hour.hour == 9  or  market_hour.minute == 30) or (market_hour.hour == 16  or  market_hour.minute == 0) :
 					result = l[-1]
 					return result
 
-			cmin = analysis.get("LOW_200") or 0
+			cmin = analysis.get("low_200") or 0
 			if l[-1] <= (cmin + (.05 * cmin)):
 				low_day = 0
 				cursor.execute("select low_day from tabIndicators where symbol='%s' limit 1" % (symbol))
