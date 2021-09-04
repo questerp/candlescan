@@ -459,12 +459,16 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 			print("high_day",high_day)
 			if high_day:
 				high_day = high_day[0][0]
+			else:
+				high_day= 0
 			result = max(stream.MAX(c,200),	high_day)
 		elif func == "LOW_DAY":
 			low_day = cursor.execute("select low_day from 'tabIndicators' where symbol='%s' limit 1")
 			print("low_day",low_day)
 			if low_day:
 				low_day = low_day[0][0]
+			else:
+				low_day= 0
 			result = min(stream.MIN(c,200),	low_day)
 
 		
