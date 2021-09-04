@@ -95,16 +95,16 @@ async def disconnect():
 	print("I'm disconnected!")
 
 
-@sio.event
-async def subscribe_symbol(message):
-	source = message.get("source_sid")
-	symbol = message.get("data")
-	if not symbol:
-		return
-	#active = frappe.db.get_value("Symbol",symbol,"active")
-	if symbol in get_active_symbols():
-		#sio.enter_room(source, symbol)
-		get_redis_server().sadd("symbols",symbol)
+# @sio.event
+# async def subscribe_symbol(message):
+# 	source = message.get("source_sid")
+# 	symbol = message.get("data")
+# 	if not symbol:
+# 		return
+# 	#active = frappe.db.get_value("Symbol",symbol,"active")
+# 	if symbol in get_active_symbols():
+# 		#sio.enter_room(source, symbol)
+# 		get_redis_server().sadd("symbols",symbol)
 
 
 @sio.event
