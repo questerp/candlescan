@@ -10,6 +10,7 @@ import time
 import threading
 from threading import Lock
 from candlescan.utils.shared_memory_obj import response_queue 
+from candlescan.services.ta_service import ta_func
 lock = Lock()
 
 public_ressources = ["Scanner"]
@@ -309,23 +310,29 @@ async def get_extra_data(message):
 	data = message.get("data")
 	symbols = data.get("symbols")
 	fields = data.get("fields")
-	target = data.get("target")
+	# target = data.get("target")
 	
+
+
 	if not (symbols or fields):
 		return
-	sql_fields =  ' ,'.join(fields)
+
+	Tfields = [a for a in fields if a in ta_func]	
+	Ffields = [a for a in fields if a not in Tfields]	
+	sql_Tfields =  ' ,'.join(Tfields)
+	sql_Ffields =  ' ,'.join(Ffields)
 	sql_symbols =  ', '.join(['%s']*len(symbols))
 	sql=""
-	if target == "T":
-		sql = """select symbol,{0} from tabIndicators where symbol in ({1})""".format(sql_fields,sql_symbols)
-	elif target == "F":
-		sql = """select symbol,{0} from tabSymbol where symbol in ({1})""".format(sql_fields,sql_symbols)
-		
-	frappe.db.commit()
-	result = frappe.db.sql(sql,tuple(symbols),as_dict=True)
-	#print("result",result)
+	data=[]
+
+	if Tfields:
+		sql = """select symbol,{0} from tabIndicators where symbol in ({1})""".format(sql_Tfields,sql_symbols)
+		data.extend(frappe.db.sql(sql,tuple(symbols),as_dict=True))
+	if Ffields:
+		sql = """select symbol,{0} from tabSymbol where symbol in ({1})""".format(sql_Ffields,sql_symbols)
+		data.extend(frappe.db.sql(sql,tuple(symbols),as_dict=True))
 	
-	await sio.emit("transfer",build_response(message,result,"get_extra_data"))
+	await sio.emit("transfer",build_response(message,data,"get_extra_data"))
 
 
 async def get_last_broadcast(message):
