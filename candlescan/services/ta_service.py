@@ -398,58 +398,58 @@ def calculate_ta(symbol,func,o,c,h,l,v):
 	try:
 		if func == "CLOSE":
 			result = c[-1]
-		if func == "OPEN":
+		elif func == "OPEN":
 			result = o[-1]
-		if func == "LOW":
+		elif func == "LOW":
 			result = l[-1]
-		if func == "HIGH":
+		elif func == "HIGH":
 			result = h[-1]
-		if long_ops and func == "VOLUME":
+		elif long_ops and func == "VOLUME":
 			result = collection.item(symbol).today_volume()
-		if func == "M_VOLUME":
+		elif func == "M_VOLUME":
 			result = v[-1]
 
-		if func == "ATR":
+		elif func == "ATR":
 			result = stream.ATR(h,l,c)
-		if func == "APO":
+		elif func == "APO":
 			result = stream.APO(c)
-		if func == "MOM":
+		elif func == "MOM":
 			result = stream.MOM(c)
-		if func == "PPO":
+		elif func == "PPO":
 			result = stream.PPO(c)
-		if func == "CCI":
+		elif func == "CCI":
 			result = stream.CCI(h,l,c)
-		if func == "ROC":
+		elif func == "ROC":
 			result = stream.ROC(c)
-		if func == "ROCP":
+		elif func == "ROCP":
 			result = stream.ROCP(c)	
-		if func == "ROCR":
+		elif func == "ROCR":
 			result = stream.ROCR(c)	
-		if func == "ROCR100":
+		elif func == "ROCR100":
 			result = stream.ROCR100(c)	
-		if func == "RSI":
+		elif func == "RSI":
 			result = stream.RSI(c)		
-		if func == "TRIX":
+		elif func == "TRIX":
 			result = stream.TRIX(c)		 
-		if func == "EMA7":
+		elif func == "EMA7":
 			result = stream.EMA(c,7)		 
-		if func == "EMA8":
+		elif func == "EMA8":
 			result = stream.EMA(c,8)	
-		if func == "EMA9":
+		elif func == "EMA9":
 			result = stream.EMA(c,9)	
-		if func == "EMA10":
+		elif func == "EMA10":
 			result = stream.EMA(c,10)	
-		if func == "EMA11":
+		elif func == "EMA11":
 			result = stream.EMA(c,11)	
-		if func == "EMA12":
+		elif func == "EMA12":
 			result = stream.EMA(c,12)	
-		if func == "EMA15":
+		elif func == "EMA15":
 			result = stream.EMA(c,15)	
-		if func == "EMA20":
+		elif func == "EMA20":
 			result = stream.EMA(c,20)	
-		if func == "EMA50":
+		elif func == "EMA50":
 			result = stream.EMA(c,50)	
-		if long_ops and func == "EMA200":
+		elif long_ops and func == "EMA200":
 			result = stream.EMA(c,200)	
 
 	except Exception as e:
