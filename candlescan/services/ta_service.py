@@ -469,7 +469,6 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis,market_hour):
 					result = h[-1]
 					return result
 
-
 			cmax = analysis.get("HIGH_200") or 0
 			if h[-1] >= (cmax - (.05 * cmax)):
 				high_day = 0
@@ -485,7 +484,7 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor,analysis,market_hour):
 				if  (market_hour.hour == 4  or  market_hour.minute == 1) or (market_hour.hour == 9  or  market_hour.minute == 31) or (market_hour.hour == 16  or  market_hour.minute == 1) :
 					result = l[-1]
 					return result
-					
+
 			cmin = analysis.get("LOW_200") or 0
 			if l[-1] <= (cmin + (.05 * cmin)):
 				low_day = 0
