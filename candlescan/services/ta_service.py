@@ -49,6 +49,8 @@ ta_func = [
 	"HIGH",
 	"M_VOLUME",
 	"VOLUME",
+	"HIGH_DAY",
+	"LOW_DAY",
 		# 'HT_DCPERIOD',
         # 'HT_DCPHASE',
         # 'HT_PHASOR',
@@ -348,7 +350,7 @@ def ta_snapshot(i,symbols=None,conf=None):
 						print("breaking")
 						break
 					try:
-						result = calculate_ta(symbol,t,open,close,heigh,low,volume)
+						result = calculate_ta(symbol,t,open,close,heigh,low,volume,_cursor)
 						if result and not math.isnan(result):
 							analysis[t] = result
 
@@ -392,10 +394,11 @@ async def connect():
 
 
 
-def calculate_ta(symbol,func,o,c,h,l,v):
+def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 	result = 0
 	long_ops = dt.now().minute % 5 == 0
 	try:
+
 		if func == "CLOSE":
 			result = c[-1]
 		elif func == "OPEN":
@@ -450,8 +453,23 @@ def calculate_ta(symbol,func,o,c,h,l,v):
 		elif func == "EMA50":
 			result = stream.EMA(c,50)	
 		elif long_ops and func == "EMA200":
-			result = stream.EMA(c,200)	
+			result = stream.EMA(c,200)		
+		elif func == "HIGH_DAY":
+			high_day = cursor.execute("select high_day from 'tabIndicators' where symbol='%s' limit 1")
+			print("high_day",high_day)
+			if high_day:
+				high_day = high_day[0][0]
+			result = max(stream.MAX(c,200),	high_day)
+		elif func == "LOW_DAY":
+			low_day = cursor.execute("select low_day from 'tabIndicators' where symbol='%s' limit 1")
+			print("low_day",low_day)
+			if low_day:
+				low_day = low_day[0][0]
+			result = min(stream.MIN(c,200),	low_day)
 
+		"",
+		"LOW_DAY",
+			
 	except Exception as e:
 		print("ta_fun error",e,func)
 	finally:
