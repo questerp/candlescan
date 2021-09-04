@@ -454,22 +454,26 @@ def calculate_ta(symbol,func,o,c,h,l,v,cursor):
 			result = stream.EMA(c,50)	
 		elif long_ops and func == "EMA200":
 			result = stream.EMA(c,200)		
-		elif func == "HIGH_DAY":
-			high_day = cursor.execute("select high_day from tabIndicators where symbol='%s' limit 1" % (symbol))
-			print("high_day",high_day)
-			if high_day:
-				high_day = high_day[0][0]
-			else:
-				high_day= 0
-			result = max(stream.MAX(c,200),	high_day)
+		elif  func == "HIGH_DAY":
+			cmax = stream.MAX(h,200)
+			if h[-1] >= (cmax - (.05 * cmax)):
+				high_day = cursor.execute("select high_day from tabIndicators where symbol='%s' limit 1" % (symbol))
+				print("high_day",high_day)
+				if high_day:
+					high_day = high_day[0][0]
+				else:
+					high_day= 0
+				result = max(cmax,	high_day)
 		elif func == "LOW_DAY":
-			low_day = cursor.execute("select low_day from tabIndicators where symbol='%s' limit 1" % (symbol))
-			print("low_day",low_day)
-			if low_day:
-				low_day = low_day[0][0]
-			else:
-				low_day= 0
-			result = min(stream.MIN(c,200),	low_day)
+			cmin = stream.MIN(l,200)
+			if l[-1] <= (cmin + (.05 * cmin)):
+				low_day = cursor.execute("select low_day from tabIndicators where symbol='%s' limit 1" % (symbol))
+				print("low_day",low_day)
+				if low_day:
+					low_day = low_day[0][0]
+				else:
+					low_day= 0
+				result = min(cmin,	low_day)
 
 		
 			
