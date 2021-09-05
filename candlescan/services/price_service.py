@@ -307,10 +307,11 @@ def insert_minute_bars(conn,minuteBars,send_last=False,col="m"):
 	try:
 
 		try:
-			cursor = conn.cursor()
-			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
-			cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
-			cursor.execute("commit")
+			with conn.cursor() as cursor:
+				args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
+				cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
+			
+			conn.commit()
 		except Exception as ve:
 			print("--- ValueError ---",ve)
 		
