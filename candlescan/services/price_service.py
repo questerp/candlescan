@@ -283,16 +283,20 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 		return
 	
 	try:
-		table = "tabBarsday" if timeframe=="d" else "tabBars"
-		result = []
-		print("start",start)
-		sql = """select t,o,c,h,l,v from %s where s='%s' and  t>=%s""" % (table,symbol,start)
-		if end:
-			sql = sql + " and t<=%s"%end
-		data = frappe.db.sql(sql,as_dict=True)
-		if data:
-			result = data
-		return result
+		with get_connection() as conn:
+			table = "tabBarsday" if timeframe=="d" else "tabBars"
+			result = []
+			attr = [symbol,start]
+			print("start",start)
+			sql = """select t,o,c,h,l,v from {} where s=%s and  t>=%s""".format(table)#,symbol,start)
+			if end:
+				sql = sql + " and t<=%s"%end
+				attr.append(end)
+			conn.execute(sql,attr)
+			data = conn.fetchall()
+			if data:
+				result = [{"t":d[0],"o":d[1],"c":d[2],"h":d[3],"l":d[4],"v":d[5]} for d in data]
+			return result
 	except Exception as ex:
 		print("ERROR get_minute_bars",ex)
 		return []

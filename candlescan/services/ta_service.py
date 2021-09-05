@@ -13,7 +13,6 @@ import talib as ta
 import talib._ta_lib as tl
 from candlescan.utils.candlescan import get_active_symbols,get_connection
 from candlescan.services.price_service import chunks
-from candlescan.libs import pystore
 import numpy as np
 import threading
 import pymysql
@@ -37,8 +36,6 @@ def handler(signum, frame):
 
 
 signal.signal(signal.SIGTSTP, handler)
-store = pystore.store('bars')
-collection = store.collection('1MIN')
 
 sio = socketio.AsyncClient(logger=True, json=json_encoder, engineio_logger=True, reconnection=True,
 						reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -323,9 +320,16 @@ def ta_snapshot_all(apply_priority=False):
 		print("error ta_snapshot_all", e)
 		stop_threads = True
 
+today = None
+today930 = None
 
 def ta_snapshot(i, symbols=None,):
 	start = dt.now()
+	global today
+	global today930
+
+	today = start.replace(hour=0,minute=0,second=0,microsecond=0).timestamp()
+	today930= start.replace(hour=9,minute=30,second=0,microsecond=0).timestamp()
 	global stop_threads
 	if symbols is None:
 		symbols = get_active_symbols()
@@ -340,7 +344,7 @@ def ta_snapshot(i, symbols=None,):
 				if stop_threads:
 					print("breaking")
 					break
-				conn.execute("select c,h,l,o,v for tabBars where s='%s' order by t desc limit 200",symbol)
+				conn.execute("select c,h,l,o,v for tabBars where s=%s order by t desc limit 200",symbol)
 				data = conn.fetchall()
 				if data:
 					# print(symbol)
@@ -398,18 +402,8 @@ async def connect():
 
 def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops):
 	result = 0
-	# cursor.execute("select today_open,high_day,low_day,today_close from tabIndicators where symbol='%s' limit 1" % (symbol))
-	# _res = cursor.fetchall()
-	# today_open = None
-	# high_day = None
-	# low_day = None
-	# today_close = None
-	# if _res:
-	# 	res = _res[0]
-	# 	today_open = res[0]
-	# 	high_day = res[1]
-	# 	low_day = res[2]
-	# 	today_close= res[3]
+	global today
+	global today930
 
 	try:
 
@@ -453,7 +447,10 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 		elif func == "high":
 			result = h[-1]
 		elif long_ops and func == "volume":
-			result = collection.item(symbol).today_volume()
+			cursor.execute("select sum(v) from tabBars where s=%s and t>%s",(symbol,today))
+			volume = cursor.fetchall()
+			if volume:
+				result = volume[0][0]
 		elif func == "m_volume":
 			result = v[-1]
 
@@ -507,31 +504,27 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 			if  minutes==360 or minutes==570 or minutes==960 :
 				result = h[-1]
 				return result
+			if minutes <=570:
+				cursor.execute("select max(h) from tabBars where symbol=%s and t>=%s ",(symbol,today))
+			else:
+				cursor.execute("select max(h) from tabBars where symbol=%s and t>=%s ",(symbol,today930))
+			_high_day = cursor.fetchall()
+			if _high_day:
+					result = _high_day[0][0]
 
-			cmax = analysis.get("high_200") or 0
-			if h[-1] >= (cmax - (.05 * cmax)):
-				high_day = 0
-				cursor.execute("select high_day from tabIndicators where symbol='%s' limit 1" % (symbol))
-				_high_day = cursor.fetchall()
-				if _high_day:
-					high_day = _high_day[0][0]
-				if high_day:
-					result = max(cmax,	high_day )
 				
 		elif func == "low_day":
 			if  minutes==360 or minutes==570 or minutes==960 :
-					result = l[-1]
-					return result
+				result = l[-1]
+				return result
+			if minutes <=570:
+				cursor.execute("select min(l) from tabBars where symbol=%s and t>=%s ",(symbol,today))
+			else:
+				cursor.execute("select min(l) from tabBars where symbol=%s and t>=%s ",(symbol,today930))
+			_low_day = cursor.fetchall()
+			if _low_day:
+					result = _low_day[0][0]
 
-			cmin = analysis.get("low_200") or 0
-			if l[-1] <= (cmin + (.05 * cmin)):
-				low_day = 0
-				cursor.execute("select low_day from tabIndicators where symbol='%s' limit 1" % (symbol))
-				_low_day = cursor.fetchall()
-				if _low_day:
-					low_day = _low_day[0][0]
-				if low_day:
-					result = min(cmin,	low_day ) if low_day else cmin
 
 		
 			
