@@ -342,7 +342,8 @@ def ta_snapshot(i, symbols=None,):
 	# 	return
 	long_ops = dt.now().minute % 5 == 0
 	ts  = start.timestamp()
-	tsm = ts-120000
+	# TODP tsm should be ts -12000 (200 minutes/bars)
+	tsm = ts-1200000
 	if minutes<440:
 		tsm = ts-(((200-(minutes-240)) + 480)*60)
 
