@@ -303,10 +303,10 @@ def ta_snapshot_all(apply_priority=False):
 				all_symbols = get_active_symbols()
 				tchunk = 2000
 			elif minute % 2 == 0:
-				all_symbols = get_active_symbols()[:2000]
-				tchunk = 1000
-			else:
 				all_symbols = get_active_symbols()[:1000]
+				tchunk = 500
+			else:
+				all_symbols = get_active_symbols()[:500]
 				tchunk = 500
 
 		for symbols in chunks(all_symbols, tchunk):
@@ -346,7 +346,6 @@ def ta_snapshot(i, symbols=None,):
 					break
 				conn.execute("select c,h,l,o,v from tabBars where s=%s order by t desc limit 200",symbol)
 				data = conn.fetchall()
-				sqlcall = dt.now()
 
 				if data:
 					# print(symbol)
@@ -355,7 +354,6 @@ def ta_snapshot(i, symbols=None,):
 					low = np.array([v[2] for v in data if v[2]], dtype=np.double)
 					open = np.array([v[3] for v in data if v[3]], dtype=np.double)
 					volume = np.array([v[4] for v in data if v[4]], dtype=np.double)
-					base = dt.now()
 
 					analysis = {}
 					# t,o,c,h,l,v
@@ -396,7 +394,7 @@ def ta_snapshot(i, symbols=None,):
 			print("error ta_snapshot", e)
 		finally:
 			end = dt.now()
-			print(i, "ta", end-base,"data",base-sqlcall,"db",sqlcall-start)
+			print(i, "time", end-start )
 
 
 @sio.event
