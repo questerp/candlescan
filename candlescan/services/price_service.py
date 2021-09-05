@@ -122,19 +122,19 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	snap = api.get_snapshots(symbols)
 	tcall = dt.now()
 
-	# conn = pymysql.connect(
-	# 		user= conf.db_name,
-	# 		password= conf.db_password,
-	# 		database=conf.db_name,
-	# 		host='127.0.0.1',
-	# 		port='',
-	# 		charset='utf8mb4',
-	# 		use_unicode=True,
-	# 		ssl=  None,
-	# 		conv=conversions,
-	# 		local_infile=conf.local_infile
-	# 	)
-	# _cursor = conn.cursor()
+	conn = pymysql.connect(
+			user= conf.db_name,
+			password= conf.db_password,
+			database=conf.db_name,
+			host='127.0.0.1',
+			port='',
+			charset='utf8mb4',
+			use_unicode=True,
+			ssl=  None,
+			conv=conversions,
+			local_infile=conf.local_infile
+		)
+	_cursor = conn.cursor()
 	bars = [ ]
 	try:
 		for s in snap:
@@ -208,16 +208,16 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				# 		print(s,"error sql",e)
 		if bars:
 			#print("inserting",len(bars))
-			insert_minute_bars(bars,True)
+			insert_minute_bars(_cursor,bars,True)
 			#_cursor.execute("commit")
 		endcall = dt.now()
 		print("DONE",len(bars),endcall-tcall,tcall-bcall)
 	except Exception as e:
 			print("error",e)
-	# finally:
-	# 	conn.close()
-	# 	_cursor = None
-	# 	conn = None
+	finally:
+		conn.close()
+		_cursor = None
+		conn = None
 
 	
 				
@@ -377,7 +377,7 @@ def init_bars_db(target = 0):
 
 	
 #@multitasking.task 
-def insert_minute_bars(minuteBars,send_last=False,col="m"):
+def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print("not minuteBars")
@@ -400,14 +400,8 @@ def insert_minute_bars(minuteBars,send_last=False,col="m"):
 		
 		#if not items.empty :
 		try:
-			_col = None
-
-			if col=="m":
-				_col = collection
-			else:
-				_col = collection_day
-
-			_col.write(minuteBars )
+			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
+			cursor.executemany("INSERT INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
 
 		except Exception as ve:
 			print("--- ValueError ---",ve)
@@ -438,31 +432,31 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 	#start = dt.utcfromtimestamp(start)
 	#if end:
 	#	end = dt.utcfromtimestamp(end)
-	try:
-		result = []
-		print("start",start)
-		# print("end",end)
-		_collection = None
-		if timeframe == "m":
-			_collection = collection#.item(symbol,filters=[('t','')])
-		else:
-			_collection = collection_day#.item(symbol)
+	# try:
+	# 	result = []
+	# 	print("start",start)
+	# 	# print("end",end)
+	# 	_collection = None
+	# 	if timeframe == "m":
+	# 		_collection = collection#.item(symbol,filters=[('t','')])
+	# 	else:
+	# 		_collection = collection_day#.item(symbol)
 		
-		# filters = []
-		# if start and end:
-		# 	filters =  't >= start & t <=end'
-		# else:
-		# 	filters = 't >= start '
+	# 	# filters = []
+	# 	# if start and end:
+	# 	# 	filters =  't >= start & t <=end'
+	# 	# else:
+	# 	# 	filters = 't >= start '
 			
 		
-		data = _collection.item(symbol,start=start,end=end ).data()
-		if data:
-			#data = data[~data.t.duplicated(keep='first')]
-			result = data
-		return result
-	except Exception as ex:
-		print("ERROR get_minute_bars",ex)
-		return []
+	# 	data = _collection.item(symbol,start=start,end=end ).data()
+	# 	if data:
+	# 		#data = data[~data.t.duplicated(keep='first')]
+	# 		result = data
+	# 	return result
+	# except Exception as ex:
+	# 	print("ERROR get_minute_bars",ex)
+	return []
 
 
 
