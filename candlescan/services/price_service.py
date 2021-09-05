@@ -145,7 +145,7 @@ def backfill(days=0,symbols=None,daily=False ):
 	
 	#all_symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
 	#all_symbols = get_active_symbols()# [a[0] for a in all_symbols] 
-	if days == 0 and dt.now().hour < 8:
+	if not daily and days == 0 and dt.now().hour < 8:
 		days = days + 1
 		print("out of hours")
 
