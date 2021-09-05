@@ -212,7 +212,7 @@ def backfill(days=0,symbols=None,daily=False ):
 		_range =  range(days+1) 
 		for d in _range:
 			start =  add_days(dt.now(),-1*d) #-1*d
-			if start.weekday() in [5,6]:
+			if not daily and start.weekday() in [5,6]:
 				continue
 			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
