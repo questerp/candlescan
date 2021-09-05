@@ -325,8 +325,7 @@ today930 = None
 
 def ta_snapshot(i, symbols=None,):
 	start = dt.now()
-	ts  = start.timestamp()
-	tsm = ts-12000
+	
 	global today
 	global today930
 
@@ -338,7 +337,14 @@ def ta_snapshot(i, symbols=None,):
 
 	market_hour = start.astimezone(estern)
 	minutes = (market_hour.hour * 60) + market_hour.minute
+	# TODO stop ta after market close (remove comments)
+	# if minutes<240 or minutes > 1200:
+	# 	return
 	long_ops = dt.now().minute % 5 == 0
+	ts  = start.timestamp()
+	tsm = ts-120000
+	if minutes<440:
+		tsm = ts-(((200-(minutes-240)) + 480)*60)
 
 	with get_connection() as conn:
 		try:
