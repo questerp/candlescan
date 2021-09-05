@@ -299,17 +299,21 @@ def ta_snapshot_all(apply_priority=False):
 		conf = frappe.conf.copy()
 		i = 0
 		all_symbols = []
+		tchunk = 250
 		print("---- START -----")
 		if apply_priority:
 			minute = dt.now().minute
 			if minute % 5 == 0:
 				all_symbols = get_active_symbols()
+				tchunk = 1000
 			elif minute % 2 == 0:
 				all_symbols = get_active_symbols()[:2000]
+				tchunk = 500
 			else:
 				all_symbols = get_active_symbols()[:1000]
+				tchunk = 250
 
-		for symbols in chunks(all_symbols, 250):
+		for symbols in chunks(all_symbols, tchunk):
 			if stop_threads:
 				print("breaking")
 				break
