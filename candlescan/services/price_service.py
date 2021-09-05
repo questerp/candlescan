@@ -6,7 +6,7 @@ import socketio
 import asyncio
 from frappe.realtime import get_redis_server
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive,queue_data
-from candlescan.utils.candlescan import to_candle,get_active_symbols,clear_active_symbols,get_cursor
+from candlescan.utils.candlescan import to_candle,get_active_symbols,clear_active_symbols,get_connection
 from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
@@ -110,48 +110,33 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	snap = api.get_snapshots(symbols)
 	tcall = dt.now()
 
-	conn = pymysql.connect(
-			user= conf.db_name,
-			password= conf.db_password,
-			database=conf.db_name,
-			host='127.0.0.1',
-			port='',
-			charset='utf8mb4',
-			use_unicode=True,
-			ssl=  None,
-			conv=conversions,
-			local_infile=conf.local_infile
-		)
-	_cursor = conn.cursor()
-	bars = [ ]
-	try:
-		for s in snap:
-			data = snap[s]
-			if not data:
-				continue
-			minuteBar = data.get("minuteBar") 
-			
-			if minuteBar:
-				_date = dt.strptime(minuteBar['t'], DATE_FORMAT)
-				minuteBar['t'] = _date.timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
-				minuteBar['s'] = s
+	with get_connection() as conn:
+		bars = [ ]
+		try:
+			for s in snap:
+				data = snap[s]
+				if not data:
+					continue
+				minuteBar = data.get("minuteBar") 
+				
+				if minuteBar:
+					_date = dt.strptime(minuteBar['t'], DATE_FORMAT)
+					minuteBar['t'] = _date.timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
+					minuteBar['s'] = s
 
-				# if utcminute != _date:
-				# 	continue
-				#insert_minute_bars(s,[minuteBar],True)
+					# if utcminute != _date:
+					# 	continue
+					#insert_minute_bars(s,[minuteBar],True)
 
-				bars.append(minuteBar)
-			
-		if bars:
-			insert_minute_bars(_cursor,bars,True)
-		endcall = dt.now()
-		print("DONE",len(bars),endcall-tcall,tcall-bcall)
-	except Exception as e:
-			print("error",e)
-	finally:
-		conn.close()
-		_cursor = None
-		conn = None
+					bars.append(minuteBar)
+				
+			if bars:
+				insert_minute_bars(conn,bars,True)
+			endcall = dt.now()
+			print("DONE",len(bars),endcall-tcall,tcall-bcall)
+		except Exception as e:
+				print("error",e)
+		
 
 	
 				
@@ -177,32 +162,32 @@ def backfill(days=0,symbols=None,daily=False ):
 
 	def _insert(i,start,chunk_symbols):
 		try:
-			cursor = get_cursor()
-			#sleeptime = random.uniform(0, i)
-			#time.sleep(i)
-			print("start",i,start)
-			tcall = dt.now()
-			bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)	
-			#print(i,"BARS",len(bars))
+			with get_connection() as conn :
+				#sleeptime = random.uniform(0, i)
+				#time.sleep(i)
+				print("start",i,start)
+				tcall = dt.now()
+				bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)	
+				#print(i,"BARS",len(bars))
 
-			tstart = dt.now()
-			if bars :
-				minute_bars  =[]
-				for b in bars:
-					_bars = bars[b]
-					for a in _bars:
-						a['s'] = b
-						minute_bars.append(a)
-						# a['n'] = 0
-						# a['vw'] = 0.0
-						#a['t'] = dt.utcfromtimestamp(a['t'])
-						#minute_bars.append(a)
-					#minute_bars.extend(_bars)
-					#candles = [to_candle(a,b) for a in candles]
-				if minute_bars:
-					insert_minute_bars(cursor,minute_bars)
-				tend = dt.now()
-				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
+				tstart = dt.now()
+				if bars :
+					minute_bars  =[]
+					for b in bars:
+						_bars = bars[b]
+						for a in _bars:
+							a['s'] = b
+							minute_bars.append(a)
+							# a['n'] = 0
+							# a['vw'] = 0.0
+							#a['t'] = dt.utcfromtimestamp(a['t'])
+							#minute_bars.append(a)
+						#minute_bars.extend(_bars)
+						#candles = [to_candle(a,b) for a in candles]
+					if minute_bars:
+						insert_minute_bars(conn,minute_bars)
+					tend = dt.now()
+					print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 
 		except Exception as e:
 			print("_insert ERROR",e)	
@@ -314,7 +299,7 @@ def init_bars_db(target = 0):
 	print("DONE")
 
 	
-def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
+def insert_minute_bars(conn,minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print("not minuteBars")
@@ -322,6 +307,7 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 	try:
 
 		try:
+			cursor = conn.cursor()
 			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
 			cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
 			cursor.execute("commit")

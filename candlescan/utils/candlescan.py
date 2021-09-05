@@ -37,7 +37,7 @@ def clear_active_symbols():
     get_active_symbols(reload=True)
 
 
-def get_cursor():
+def get_connection():
     global conf
     conn = pymysql.connect(
 			user= conf.db_name,
@@ -51,7 +51,7 @@ def get_cursor():
 			conv=conversions,
 			local_infile=conf.local_infile
 		)
-    return conn.cursor()
+    return conn
 
 def to_candle(data,symbol=None):
     # if not symbol and not data.get("s"):
