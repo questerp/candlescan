@@ -186,12 +186,9 @@ def backfill(days=0,symbols=None,daily=False ):
 	def _insert_day(i,start,chunk_symbols):
 		try:
 			with get_connection() as cursor :
-				#sleeptime = random.uniform(0, i)
-				#time.sleep(i)
 				print("start",i,start)
 				tcall = dt.now()
 				bars = api.get_barset(chunk_symbols,"day",limit=1000 )	
-				#print(i,"BARS",len(bars))
 
 				tstart = dt.now()
 				if bars :
@@ -202,12 +199,6 @@ def backfill(days=0,symbols=None,daily=False ):
 							a['s'] = b
 							minute_bars.append(a)
 
-							# a['n'] = 0
-							# a['vw'] = 0.0
-							#a['t'] = dt.utcfromtimestamp(a['t'])
-							#minute_bars.append(a)
-						#minute_bars.extend(_bars)
-						#candles = [to_candle(a,b) for a in candles]
 					if minute_bars:
 						insert_minute_bars(cursor,minute_bars,col="d")
 					tend = dt.now()
