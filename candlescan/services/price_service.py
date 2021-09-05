@@ -189,7 +189,7 @@ def backfill(days=0,symbols=None,daily=False ):
 				print("start",i,start)
 				tcall = dt.now()
 				bars = api.get_barset(chunk_symbols,"day",limit=1000 )	
-
+				print(len(bars))
 				tstart = dt.now()
 				if bars :
 					minute_bars  =[]
