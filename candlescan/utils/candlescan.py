@@ -26,13 +26,11 @@ conf = frappe.conf.copy()
 def get_active_symbols(reload=False):
     global active_symbols
     if reload or not active_symbols:
-        with get_connection() as conn :
-            print(type(conn))
-            with conn.cursor() as cursor:
-                cursor.execute(""" select symbol from tabIndicators  order by M_VOLUME desc""")
-                symbols = cursor.fetchall()
-                active_symbols = [a[0] for a in symbols]
-                print("top 1m volume",active_symbols[0])
+        with get_connection() as cursor :
+            cursor.execute(""" select symbol from tabIndicators  order by M_VOLUME desc""")
+            symbols = cursor.fetchall()
+            active_symbols = [a[0] for a in symbols]
+            print("top 1m volume",active_symbols[0])
     return active_symbols
 
 def clear_active_symbols():

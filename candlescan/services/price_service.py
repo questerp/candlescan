@@ -110,7 +110,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	snap = api.get_snapshots(symbols)
 	tcall = dt.now()
 
-	with get_connection() as conn:
+	with get_connection() as cursor:
 		bars = [ ]
 		try:
 			for s in snap:
@@ -131,7 +131,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 					bars.append(minuteBar)
 				
 			if bars:
-				insert_minute_bars(conn,bars,True)
+				insert_minute_bars(cursor,bars,True)
 			endcall = dt.now()
 			print("DONE",len(bars),endcall-tcall,tcall-bcall)
 		except Exception as e:
@@ -162,7 +162,7 @@ def backfill(days=0,symbols=None,daily=False ):
 
 	def _insert(i,start,chunk_symbols):
 		try:
-			with get_connection() as conn :
+			with get_connection() as cursor :
 				print("start",i,start)
 				tcall = dt.now()
 				bars = api.get_barset(chunk_symbols,"minute",limit=1000,start=start)	
@@ -176,8 +176,7 @@ def backfill(days=0,symbols=None,daily=False ):
 							minute_bars.append(a)
 
 					if minute_bars:
-						print(type(conn))
-						insert_minute_bars(conn,minute_bars)
+						insert_minute_bars(cursor,minute_bars)
 					tend = dt.now()
 					print(i,len(minute_bars),"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 
@@ -291,7 +290,7 @@ def init_bars_db(target = 0):
 	print("DONE")
 
 	
-def insert_minute_bars(conn,minuteBars,send_last=False,col="m"):
+def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print("not minuteBars")
@@ -299,11 +298,9 @@ def insert_minute_bars(conn,minuteBars,send_last=False,col="m"):
 	try:
 
 		try:
-			with conn.cursor() as cursor:
-				args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
-				cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
-			
-			conn.commit()
+			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
+			cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
+			cursor.execute("commit")
 		except Exception as ve:
 			print("--- ValueError ---",ve)
 		
