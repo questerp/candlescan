@@ -303,10 +303,10 @@ def ta_snapshot_all(apply_priority=False):
 				all_symbols = get_active_symbols()
 				tchunk = 2000
 			elif minute % 2 == 0:
-				all_symbols = get_active_symbols()[:1000]
+				all_symbols = get_active_symbols()[:2000]
 				tchunk = 500
 			else:
-				all_symbols = get_active_symbols()[:500]
+				all_symbols = get_active_symbols()[:1000]
 				tchunk = 500
 
 		for symbols in chunks(all_symbols, tchunk):
