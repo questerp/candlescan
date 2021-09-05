@@ -414,18 +414,18 @@ async def connect():
 
 def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops):
 	result = 0
-	cursor.execute("select today_open,high_day,low_day,today_close from tabIndicators where symbol='%s' limit 1" % (symbol))
-	_res = cursor.fetchall()
-	today_open = None
-	high_day = None
-	low_day = None
-	today_close = None
-	if _res:
-		res = _res[0]
-		today_open = res[0]
-		high_day = res[1]
-		low_day = res[2]
-		today_close= res[3]
+	# cursor.execute("select today_open,high_day,low_day,today_close from tabIndicators where symbol='%s' limit 1" % (symbol))
+	# _res = cursor.fetchall()
+	# today_open = None
+	# high_day = None
+	# low_day = None
+	# today_close = None
+	# if _res:
+	# 	res = _res[0]
+	# 	today_open = res[0]
+	# 	high_day = res[1]
+	# 	low_day = res[2]
+	# 	today_close= res[3]
 
 	try:
 
@@ -442,18 +442,19 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 
 		elif func == "change_v":
 			if minutes >= 570 :
-				if minutes < 770 and not today_open:
+				today_open = 0
+				if minutes < 770 :
 					candles = minutes - 570
 					if len(o)>candles:
 						today_open = o[-1*candles]
 						analysis["today_open"] = today_open
 				
 				if today_open:
-					result = h[-1] - today_open
-			elif today_close:
+					result = c[-1] - today_open
+			else:
 				# premarket change in $
-				result = h[-1] - today_close
-
+				result = c[-1] - (analysis.get("low_day") or c[-1])
+				
 
 		elif func == "change_p":
 			change_v = analysis.get("change_v")
@@ -524,14 +525,14 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 				return result
 
 			cmax = analysis.get("high_200") or 0
-			# if h[-1] >= (cmax - (.05 * cmax)):
-			# 	high_day = 0
-			# 	cursor.execute("select high_day from tabIndicators where symbol='%s' limit 1" % (symbol))
-			# 	_high_day = cursor.fetchall()
-			# 	if _high_day:
-			# 		high_day = _high_day[0][0]
-
-			result = max(cmax,	high_day )
+			if h[-1] >= (cmax - (.05 * cmax)):
+				high_day = 0
+				cursor.execute("select high_day from tabIndicators where symbol='%s' limit 1" % (symbol))
+				_high_day = cursor.fetchall()
+				if _high_day:
+					high_day = _high_day[0][0]
+				if high_day:
+					result = max(cmax,	high_day )
 				
 		elif func == "low_day":
 			if  minutes==360 or minutes==570 or minutes==960 :
@@ -539,13 +540,14 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 					return result
 
 			cmin = analysis.get("low_200") or 0
-			# if l[-1] <= (cmin + (.05 * cmin)):
-			# 	low_day = 0
-			# 	cursor.execute("select low_day from tabIndicators where symbol='%s' limit 1" % (symbol))
-			# 	_low_day = cursor.fetchall()
-			# 	if _low_day:
-			# 		low_day = _low_day[0][0]
-			result = min(cmin,	low_day ) if low_day else cmin
+			if l[-1] <= (cmin + (.05 * cmin)):
+				low_day = 0
+				cursor.execute("select low_day from tabIndicators where symbol='%s' limit 1" % (symbol))
+				_low_day = cursor.fetchall()
+				if _low_day:
+					low_day = _low_day[0][0]
+				if low_day:
+					result = min(cmin,	low_day ) if low_day else cmin
 
 		
 			
