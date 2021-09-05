@@ -347,6 +347,7 @@ def ta_snapshot(i, symbols=None,):
 				conn.execute("select c,h,l,o,v from tabBars where s=%s order by t desc limit 200",symbol)
 				data = conn.fetchall()
 				if data:
+					print(data);
 					# print(symbol)
 					close = np.array([v[0] for v in data if v[0]], dtype=np.double)
 					heigh = np.array([v[1] for v in data if v[1]], dtype=np.double)
@@ -505,7 +506,7 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 			if  minutes==360 or minutes==570 or minutes==960 :
 				result = h[-1]
 				return 
-			high_200 = analysis.get("high_200")	
+			high_200 = analysis.get("high_200")	or h[-1]
 			if h[-1] >= (.95*high_200):
 				if minutes <=570:
 					cursor.execute("select max(h) from tabBars where s=%s and t>=%s ",(symbol,today))
@@ -520,7 +521,7 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 			if  minutes==360 or minutes==570 or minutes==960 :
 				result = l[-1]
 				return result
-			low_200 = analysis.get("low_200")	
+			low_200 = analysis.get("low_200") or l[-1]
 			if l[-1] <= (1.05*low_200):
 				if minutes <=570:
 					cursor.execute("select min(l) from tabBars where s=%s and t>=%s ",(symbol,today))
