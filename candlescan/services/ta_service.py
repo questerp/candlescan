@@ -504,27 +504,31 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 		elif  func == "high_day":
 			if  minutes==360 or minutes==570 or minutes==960 :
 				result = h[-1]
-				return result
-			if minutes <=570:
-				cursor.execute("select max(h) from tabBars where s=%s and t>=%s ",(symbol,today))
-			else:
-				cursor.execute("select max(h) from tabBars where s=%s and t>=%s ",(symbol,today930))
-			_high_day = cursor.fetchall()
-			if _high_day:
-					result = _high_day[0][0]
+				return 
+			high_200 = analysis.get("high_200")	
+			if h[-1] >= (.95*high_200):
+				if minutes <=570:
+					cursor.execute("select max(h) from tabBars where s=%s and t>=%s ",(symbol,today))
+				else:
+					cursor.execute("select max(h) from tabBars where s=%s and t>=%s ",(symbol,today930))
+				_high_day = cursor.fetchall()
+				if _high_day:
+						result = _high_day[0][0]
 
 				
 		elif func == "low_day":
 			if  minutes==360 or minutes==570 or minutes==960 :
 				result = l[-1]
 				return result
-			if minutes <=570:
-				cursor.execute("select min(l) from tabBars where s=%s and t>=%s ",(symbol,today))
-			else:
-				cursor.execute("select min(l) from tabBars where s=%s and t>=%s ",(symbol,today930))
-			_low_day = cursor.fetchall()
-			if _low_day:
-					result = _low_day[0][0]
+			low_200 = analysis.get("low_200")	
+			if l[-1] <= (1.05*low_200):
+				if minutes <=570:
+					cursor.execute("select min(l) from tabBars where s=%s and t>=%s ",(symbol,today))
+				else:
+					cursor.execute("select min(l) from tabBars where s=%s and t>=%s ",(symbol,today930))
+				_low_day = cursor.fetchall()
+				if _low_day:
+						result = _low_day[0][0]
 
 
 		
