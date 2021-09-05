@@ -185,29 +185,33 @@ def backfill(days=0,symbols=None,daily=False ):
 
 	def _insert_day(i,start,chunk_symbols):
 		try:
-			#sleeptime = random.uniform(0, i)
-			#time.sleep(i)
-			print("start",i,start)
-			tcall = dt.now()
-			bars = api.get_barset(chunk_symbols,"day",limit=1000 )	
-			#print(i,"BARS",len(bars))
+			with get_connection() as cursor :
+				#sleeptime = random.uniform(0, i)
+				#time.sleep(i)
+				print("start",i,start)
+				tcall = dt.now()
+				bars = api.get_barset(chunk_symbols,"day",limit=1000 )	
+				#print(i,"BARS",len(bars))
 
-			tstart = dt.now()
-			if bars :
-				for b in bars:
-					_bars = bars[b]
-					for a in _bars:
-						a['s'] = b
-						# a['n'] = 0
-						# a['vw'] = 0.0
-						#a['t'] = dt.utcfromtimestamp(a['t'])
-						#minute_bars.append(a)
-					#minute_bars.extend(_bars)
-					#candles = [to_candle(a,b) for a in candles]
-					if _bars:
-						insert_minute_bars(_bars,col="d")
-				tend = dt.now()
-				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
+				tstart = dt.now()
+				if bars :
+					minute_bars  =[]
+					for b in bars:
+						_bars = bars[b]
+						for a in _bars:
+							a['s'] = b
+							minute_bars.append(a)
+
+							# a['n'] = 0
+							# a['vw'] = 0.0
+							#a['t'] = dt.utcfromtimestamp(a['t'])
+							#minute_bars.append(a)
+						#minute_bars.extend(_bars)
+						#candles = [to_candle(a,b) for a in candles]
+					if minute_bars:
+						insert_minute_bars(cursor,minute_bars,col="d")
+					tend = dt.now()
+					print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 
 		except Exception as e:
 			print("_insert ERROR",e)	
@@ -298,8 +302,10 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 	try:
 
 		try:
+			table = "tabBarsday" if col=="d" else "tabBars"
+
 			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
-			cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
+			cursor.executemany("INSERT IGNORE INTO %s (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)"%table,args)
 			cursor.execute("commit")
 		except Exception as ve:
 			print("--- ValueError ---",ve)
@@ -318,14 +324,15 @@ def add_to_queue(event,ev,last):
 	queue_data(event,ev,last)
 
 
-def get_minute_bars(symbol,start,end=None ):
-	if not (symbol and start):
+def get_minute_bars(symbol,timeframe,start,end=None ):
+	if not (symbol and start and timeframe):
 		return
 	
 	try:
+		table = "tabBarsday" if timeframe=="d" else "tabBars"
 		result = []
 		print("start",start)
-		sql = """select t,o,c,h,l,v from tabBars where s='%s' and  t>=%s""" % (symbol,start)
+		sql = """select t,o,c,h,l,v from %s where s='%s' and  t>=%s""" % (table,symbol,start)
 		if end:
 			sql = sql + " and t<=%s"%end
 		data = frappe.db.sql(sql,as_dict=True)
@@ -335,6 +342,7 @@ def get_minute_bars(symbol,start,end=None ):
 	except Exception as ex:
 		print("ERROR get_minute_bars",ex)
 		return []
+
 
 
 
