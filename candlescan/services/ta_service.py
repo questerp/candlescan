@@ -305,13 +305,13 @@ def ta_snapshot_all(apply_priority=False):
 			minute = dt.now().minute
 			if minute % 5 == 0:
 				all_symbols = get_active_symbols()
-				tchunk = 1000
+				tchunk = 2000
 			elif minute % 2 == 0:
 				all_symbols = get_active_symbols()[:2000]
-				tchunk = 500
+				tchunk = 1000
 			else:
 				all_symbols = get_active_symbols()[:1000]
-				tchunk = 250
+				tchunk = 500
 
 		for symbols in chunks(all_symbols, tchunk):
 			if stop_threads:
