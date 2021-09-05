@@ -13,7 +13,6 @@ from alpaca_trade_api.rest import REST
 import pandas as pd
 import threading
 import numba
-from candlescan.libs import pystore
 import multitasking
 import signal
 import threading
@@ -32,9 +31,7 @@ bar_symbols = []
 sio = socketio.Client(logger=False,json=json_encoder, engineio_logger=False,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
 log = logging.getLogger(__name__)
 api = None
-store = pystore.store('bars' )
-collection = store.collection('1MIN' )
-collection_day = store.collection("1DAY" )
+
 
 def connect():
 	try:
@@ -250,38 +247,6 @@ def update_chart_subs(redis):
 		#if dt.now().minute % 5 == 0:
 		clear_active_symbols()
 
-
-# def create_ta_table(symbols=None):
-# 	collection.create_ta_table(symbols)
-
-def init_bars_db(target = 0):
-	print("init")
-	day = target in [0,2]
-	minute = target in [0,1]
-	if minute:
-		store.delete_collection("1MIN" )
-		collection = store.collection("1MIN",overwrite=True)
-	if day:
-		store.delete_collection("1DAY")
-		collection_day = store.collection("1DAY",overwrite=True)
-	if minute:
-		collection.create_table("data")
-	if day:
-		collection_day.create_table("data")
-
-
-
-	#symbols = frappe.db.sql("""select symbol from tabSymbol where active=1 """,as_list=True)
-	# symbols =  get_active_symbols()#[a[0] for a in symbols]
-	# date = dt.now().replace(year=1990)
-	# for idx,s in enumerate(symbols):
-	# 	#if s not in items:
-	# 	print(idx)
-	# 	if minute:
-	# 		collection.create_table(s)
-	# 	if day:
-	# 		collection_day.create_table(s)
-	print("DONE")
 
 	
 def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
