@@ -347,7 +347,6 @@ def ta_snapshot(i, symbols=None,):
 				conn.execute("select c,h,l,o,v from tabBars where s=%s order by t desc limit 200",symbol)
 				data = conn.fetchall()
 				if data:
-					print(data);
 					# print(symbol)
 					close = np.array([v[0] for v in data if v[0]], dtype=np.double)
 					heigh = np.array([v[1] for v in data if v[1]], dtype=np.double)
