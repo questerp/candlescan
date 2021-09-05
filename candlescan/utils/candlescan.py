@@ -26,9 +26,12 @@ conf = frappe.conf.copy()
 def get_active_symbols(reload=False):
     global active_symbols
     if reload or not active_symbols:
-        s = frappe.db.sql(""" select symbol from tabIndicators  order by M_VOLUME desc""",as_list=True)
-        active_symbols = [a[0] for a in s]
-        print("top 1m volume",active_symbols[0])
+        with get_connection() as conn :
+            with conn.cursor() as cursor:
+                cursor.execute(""" select symbol from tabIndicators  order by M_VOLUME desc""")
+                symbols = cursor.fetchall()
+                active_symbols = [a[0] for a in symbols]
+                print("top 1m volume",active_symbols[0])
     return active_symbols
 
 def clear_active_symbols():
