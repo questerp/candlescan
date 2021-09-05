@@ -186,20 +186,20 @@ def backfill(days=0,symbols=None,daily=False ):
 
 			tstart = dt.now()
 			if bars :
-				bars  =[]
+				minute_bars  =[]
 				for b in bars:
 					_bars = bars[b]
 					for a in _bars:
 						a['s'] = b
-						bars.append(a)
+						minute_bars.append(a)
 						# a['n'] = 0
 						# a['vw'] = 0.0
 						#a['t'] = dt.utcfromtimestamp(a['t'])
 						#minute_bars.append(a)
 					#minute_bars.extend(_bars)
 					#candles = [to_candle(a,b) for a in candles]
-				if bars:
-					insert_minute_bars(cursor,bars)
+				if minute_bars:
+					insert_minute_bars(cursor,minute_bars)
 				tend = dt.now()
 				print(i,"DONE","time:" ,tend-tstart,"api",tstart-tcall)
 
