@@ -338,13 +338,10 @@ def add_to_queue(event,ev,last):
 	queue_data(event,ev,last)
 
 
-def get_minute_bars(symbol,timeframe,start,end=None ):
+def get_minute_bars(symbol,start,end=None ):
 	if not (symbol and start):
 		return
 	
-	# start = dt.utcfromtimestamp(start)
-	# if end:
-	# 	end = dt.utcfromtimestamp(end)
 	try:
 		result = []
 		print("start",start)
