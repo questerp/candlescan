@@ -73,4 +73,6 @@ def run_filter(name):
 		sort = "ASC" if filter.sort_mode == "Ascending" else "DESC"
 		if sql:
 			data = frappe.db.sql("""%s order by %s %s limit %s""" % (sql,filter.sort_field,sort,filter.limit_results or 1),as_dict=True)
+	
+	
 	return data
