@@ -310,29 +310,13 @@ def init_bars_db(target = 0):
 	print("DONE")
 
 	
-#@multitasking.task 
 def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print("not minuteBars")
 		return
-	# print("path",path)
 	try:
-		#_bars = minuteBars #[to_candle(a) for a in minuteBars ]
-		# items = pd.DataFrame.from_dict(minuteBars)
-		# items = items.astype(dtype= {
-		# 	"s":"str",
-		# 	"t":"int64", 
-		# 	"o":"float64",
-		# 	"c":"float64",
-		# 	"h":"float64",
-		# 	"l":"float64",
-		# 	"n":"int64",
-		# 	"v":"int64",
-		# 	"vw":"float64",
-		# 	})
-		
-		#if not items.empty :
+
 		try:
 			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
 			cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
@@ -341,21 +325,16 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 			print("--- ValueError ---",ve)
 		
 		if send_last  :
-			# if not isinstance(minuteBars,list):
-			# 	minuteBars = [minuteBars]
 			for ticker in minuteBars:
 				s = ticker.get("s")
 				if s in bar_symbols:
 					ev  = "bars_%s"%  s.lower()
 					add_to_queue(ev,ev,ticker)
-		# else:
-		# 	print(ticker,"empty")
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
 
 @multitasking.task 
 def add_to_queue(event,ev,last):
-	#print("queue",event)
 	queue_data(event,ev,last)
 
 
@@ -363,34 +342,22 @@ def get_minute_bars(symbol,timeframe,start,end=None ):
 	if not (symbol and start):
 		return
 	
-	#start = dt.utcfromtimestamp(start)
-	#if end:
-	#	end = dt.utcfromtimestamp(end)
-	# try:
-	# 	result = []
-	# 	print("start",start)
-	# 	# print("end",end)
-	# 	_collection = None
-	# 	if timeframe == "m":
-	# 		_collection = collection#.item(symbol,filters=[('t','')])
-	# 	else:
-	# 		_collection = collection_day#.item(symbol)
-		
-	# 	# filters = []
-	# 	# if start and end:
-	# 	# 	filters =  't >= start & t <=end'
-	# 	# else:
-	# 	# 	filters = 't >= start '
-			
-		
-	# 	data = _collection.item(symbol,start=start,end=end ).data()
-	# 	if data:
-	# 		#data = data[~data.t.duplicated(keep='first')]
-	# 		result = data
-	# 	return result
-	# except Exception as ex:
-	# 	print("ERROR get_minute_bars",ex)
-	return []
+	# start = dt.utcfromtimestamp(start)
+	# if end:
+	# 	end = dt.utcfromtimestamp(end)
+	try:
+		result = []
+		print("start",start)
+		sql = """select t,o,c,h,l,v from tabBars where s='%s' and  t>=%s""" % (symbol,start)
+		if end:
+			sql = sql + " and t<=%s"%end
+		data = frappe.db.sql(sql,as_dict=True)
+		if data:
+			result = data
+		return result
+	except Exception as ex:
+		print("ERROR get_minute_bars",ex)
+		return []
 
 
 
