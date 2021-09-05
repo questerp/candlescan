@@ -67,11 +67,9 @@ def _start():
 	api = REST(raw_data=True)
 	logging.basicConfig(level=logging.INFO)
 	redis = get_redis_server()
-	#s = frappe.db.sql(""" select symbol from tabSymbol where active=1""",as_list=True)
 	symbols = get_active_symbols()
 	minutedelta = timedelta(minutes=1)
 	conf = frappe.conf.copy()
-	#print(conf)
 
 	while(1):
 		nw  = dt.now()
@@ -90,7 +88,6 @@ def _start():
 			continue
 		frappe.db.sql("select 'KEEP_ALIVE'")
 		print("------------")
-		#print(nw)
 		utc =  dt.utcnow()
 		
 		utcminute =   utc - minutedelta
@@ -100,18 +97,9 @@ def _start():
 		i = 0
 		for _symbols in chunks(symbols,2000):
 			i +=1
-			#get_snapshots(conf,i, api,utcminute,_symbols)
 			threading.Thread(target=get_snapshots,args=(conf,i, api,utcminute,_symbols,)).start()	
-			#get_snapshots(i, api,utcminute,_symbols)
-			# 200 27sec
-			# 2000 22sec process: 
-			# 1000 23 sec
-			# 500  31 sec
-			# 3000 
 		frappe.db.commit()
 		print("----> DONE", dt.now())
-		
-		#minuteBars = []	
 		time.sleep(1)
 		
 		
@@ -141,13 +129,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 			data = snap[s]
 			if not data:
 				continue
-			
 			minuteBar = data.get("minuteBar") 
-			#latestTrade = data.get("latestTrade") or {}
-			# dailyBar = data.get("dailyBar") or {}
-			# prevDailyBar = data.get("prevDailyBar") or {}
-			# latestQuote = data.get("latestQuote") or {}
-			
 			
 			if minuteBar:
 				_date = dt.strptime(minuteBar['t'], DATE_FORMAT)
@@ -159,57 +141,9 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				#insert_minute_bars(s,[minuteBar],True)
 
 				bars.append(minuteBar)
-				#price = latestTrade.get("p") or 0
-				# if price:
-				# 	sql = """ update tabSymbol set 
-				# 	price=%s, 
-				# 	volume=%s, 
-				# 	1m_volume=%s,
-				# 	today_high=%s, 
-				# 	today_low=%s ,
-				# 	today_open=%s ,
-				# 	today_close=%s ,
-				# 	today_trades=%s ,
-				# 	bid=%s , 
-				# 	ask=%s ,
-				# 	vwap=%s , 
-				# 	prev_day_open = %s ,
-				# 	prev_day_close = %s , 
-				# 	prev_day_high = %s ,
-				# 	prev_day_low = %s , 
-				# 	prev_day_vwap = %s ,
-				# 	prev_day_volume = %s ,
-				# 	prev_day_trades = %s 
-				# 	where name='%s' """ % (
-				# 				price or 0,
-				# 				dailyBar.get("v") or 0,
-				# 				minuteBar.get("v") or 0,
-				# 				dailyBar.get("h") or 0,
-				# 				dailyBar.get("l") or 0,
-				# 				dailyBar.get("o") or 0,
-				# 				dailyBar.get("c") or 0,
-				# 				dailyBar.get("n") or 0,
-				# 				latestQuote.get("bp") or 0,
-				# 				latestQuote.get("ap") or 0,
-				# 				minuteBar.get("vw") or 0,
-				# 				prevDailyBar.get("o") or 0,
-				# 				prevDailyBar.get("c") or 0,
-				# 				prevDailyBar.get("h") or 0,
-				# 				prevDailyBar.get("l") or 0,
-				# 				prevDailyBar.get("vw") or 0,
-				# 				prevDailyBar.get("v") or 0,
-				# 				prevDailyBar.get("n") or 0,
-				# 				s )
-				# 	try:
-				# 		sql = str(sql)
-				# 		_cursor.execute(sql)
-
-				# 	except Exception as e:
-				# 		print(s,"error sql",e)
+			
 		if bars:
-			#print("inserting",len(bars))
 			insert_minute_bars(_cursor,bars,True)
-			#_cursor.execute("commit")
 		endcall = dt.now()
 		print("DONE",len(bars),endcall-tcall,tcall-bcall)
 	except Exception as e:
@@ -401,7 +335,7 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 		#if not items.empty :
 		try:
 			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
-			cursor.executemany("INSERT INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
+			cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
 			cursor.execute("commit")
 		except Exception as ve:
 			print("--- ValueError ---",ve)
