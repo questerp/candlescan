@@ -202,7 +202,7 @@ def backfill(days=0,symbols=None,daily=False ):
 					if minute_bars:
 						insert_minute_bars(cursor,minute_bars,col="d")
 					tend = dt.now()
-					print(i,len(minute_bars),"DONE","time:" ,tend-tstart,"api",tstart-tcall)
+					print(i,len(minute_bars),"DONE D","time:" ,tend-tstart,"api",tstart-tcall)
 
 		except Exception as e:
 			print("_insert ERROR",e)	
