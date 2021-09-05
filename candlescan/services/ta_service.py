@@ -426,6 +426,7 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 					if len(o)>candles:
 						today_open = o[-1*candles]
 						analysis["today_open"] = today_open
+						
 				
 				if today_open:
 					result = c[-1] - today_open
