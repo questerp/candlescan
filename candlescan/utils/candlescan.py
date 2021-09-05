@@ -15,9 +15,13 @@ import candlescan.utils.yahoo_finance_api2 as yf
 from frappe.utils import cint,now_datetime
 from datetime import timedelta,datetime as dt
 from pytz import timezone	
+import pymysql
+from pymysql.converters import conversions, escape_string
+
 _timezone = timezone("America/New_York")
 
 active_symbols = []
+conf = frappe.db.conf.copy()
 
 def get_active_symbols(reload=False):
     global active_symbols
@@ -32,6 +36,22 @@ def clear_active_symbols():
     #active_symbols = []
     get_active_symbols(reload=True)
 
+
+def get_cursor():
+    global conf
+    conn = pymysql.connect(
+			user= conf.db_name,
+			password= conf.db_password,
+			database=conf.db_name,
+			host='127.0.0.1',
+			port='',
+			charset='utf8mb4',
+			use_unicode=True,
+			ssl=  None,
+			conv=conversions,
+			local_infile=conf.local_infile
+		)
+    return conn.cursor()
 
 def to_candle(data,symbol=None):
     # if not symbol and not data.get("s"):

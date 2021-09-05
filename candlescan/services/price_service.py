@@ -6,7 +6,7 @@ import socketio
 import asyncio
 from frappe.realtime import get_redis_server
 from candlescan.utils.socket_utils import get_user,validate_data,build_response,json_encoder,keep_alive,queue_data
-from candlescan.utils.candlescan import to_candle,get_active_symbols,clear_active_symbols
+from candlescan.utils.candlescan import to_candle,get_active_symbols,clear_active_symbols,get_cursor
 from alpaca_trade_api import Stream
 from alpaca_trade_api.common import URL
 from alpaca_trade_api.rest import REST
@@ -170,13 +170,14 @@ def backfill(days=0,symbols=None,daily=False ):
 	TZ = 'America/New_York'
 	#redis = get_redis_server()
 	#empty_candle = get_empty_candle()
-	cursor = frappe.db.get_connection().cursor()
+	
 	print("symbols",symbols)
 	if not symbols:
 		symbols  = get_active_symbols()
 
 	def _insert(i,start,chunk_symbols):
 		try:
+			cursor = get_cursor()
 			#sleeptime = random.uniform(0, i)
 			#time.sleep(i)
 			print("start",i,start)
