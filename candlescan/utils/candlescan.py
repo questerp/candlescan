@@ -27,6 +27,7 @@ def get_active_symbols(reload=False):
     global active_symbols
     if reload or not active_symbols:
         with get_connection() as conn :
+            print(type(conn))
             with conn.cursor() as cursor:
                 cursor.execute(""" select symbol from tabIndicators  order by M_VOLUME desc""")
                 symbols = cursor.fetchall()
