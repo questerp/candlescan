@@ -21,7 +21,7 @@ from pymysql.converters import conversions, escape_string
 _timezone = timezone("America/New_York")
 
 active_symbols = []
-conf = frappe.db.conf.copy()
+conf = frappe.conf.copy()
 
 def get_active_symbols(reload=False):
     global active_symbols
