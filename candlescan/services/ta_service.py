@@ -309,7 +309,7 @@ def ta_snapshot_all(apply_priority=False):
 			else:
 				all_symbols = get_active_symbols()[:1000]
 
-		for symbols in chunks(all_symbols, 1000):
+		for symbols in chunks(all_symbols, 250):
 			if stop_threads:
 				print("breaking")
 				break
