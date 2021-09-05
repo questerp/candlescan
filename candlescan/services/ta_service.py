@@ -344,7 +344,7 @@ def ta_snapshot(i, symbols=None,):
 				if stop_threads:
 					print("breaking")
 					break
-				conn.execute("select c,h,l,o,v for tabBars where s=%s order by t desc limit 200",symbol)
+				conn.execute("select c,h,l,o,v from tabBars where s=%s order by t desc limit 200",symbol)
 				data = conn.fetchall()
 				if data:
 					# print(symbol)
@@ -426,7 +426,7 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 					if len(o)>candles:
 						today_open = o[-1*candles]
 						analysis["today_open"] = today_open
-						
+
 				
 				if today_open:
 					result = c[-1] - today_open
