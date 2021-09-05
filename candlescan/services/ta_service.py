@@ -325,6 +325,8 @@ today930 = None
 
 def ta_snapshot(i, symbols=None,):
 	start = dt.now()
+	ts  = start.timestamp()
+	tsm = ts-12000
 	global today
 	global today930
 
@@ -344,7 +346,7 @@ def ta_snapshot(i, symbols=None,):
 				if stop_threads:
 					print("breaking")
 					break
-				conn.execute("select c,h,l,o,v from tabBars where s=%s order by name desc limit 200",symbol)
+				conn.execute("select c,h,l,o,v from tabBars where s=%s and t BETWEEN %s AND %s",(symbol,tsm,ts))
 				data = conn.fetchall()
 
 				if data:
