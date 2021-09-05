@@ -353,6 +353,8 @@ def ta_snapshot(i, symbols=None,):
 					low = np.array([v[2] for v in data if v[2]], dtype=np.double)
 					open = np.array([v[3] for v in data if v[3]], dtype=np.double)
 					volume = np.array([v[4] for v in data if v[4]], dtype=np.double)
+					base = dt.now()
+
 					analysis = {}
 					# t,o,c,h,l,v
 					for t in ta_func:
@@ -392,7 +394,7 @@ def ta_snapshot(i, symbols=None,):
 			print("error ta_snapshot", e)
 		finally:
 			end = dt.now()
-			print(i, "DONE", end-start)
+			print(i, "ta", end-base,"data",base-start)
 
 
 @sio.event
