@@ -78,6 +78,7 @@ def _start():
 				lapsem = 60 - nw.minute # -> 15
 			if nw.hour > 20:
 				lapseh = 3
+			#TODO remove comment
 			#time.sleep((lapseh*60*60)+(lapsem*60))
 			
 		if dt.now().second != 0:
@@ -121,9 +122,9 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 					minuteBar['t'] = _date.timestamp() #get_datetime(minuteBar['t'].replace("Z",""))#.timestamp()
 					minuteBar['s'] = s
 
+					#TODO remove to ignore old candles
 					# if utcminute != _date:
 					# 	continue
-					#insert_minute_bars(s,[minuteBar],True)
 
 					bars.append(minuteBar)
 				
