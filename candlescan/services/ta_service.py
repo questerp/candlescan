@@ -344,7 +344,7 @@ def ta_snapshot(i, symbols=None,):
 				if stop_threads:
 					print("breaking")
 					break
-				conn.execute("select c,h,l,o,v from tabBars where s=%s order by t desc limit 200",symbol)
+				conn.execute("select c,h,l,o,v from tabBars where s=%s order by name desc limit 200",symbol)
 				data = conn.fetchall()
 
 				if data:
