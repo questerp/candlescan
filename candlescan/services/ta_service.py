@@ -346,6 +346,8 @@ def ta_snapshot(i, symbols=None,):
 					break
 				conn.execute("select c,h,l,o,v from tabBars where s=%s order by t desc limit 200",symbol)
 				data = conn.fetchall()
+				sqlcall = dt.now()
+
 				if data:
 					# print(symbol)
 					close = np.array([v[0] for v in data if v[0]], dtype=np.double)
@@ -394,7 +396,7 @@ def ta_snapshot(i, symbols=None,):
 			print("error ta_snapshot", e)
 		finally:
 			end = dt.now()
-			print(i, "ta", end-base,"data",base-start)
+			print(i, "ta", end-base,"data",base-sqlcall,"db",sqlcall-start)
 
 
 @sio.event
