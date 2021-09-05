@@ -295,7 +295,7 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 		try:
 			table = "tabBarsday" if col=="d" else "tabBars"
 			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
-			cursor.executemany("INSERT IGNORE INTO %s (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)"%table,args)
+			cursor.executemany("INSERT IGNORE INTO {0} (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)".format(table),args)
 			cursor.execute("commit")
 		except Exception as ve:
 			print("--- ValueError ---",ve)
