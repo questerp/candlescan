@@ -279,7 +279,7 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 		try:
 			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
 			if col=="d":
-				cursor.executemany("INSERT IGNORE INTO tabBarsday (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE o=VALUES(o),c=VALUES(c),h=VALUES(h),l=VALUES(l)",args)
+				cursor.executemany("INSERT INTO tabBarsday (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE o=VALUES(o),c=VALUES(c),h=VALUES(h),l=VALUES(l)",args)
 			else:
 				cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
 			cursor.execute("commit")
