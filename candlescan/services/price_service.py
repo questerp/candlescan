@@ -283,7 +283,7 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 			if col=="d":
 				rows = cursor.executemany("INSERT INTO tabBarsday (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE o=VALUES(o),c=VALUES(c),h=VALUES(h),l=VALUES(l)",args)
 			else:
-				rows = cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
+				rows = cursor.executemany("INSERT INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE t=t",args)
 			cursor.execute("commit")
 		except Exception as ve:
 			print("--- ValueError ---",ve)
