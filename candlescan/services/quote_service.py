@@ -22,8 +22,8 @@ old_quotes = []
 def handler(signum, frame):
     global stop_threads
     stop_threads = True
-    print('Ctrl+Z pressed, wait 5 sec')
-    time.sleep(5)
+    print('Ctrl+Z pressed, wait 11 sec')
+    time.sleep(11)
     sys.exit()
 
 
@@ -50,9 +50,13 @@ async def run():
 
 def broadcast():
     try:
+        global stop_threads
         global old_quotes
         stream = Stream(raw_data=True)
         while(1):
+            if stop_threads:
+                print("STOP broadcast")
+                break
             quotes = get_redis_server().smembers("quotes")
             if quotes:
                 try:
@@ -63,11 +67,14 @@ def broadcast():
                     get_redis_server().delete_key("quotes")
                 except Exception as ex:
                     print("ERROR", ex)
-                	# print("data",get_redis_server().keys(),data)
+                    # print("data",get_redis_server().keys(),data)
                 time.sleep(10)
 
     except Exception as e:
         print(e)
+        if stop_threads:
+            print("STOP broadcast")
+            return
         time.sleep(1)
         broadcast()
 
