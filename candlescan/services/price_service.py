@@ -136,8 +136,8 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 
 					bars.append(minuteBar)
 					if dailyBar:
-						nearHigh = dailyBar["h"] and (minuteBar['h'] >= .95*dailyBar["h"])
-						nearLow = dailyBar["l"] and (minuteBar['l'] <= 1.05*dailyBar["l"])
+						nearHigh = dailyBar["h"]# and (minuteBar['h'] >= .95*dailyBar["h"])
+						nearLow = dailyBar["l"]# and (minuteBar['l'] <= 1.05*dailyBar["l"])
 
 						if nearLow or nearHigh:
 							_ddate = dt.strptime(dailyBar['t'], DATE_FORMAT)
