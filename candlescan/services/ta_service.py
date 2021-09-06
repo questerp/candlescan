@@ -513,7 +513,7 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 		elif  func == "low_200":
 			result = stream.MIN(l,200)
 		elif  func == "high_day":
-			if  minutes==360 or minutes==570 or minutes==960 :
+			if  minutes==361 or minutes==571 or minutes==961 :
 				result = h[-1]
 				return 
 			high_200 = analysis.get("high_200")	or h[-1]
@@ -528,7 +528,7 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 
 				
 		elif func == "low_day":
-			if  minutes==360 or minutes==570 or minutes==960 :
+			if  minutes==361 or minutes==571 or minutes==961 :
 				result = l[-1]
 				return result
 			low_200 = analysis.get("low_200") or l[-1]

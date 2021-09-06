@@ -103,11 +103,16 @@ def _start():
 		
  
 def get_snapshots(conf,i,api,utcminute,symbols):
-	print("START",i,dt.now())
 	bcall = dt.now()
-	snap = api.get_snapshots(symbols)
-	tcall = dt.now()
+	print("START",i,bcall)
 
+	try:
+		snap = api.get_snapshots(symbols)
+	except Exception as e: 
+		print(e)
+		return
+
+	tcall = dt.now()
 	with get_connection() as cursor:
 		bars = [ ]
 		try:

@@ -123,3 +123,9 @@ def get_yahoo_prices(symbol,period_type, period, frequency_type, frequency):
 	data = share.get_historical(period_type,period,frequency_type,frequency,"dict")
 	data = [a for a in data if a['low'] and a['low']>0]
 	return data
+
+
+#FEATURE a function to run after server outage, to backfill and calculate ta
+# time : time of shortage from now (minutes)
+def recover_data(time):
+    pass
