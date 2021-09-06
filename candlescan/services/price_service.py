@@ -244,7 +244,7 @@ def backfill(days=0,symbols=None,daily=False ):
 					func =  _insert_day if daily else _insert
 					threading.Thread(target=func,args=(threads,beg,result,)).start()	
 		
-			time.sleep(20)
+			time.sleep(60)
 
 	except Exception as e:
 		print("backfill ERROR",e)

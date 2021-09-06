@@ -16,7 +16,7 @@ class StockFilter(Document):
 		#fields = ",".join([a['field'] for a in columns])
 		#if 'symbol' not in fields:
 		fields = "symbol"
-		final = """ SELECT %s from tabIndicators where %s """ % (fields,sql)
+		final,step_cond = """ SELECT %s from tabIndicators where %s """ % (fields,sql)
 		#frappe.msgprint(final)
 		try:
 			frappe.db.sql("""explain %s""" % final)
@@ -26,19 +26,28 @@ class StockFilter(Document):
 				frappe.throw(e.args[1].replace("in 'where clause'","in script"))
 			frappe.throw("Errors in the script, please check syntax")
 		self.sql_script = json.dumps(final)
+		if step_cond:
+			self.steps = json.dumps(step_cond)
 
 		
 	def validate_script(self):
 		if not self.script:
 			frappe.throw("Script is required")
-		
-		self.script = self.script.lower().replace('(','').replace(')','').replace('[','').replace(']','').replace('drop','').replace('alter','').replace('delete','').replace('insert','').replace('update','')
+		# close < close[-1]
+		# close[-1] < close[-2]
+		# close[-2] < close[-3]
+
+		self.script = self.script.lower().replace('(','').replace(')','').replace('drop','').replace('alter','').replace('delete','').replace('insert','').replace('update','')
 		script = json.loads(self.script)
 		conds = script.splitlines()
 		sql =""
 		or_sql = []
 		and_sqls = []
+		step_cond = []
 		for cond in conds:
+			if "[" in cond:
+				step_cond.append(cond)
+				continue
 			if not cond:
 				continue
 			if cond == 'OR':
@@ -52,6 +61,6 @@ class StockFilter(Document):
 		for s in or_sql:
 			finalsql.append( "(%s)" % (' AND '.join(s)))
 		query = ' OR '.join(finalsql)
-		return query
+		return query,step_cond
 		
 		
