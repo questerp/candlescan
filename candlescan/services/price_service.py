@@ -115,12 +115,14 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 	tcall = dt.now()
 	with get_connection() as cursor:
 		bars = [ ]
+		dailyBars = [ ]
 		try:
 			for s in snap:
 				data = snap[s]
 				if not data:
 					continue
 				minuteBar = data.get("minuteBar") 
+				dailyBar = data.get("dailyBar") 
 				
 				if minuteBar:
 					_date = dt.strptime(minuteBar['t'], DATE_FORMAT)
@@ -132,9 +134,20 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 					# 	continue
 
 					bars.append(minuteBar)
+					nearHigh = dailyBar["h"] and (minuteBar['h'] >= .95*dailyBar["h"])
+					nearLow = dailyBar["l"] and (minuteBar['l'] <= 1.05*dailyBar["l"])
+
+					if nearLow or nearHigh:
+						_ddate = dt.strptime(dailyBar['t'], DATE_FORMAT)
+						dailyBar['t'] = _ddate.timestamp() 
+						dailyBar['s'] = s
+						dailyBars.append(dailyBar)
 				
 			if bars:
 				insert_minute_bars(cursor,bars,True)
+			if dailyBars:
+				insert_minute_bars(cursor,dailyBars,False,"d")
+
 			endcall = dt.now()
 			print("DONE",len(bars),endcall-tcall,tcall-bcall)
 		except Exception as e:
@@ -263,9 +276,11 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 	try:
 
 		try:
-			table = "tabBarsday" if col=="d" else "tabBars"
 			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
-			cursor.executemany("INSERT IGNORE INTO {0} (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)".format(table),args)
+			if col=="d":
+				cursor.executemany("INSERT IGNORE INTO tabBarsday (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE o=VALUES(o),c=VALUES(c),h=VALUES(h),l=VALUES(l)",args)
+			else:
+				cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
 			cursor.execute("commit")
 		except Exception as ve:
 			print("--- ValueError ---",ve)
