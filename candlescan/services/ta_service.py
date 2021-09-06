@@ -365,19 +365,23 @@ def ta_snapshot(i, symbols=None,):
 					volume = np.array([v[4] for v in data if v[4]], dtype=np.double)
 
 					analysis = {}
+					analysis = calculate_ta(symbol, open, close, heigh,	low, volume, conn, analysis, minutes,long_ops)
 					# t,o,c,h,l,v
-					for t in ta_func:
-						if stop_threads:
-							print("breaking")
-							break
-						try:
-							result = calculate_ta(symbol, t, open, close, heigh,
-												low, volume, conn, analysis, minutes,long_ops)
-							if result and not math.isnan(result) and result > 0:
-								analysis[t] = result
+					if stop_threads:
+						print("breaking")
+						break
+					# for t in ta_func:
+					# 	if stop_threads:
+					# 		print("breaking")
+					# 		break
+					# 	try:
+					# 		result = calculate_ta(symbol, t, open, close, heigh,
+					# 							low, volume, conn, analysis, minutes,long_ops)
+					# 		if result and not math.isnan(result) and result > 0:
+					# 			analysis[t] = result
 
-						except Exception as e:
-							print("ERROR TA", e)
+					# 	except Exception as e:
+					# 		print("ERROR TA", e)
 					if analysis:
 						fields = [field for field in analysis.keys()] + [""]
 						args = ("=ROUND(%s, 2), ".join(fields))
@@ -416,126 +420,61 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 	global today
 	global today930
 
+
 	try:
-
-		if func == "close":
-			result = c[-1]
 		
-		elif func == "today_open":
-			if minutes == 571:
-				result = o[-1]
-		elif func == "today_close":
-			if minutes == 959:
-				result = c[-1]
-		
+		cursor.execute("select o,c,h,l,v from tabBarsday where s=%s and t=%s limit 1",(symbol,today))
+		today_values = cursor.fetchone()
+		if today_values and today_values[0]:
+			today_open = today_values[0]
+			today_close = today_values[1]
+			today_high = today_values[2]
+			today_low = today_values[3]
+			today_volume = today_values[4]
+			analysis["today_open"] = today_open
+			analysis["change_v"] =  c[-1]-today_open
+			analysis["change_p"] = 100*(analysis["change_v"] / today_open)
+			analysis["today_close"] = today_close
+			analysis["high_day"] = today_high
+			analysis["low_day"] = today_low
+			analysis["volume"] = today_volume
 
-		elif func == "change_v":
-			if minutes >= 570 :
-				today_open = 0
-				if minutes < 770 :
-					candles = minutes - 570
-					if len(o)>candles:
-						today_open = o[-1*candles]
-						analysis["today_open"] = today_open
 
-				
-				if today_open:
-					result = c[-1] - today_open
-			else:
-				# premarket change in $
-				result = c[-1] - (analysis.get("low_day") or c[-1])
-				
+		analysis["close"] = c[-1]
+		analysis["open"] = o[-1]
+		analysis["high"] = h[-1]
+		analysis["low"] = l[-1]
+		analysis["m_volume"] = v[-1]
+		analysis["high_200"] = stream.MAX(h,200)
+		analysis["low_200"] = stream.MIN(l,200)
+		analysis["atr"] = stream.ATR(h,l,c)
+		analysis["apo"] = stream.APO(c)
+		analysis["mom"] = stream.MOM(c)
+		analysis["ppo"] = stream.PPO(c)
+		analysis["cci"] =stream.CCI(h,l,c)
+		analysis["roc"] = stream.ROC(c)
+		analysis["rocp"] = stream.ROCP(c)	
+		analysis["rocr"] = stream.ROCR(c)	
+		analysis["rocr100"] = stream.ROCR100(c)	
+		analysis["rsi"] = stream.RSI(c)	
+		analysis["trix"] = stream.TRIX(c)	
+		analysis["ema7"] = stream.EMA(c,7)	
+		analysis["ema8"] = stream.EMA(c,8)	
+		analysis["ema9"] = stream.EMA(c,9)	
+		analysis["ema10"] = stream.EMA(c,10)	
+		analysis["ema11"] = stream.EMA(c,11)	
+		analysis["ema12"] = stream.EMA(c,12)	
+		analysis["ema15"] = stream.EMA(c,15)	
+		analysis["ema20"] = stream.EMA(c,20)	
+		analysis["ema50"] = stream.EMA(c,50)	
+		analysis["ema200"] = stream.EMA(c,200)	
 
-		elif func == "change_p":
-			change_v = analysis.get("change_v")
-			close = c[-1]
-			if close and change_v:
-				result = 100*(change_v / close)
+	
 
-		elif func == "open":
-			result = o[-1]
-		elif func == "low":
-			result = l[-1]
-		elif func == "high":
-			result = h[-1]
-		elif long_ops and func == "volume":
-			cursor.execute("select sum(v) from tabBars where s=%s and t>%s",(symbol,today))
-			volume = cursor.fetchone()
-			if volume:
-				result = volume[0]
-		elif func == "m_volume":
-			result = v[-1]
-
-		elif func == "atr":
-			result = stream.ATR(h,l,c)
-		elif func == "apo":
-			result = stream.APO(c)
-		elif func == "mom":
-			result = stream.MOM(c)
-		elif func == "ppo":
-			result = stream.PPO(c)
-		elif func == "cci":
-			result = stream.CCI(h,l,c)
-		elif func == "roc":
-			result = stream.ROC(c)
-		elif func == "rocp":
-			result = stream.ROCP(c)	
-		elif func == "rocr":
-			result = stream.ROCR(c)	
-		elif func == "rocr100":
-			result = stream.ROCR100(c)	
-		elif func == "rsi":
-			result = stream.RSI(c)		
-		elif func == "trix":
-			result = stream.TRIX(c)		 
-		elif func == "ema7":
-			result = stream.EMA(c,7)		 
-		elif func == "ema8":
-			result = stream.EMA(c,8)	
-		elif func == "ema9":
-			result = stream.EMA(c,9)	
-		elif func == "ema10":
-			result = stream.EMA(c,10)	
-		elif func == "ema11":
-			result = stream.EMA(c,11)	
-		elif func == "ema12":
-			result = stream.EMA(c,12)	
-		elif func == "ema15":
-			result = stream.EMA(c,15)	
-		elif func == "ema20":
-			result = stream.EMA(c,20)	
-		elif func == "ema50":
-			result = stream.EMA(c,50)	
-		elif long_ops and func == "ema200":
-			result = stream.EMA(c,200)	
-		elif  func == "high_200":
-			result = stream.MAX(h,200)
-		elif  func == "low_200":
-			result = stream.MIN(l,200)
-		elif  func == "high_day":
-			if  minutes==361 or minutes==571 or minutes==961 :
-				result = h[-1]
-				return 
-			cursor.execute("select h from tabBarsday where s=%s and t=%s limit 1",(symbol,today))
-			extreme = cursor.fetchone()
-			if extreme:
-				result = extreme[0]
-				
-		elif func == "low_day":
-			if  minutes==361 or minutes==571 or minutes==961 :
-				result = l[-1]
-				return result
-			cursor.execute("select l from tabBarsday where s=%s and t=%s limit 1",(symbol,today))
-			extreme = cursor.fetchone()
-			if extreme:
-				result = extreme[0]
 			
 
-
-		
-			
 	except Exception as e:
 		print("ta_fun error",e,func)
 	finally:
-		return result
+		return analysis
 
