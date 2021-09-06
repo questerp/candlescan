@@ -105,7 +105,8 @@ def _start():
 def get_snapshots(conf,i,api,utcminute,symbols):
 	bcall = dt.now()
 	print("START",i,bcall)
-
+	mrows = 0
+	drows = 0
 	try:
 		snap = api.get_snapshots(symbols)
 	except Exception as e: 
@@ -145,12 +146,12 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 							dailyBars.append(dailyBar)
 				
 			if bars:
-				insert_minute_bars(cursor,bars,True)
+				mrows = insert_minute_bars(cursor,bars,True)
 			if dailyBars:
-				insert_minute_bars(cursor,dailyBars,False,"d")
+				drows = insert_minute_bars(cursor,dailyBars,False,"d")
 
 			endcall = dt.now()
-			print("min",len(bars),"day",len(dailyBars),endcall-tcall,tcall-bcall)
+			print("min",mrows,"day",drows,endcall-tcall,tcall-bcall)
 		except Exception as e:
 				print("error",e)
 		
@@ -273,15 +274,16 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 	global bar_symbols
 	if not minuteBars:
 		print("not minuteBars")
-		return
+		return 0
+	rows = 0
 	try:
 
 		try:
 			args = [(a['t'],a['o'],a['c'],a['h'],a['l'],a['v'],a['s']) for a in minuteBars]
 			if col=="d":
-				cursor.executemany("INSERT INTO tabBarsday (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE o=VALUES(o),c=VALUES(c),h=VALUES(h),l=VALUES(l)",args)
+				rows = cursor.executemany("INSERT INTO tabBarsday (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE o=VALUES(o),c=VALUES(c),h=VALUES(h),l=VALUES(l)",args)
 			else:
-				cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
+				rows = cursor.executemany("INSERT IGNORE INTO tabBars (t,o,c,h,l,v,s) values(%s,%s,%s,%s,%s,%s,%s)",args)
 			cursor.execute("commit")
 		except Exception as ve:
 			print("--- ValueError ---",ve)
@@ -294,6 +296,8 @@ def insert_minute_bars(cursor,minuteBars,send_last=False,col="m"):
 					add_to_queue(ev,ev,ticker)
 	except Exception as e:
 		print("insert_minute_bars ERROR",e)
+	finally:
+		return rows
 
 @multitasking.task 
 def add_to_queue(event,ev,last):
