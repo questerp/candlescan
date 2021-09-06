@@ -134,14 +134,15 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 					# 	continue
 
 					bars.append(minuteBar)
-					nearHigh = dailyBar["h"] and (minuteBar['h'] >= .95*dailyBar["h"])
-					nearLow = dailyBar["l"] and (minuteBar['l'] <= 1.05*dailyBar["l"])
+					if dailyBar:
+						nearHigh = dailyBar["h"] and (minuteBar['h'] >= .95*dailyBar["h"])
+						nearLow = dailyBar["l"] and (minuteBar['l'] <= 1.05*dailyBar["l"])
 
-					if nearLow or nearHigh:
-						_ddate = dt.strptime(dailyBar['t'], DATE_FORMAT)
-						dailyBar['t'] = _ddate.timestamp() 
-						dailyBar['s'] = s
-						dailyBars.append(dailyBar)
+						if nearLow or nearHigh:
+							_ddate = dt.strptime(dailyBar['t'], DATE_FORMAT)
+							dailyBar['t'] = _ddate.timestamp() 
+							dailyBar['s'] = s
+							dailyBars.append(dailyBar)
 				
 			if bars:
 				insert_minute_bars(cursor,bars,True)
