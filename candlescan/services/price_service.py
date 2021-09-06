@@ -231,7 +231,10 @@ def backfill(days=0,symbols=None,daily=False ):
 			start =  add_days(dt.now(),-1*d) #-1*d
 			if not daily and start.weekday() in [5,6]:
 				continue
-			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)	
+			start = start.replace(second=0).replace(microsecond=0).replace(hour=4).replace(minute=0)
+			if start.weekday() in [5,6]	:
+				print("weekend",start)
+				continue
 			beg = pd.Timestamp(start, tz=TZ).isoformat()
 			print("BACKFILL FOR",beg)
 			for result in chunks(symbols,chuck):
