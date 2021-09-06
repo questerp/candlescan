@@ -11,12 +11,12 @@ class StockFilter(Document):
 	def validate(self):
 		if not self.columns:
 			frappe.throw("Please select at least one column for the filter")
-		sql = self.validate_script()
+		sql,step_cond = self.validate_script()
 		#columns = json.loads(self.columns)
 		#fields = ",".join([a['field'] for a in columns])
 		#if 'symbol' not in fields:
 		fields = "symbol"
-		final,step_cond = """ SELECT %s from tabIndicators where %s """ % (fields,sql)
+		final = """ SELECT %s from tabIndicators where %s """ % (fields,sql)
 		#frappe.msgprint(final)
 		try:
 			frappe.db.sql("""explain %s""" % final)
