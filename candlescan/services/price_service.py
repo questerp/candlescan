@@ -150,7 +150,7 @@ def get_snapshots(conf,i,api,utcminute,symbols):
 				insert_minute_bars(cursor,dailyBars,False,"d")
 
 			endcall = dt.now()
-			print("DONE",len(bars),endcall-tcall,tcall-bcall)
+			print("min",len(bars),"day",len(dailyBars),endcall-tcall,tcall-bcall)
 		except Exception as e:
 				print("error",e)
 		
