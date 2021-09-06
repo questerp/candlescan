@@ -105,8 +105,8 @@ def _start():
 def get_snapshots(conf,i,api,utcminute,symbols):
 	bcall = dt.now()
 	print("START",i,bcall)
-	mrows = 0
-	drows = 0
+	mrows = -1
+	drows = -1
 	try:
 		snap = api.get_snapshots(symbols)
 	except Exception as e: 
