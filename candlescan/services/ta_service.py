@@ -460,9 +460,9 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 			result = h[-1]
 		elif long_ops and func == "volume":
 			cursor.execute("select sum(v) from tabBars where s=%s and t>%s",(symbol,today))
-			volume = cursor.fetchall()
+			volume = cursor.fetchone()
 			if volume:
-				result = volume[0][0]
+				result = volume[0]
 		elif func == "m_volume":
 			result = v[-1]
 
@@ -517,18 +517,18 @@ def calculate_ta(symbol, func, o, c, h, l, v, cursor, analysis, minutes,long_ops
 				result = h[-1]
 				return 
 			cursor.execute("select h from tabBarsday where s=%s and t=%s limit 1",(symbol,today))
-			extreme = cursor.fetchall()
+			extreme = cursor.fetchone()
 			if extreme:
-				result = extreme[0][0]
+				result = extreme[0]
 				
 		elif func == "low_day":
 			if  minutes==361 or minutes==571 or minutes==961 :
 				result = l[-1]
 				return result
 			cursor.execute("select l from tabBarsday where s=%s and t=%s limit 1",(symbol,today))
-			extreme = cursor.fetchall()
+			extreme = cursor.fetchone()
 			if extreme:
-				result = extreme[0][0]
+				result = extreme[0]
 			
 
 
