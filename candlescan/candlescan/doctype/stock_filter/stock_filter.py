@@ -21,7 +21,7 @@ class StockFilter(Document):
 		
 		pattern = re.compile(" [a-z]+\[+.+]")
 		if step_cond:
-			rbsql_model = """(select %s from tabBars where s=ind.symbol and m_volume>500 and t between (@ts - %s)   and  (@ts - %s)  limit 1 )"""
+			rbsql_model = """(select %s from tabBars where s=ind.symbol and m_volume>500 and t between (@ts - %s) and  (@ts - %s)  limit 1 )"""
 			for step in step_cond:
 				# close[-1] < vwap
 				vals = pattern.findall(step)
@@ -38,7 +38,7 @@ class StockFilter(Document):
 
 					rbsql = rbsql_model % (column,ts,ts_end)
 					sql = sql.replace(val,rbsql)
-					sql = "set @ts =UNIX_TIMESTAMP(); %s" % sql
+					sql = "set @ts = UNIX_TIMESTAMP(); %s" % sql
 					
 		fields = "symbol"
 		final = """ SELECT %s from tabIndicators ind where %s """ % (fields,sql)
@@ -50,7 +50,7 @@ class StockFilter(Document):
 			missing_columns = frappe.db.is_missing_column(e)
 			if missing_columns:
 				frappe.throw(e.args[1].replace("in 'where clause'","in script"))
-			frappe.throw("Errors in the script, please check syntax")
+			frappe.throw("Errors in the script, please check syntax %s" % final)
 		self.sql_script = json.dumps(final)
 		if step_cond:
 			self.steps = json.dumps(step_cond)
