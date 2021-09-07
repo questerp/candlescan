@@ -21,7 +21,7 @@ class StockFilter(Document):
 		
 		pattern = re.compile(" [a-z]+\[+.+]")
 		if step_cond:
-			rbsql_model = """(select %s from tabBars where s=ind.symbol and m_volume>500 and t between (UNIX_TIMESTAMP() - %s)   and  (UNIX_TIMESTAMP() - %s)  limit 1 )"""
+			rbsql_model = """set @ts =UNIX_TIMESTAMP(); (select %s from tabBars where s=ind.symbol and m_volume>500 and t between (@ts - %s)   and  (@ts - %s)  limit 1 )"""
 			for step in step_cond:
 				# close[-1] < vwap
 				vals = pattern.findall(step)
