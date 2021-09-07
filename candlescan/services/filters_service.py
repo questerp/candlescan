@@ -75,8 +75,12 @@ def run_filter(name):
 		sql = json.loads(filter.sql_script)
 		sort = "ASC" if filter.sort_mode == "Ascending" else "DESC"
 		if sql:
-			data = frappe.db.sql("""%s order by %s %s limit %s""" % (sql,filter.sort_field,sort,filter.limit_results or 1),as_dict=True)
-	
+			try:
+				data = frappe.db.sql("""%s order by %s %s limit %s""" % (sql,filter.sort_field,sort,filter.limit_results or 1),as_dict=True)
+			except Exception as e:
+				print(e)
+				print(sql)
+
 	end = dt.now()
 	print("done",end-start)
 	return data
