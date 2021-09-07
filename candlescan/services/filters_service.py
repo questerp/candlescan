@@ -6,6 +6,7 @@ from frappe.utils import cstr,getdate, get_time, today,now_datetime
 import socketio
 import asyncio
 from candlescan.utils.candlescan import get_yahoo_prices as get_prices
+from datetime import datetime as dt
 
 
 sio = socketio.AsyncClient(logger=True,json=json_encoder, engineio_logger=True,reconnection=True, reconnection_attempts=10, reconnection_delay=1, reconnection_delay_max=5)
@@ -59,6 +60,8 @@ async def run_stock_filter(message):
 def run_filter(name):
 	if not name:
 		return
+	start = dt.now()
+
 	frappe.db.commit()
 	filter = frappe.db.sql("""select * from `tabStock Filter` where name='%s'"""%name,as_dict=1)
 	if filter:
@@ -74,5 +77,6 @@ def run_filter(name):
 		if sql:
 			data = frappe.db.sql("""%s order by %s %s limit %s""" % (sql,filter.sort_field,sort,filter.limit_results or 1),as_dict=True)
 	
-	
+	end = dt.now()
+	print("done",end-start)
 	return data
