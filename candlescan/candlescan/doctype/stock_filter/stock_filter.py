@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import frappe, json
 from frappe.model.document import Document
 import re
+from frappe.utils.data import   flt
 
 class StockFilter(Document):
 	def validate(self):
@@ -26,6 +27,7 @@ class StockFilter(Document):
 					parts = val.split('[')
 					column = parts[0]
 					stp = parts[1]
+					stp = flt(stp.split("]")[0])
 					ts = stp * 60
 					ts_end = ts + 60
 
