@@ -15,8 +15,26 @@ class StockFilter(Document):
 		#columns = json.loads(self.columns)
 		#fields = ",".join([a['field'] for a in columns])
 		#if 'symbol' not in fields:
+		
+		pattern = re.compile(" [a-z]+\[+.+]")
+		if step_cond:
+			rbsql_model = """(select %s from tabBars where s=ind.symbol and t between (UNIX_TIMESTAMP() - %s)  and  (UNIX_TIMESTAMP() + %s)   )"""
+			for step in step_cond:
+				# close[-1] < vwap
+				vals = pattern.findall(step)
+				for val in vals:
+					parts = val.split('[')
+					column = parts[0]
+					stp = parts[1]
+					ts = stp * 60
+					ts_end = ts + 60
+
+					rbsql = rbsql_model % (column,ts,ts_end)
+					sql = sql.replace(val,rbsql)
+					
 		fields = "symbol"
-		final = """ SELECT %s from tabIndicators where %s """ % (fields,sql)
+		final = """ SELECT %s from tabIndicators ind where %s """ % (fields,sql)
+
 		#frappe.msgprint(final)
 		try:
 			frappe.db.sql("""explain %s""" % final)
@@ -47,7 +65,7 @@ class StockFilter(Document):
 		for cond in conds:
 			if "[" in cond:
 				step_cond.append(cond)
-				continue
+				#continue
 			if not cond:
 				continue
 			if cond == 'OR':
