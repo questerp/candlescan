@@ -28,6 +28,9 @@ class StockFilter(Document):
 					column = parts[0]
 					stp = parts[1]
 					stp = flt(stp.split("]")[0])
+					if stp<0:
+						frappe.throw("field index must be a positive integer")
+
 					ts = stp * 60
 					ts_end = ts + 60
 
