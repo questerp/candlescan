@@ -38,10 +38,11 @@ class StockFilter(Document):
 
 					rbsql = rbsql_model % (column,ts,ts_end)
 					sql = sql.replace(val,rbsql)
-					sql = "set @ts = UNIX_TIMESTAMP(); %s" % sql
 					
 		fields = "symbol"
 		final = """ SELECT %s from tabIndicators ind where %s """ % (fields,sql)
+		if step_cond:
+			final = "set @ts = UNIX_TIMESTAMP(); %s" % final
 
 		#frappe.msgprint(final)
 		try:
