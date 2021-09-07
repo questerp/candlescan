@@ -19,7 +19,7 @@ class StockFilter(Document):
 		
 		pattern = re.compile(" [a-z]+\[+.+]")
 		if step_cond:
-			rbsql_model = """(select %s from tabBars where s=ind.symbol and t between (UNIX_TIMESTAMP() - %s)  and  (UNIX_TIMESTAMP() + %s)   )"""
+			rbsql_model = """(select %s from tabBars where s=ind.symbol and t between (UNIX_TIMESTAMP() - %s)  and  (UNIX_TIMESTAMP() + %s)  limit 1 )"""
 			for step in step_cond:
 				# close[-1] < vwap
 				vals = pattern.findall(step)
@@ -31,8 +31,8 @@ class StockFilter(Document):
 					if stp<0:
 						frappe.throw("field index must be a positive integer")
 
-					ts = stp * 60
-					ts_end = ts + 60
+					ts = stp * 119
+					ts_end = ts + 119
 
 					rbsql = rbsql_model % (column,ts,ts_end)
 					sql = sql.replace(val,rbsql)
