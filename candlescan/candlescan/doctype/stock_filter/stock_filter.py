@@ -41,17 +41,18 @@ class StockFilter(Document):
 					
 		fields = "symbol"
 		final = """ SELECT %s from tabIndicators ind where %s """ % (fields,sql)
-		if step_cond:
-			final = "set @ts = UNIX_TIMESTAMP(); %s" % final
+		
 
 		#frappe.msgprint(final)
 		try:
-			frappe.db.sql("""explain %s""" % final)
+			frappe.db.sql("""explain (%s)""" % final)
 		except Exception as e:
 			missing_columns = frappe.db.is_missing_column(e)
 			if missing_columns:
 				frappe.throw(e.args[1].replace("in 'where clause'","in script"))
 			frappe.throw("Errors in the script, please check syntax %s" % final)
+		if step_cond:
+			final = "set @ts = UNIX_TIMESTAMP(); %s" % final
 		self.sql_script = json.dumps(final)
 		if step_cond:
 			self.steps = json.dumps(step_cond)
