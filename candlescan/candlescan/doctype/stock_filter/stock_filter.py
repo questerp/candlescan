@@ -7,6 +7,8 @@ import frappe, json
 from frappe.model.document import Document
 import re
 from frappe.utils.data import   flt
+from datetime import  datetime as dt
+
 
 class StockFilter(Document):
 	def validate(self):
@@ -19,7 +21,7 @@ class StockFilter(Document):
 		
 		pattern = re.compile(" [a-z]+\[+.+]")
 		if step_cond:
-			rbsql_model = """(select %s from tabBars where s=ind.symbol and t between (UNIX_TIMESTAMP() - %s) as start  and  (UNIX_TIMESTAMP() - %s)  limit 1 )"""
+			rbsql_model = """(select %s from tabBars where s=ind.symbol and t between (UNIX_TIMESTAMP() - %s)   and  (UNIX_TIMESTAMP() - %s)  limit 1 )"""
 			for step in step_cond:
 				# close[-1] < vwap
 				vals = pattern.findall(step)
@@ -59,7 +61,6 @@ class StockFilter(Document):
 		# close < close[-1]
 		# close[-1] < close[-2]
 		# close[-2] < close[-3]
-
 		self.script = self.script.lower().replace('(','').replace(')','').replace('drop','').replace('alter','').replace('delete','').replace('insert','').replace('update','')
 		script = json.loads(self.script)
 		conds = script.splitlines()
